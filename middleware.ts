@@ -15,7 +15,7 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!api/unlock|_next/static|_next/image|favicon.ico|brand/|photos/).*)",
-  ],
+  // gate all pages; skip the unlock api, next internals and any static file
+  // (anything with a dot: .png, .mp3, .ico, ...)
+  matcher: ["/((?!api/unlock|_next/static|_next/image|.*\\..*).*)"],
 };

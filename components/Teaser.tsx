@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Countdown from "./Countdown";
 import TeaserShader from "./TeaserShader";
 
@@ -9,6 +9,49 @@ type Status = "idle" | "checking" | "wrong" | "unlocking";
 export default function Teaser() {
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+  const [glitching, setGlitching] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const glitchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // autoplay is usually blocked — retry on the first interaction
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.volume = 0.3;
+    const tryPlay = () => {
+      if (audio.paused && soundOn) {
+        audio.play().catch(() => {
+          // still blocked — next interaction will retry
+        });
+      }
+    };
+    tryPlay();
+    window.addEventListener("pointerdown", tryPlay);
+    window.addEventListener("keydown", tryPlay);
+    return () => {
+      window.removeEventListener("pointerdown", tryPlay);
+      window.removeEventListener("keydown", tryPlay);
+    };
+  }, [soundOn]);
+
+  const toggleSound = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (soundOn) {
+      audio.pause();
+      setSoundOn(false);
+    } else {
+      audio.play().catch(() => {});
+      setSoundOn(true);
+    }
+  };
+
+  const handleGlitch = () => {
+    setGlitching(true);
+    if (glitchTimer.current) clearTimeout(glitchTimer.current);
+    glitchTimer.current = setTimeout(() => setGlitching(false), 240);
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +64,7 @@ export default function Teaser() {
     });
     if (res.ok) {
       setStatus("unlocking");
+      audioRef.current?.pause();
     } else {
       setStatus("wrong");
       setPassword("");
@@ -32,10 +76,17 @@ export default function Teaser() {
       <TeaserShader
         unlocking={status === "unlocking"}
         onFlooded={() => window.location.reload()}
+        onGlitch={handleGlitch}
       />
 
+      <audio ref={audioRef} src="/audio/teaser.mp3" loop preload="auto" />
+
       {/* frame labels */}
-      <div className="pointer-events-none absolute inset-0 p-5 font-mono text-[10px] tracking-[0.3em] text-bone/60 sm:p-8 sm:text-[11px]">
+      <div
+        className={`pointer-events-none absolute inset-0 p-5 font-mono text-[10px] tracking-[0.3em] text-bone/60 sm:p-8 sm:text-[11px] ${
+          glitching ? "dom-glitch" : ""
+        }`}
+      >
         <span className="animate-rise absolute left-5 top-5 sm:left-8 sm:top-8 [animation-delay:400ms]">
           HNGRŸ®
         </span>
@@ -50,11 +101,19 @@ export default function Teaser() {
         </span>
       </div>
 
+      {/* sound toggle */}
+      <button
+        onClick={toggleSound}
+        className="absolute right-5 top-14 z-10 font-mono text-[10px] tracking-[0.3em] text-bone/40 transition-colors hover:text-bone sm:right-8 sm:top-20"
+      >
+        SOUND {soundOn ? "ON" : "OFF"}
+      </button>
+
       {/* countdown + gate */}
       <div
         className={`absolute inset-x-0 bottom-[10%] flex flex-col items-center gap-8 px-6 transition-opacity duration-700 ${
           status === "unlocking" ? "pointer-events-none opacity-0" : ""
-        }`}
+        } ${glitching ? "dom-glitch" : ""}`}
       >
         <div className="animate-rise [animation-delay:1100ms]">
           <Countdown />

@@ -60,6 +60,11 @@ float logoInk(vec2 s, float mask) {
 
 void main() {
   vec2 uv = gl_FragCoord.xy / uRes;
+
+  // glitch tears horizontal bands across the WHOLE frame
+  float band = floor(gl_FragCoord.y / (uRes.y * 0.022));
+  uv.x += (hash(vec2(band, floor(uTime * 24.0))) - 0.5) * 0.09 * uGlitch;
+
   float aspect = uRes.x / uRes.y;
   vec2 p = vec2(uv.x * aspect, uv.y);
   float t = uTime * 0.05;
@@ -95,10 +100,6 @@ void main() {
 
   vec2 s = luv + warp;
 
-  // glitch: horizontal bands tear sideways
-  float band = floor(gl_FragCoord.y / (uRes.y * 0.022));
-  s.x += (hash(vec2(band, floor(uTime * 24.0))) - 0.5) * 0.09 * uGlitch;
-
   vec2 edge = smoothstep(0.0, 0.02, s) * smoothstep(0.0, 0.02, 1.0 - s);
   float mask = edge.x * edge.y * smoothstep(0.05, 0.9, uForm);
 
@@ -132,15 +133,19 @@ void main() {
 export default function TeaserShader({
   unlocking,
   onFlooded,
+  onGlitch,
 }: {
   unlocking: boolean;
   onFlooded: () => void;
+  onGlitch?: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const unlockingRef = useRef(unlocking);
   const onFloodedRef = useRef(onFlooded);
+  const onGlitchRef = useRef(onGlitch);
   unlockingRef.current = unlocking;
   onFloodedRef.current = onFlooded;
+  onGlitchRef.current = onGlitch;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -224,6 +229,7 @@ export default function TeaserShader({
       if (now > nextGlitch && form >= 1) {
         glitch = 1;
         nextGlitch = now + 3500 + Math.random() * 4500;
+        onGlitchRef.current?.();
       }
       glitch *= Math.pow(0.0025, dt); // ~150ms decay
 

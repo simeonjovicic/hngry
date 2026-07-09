@@ -34,11 +34,7 @@ export default function ShopGrid() {
 
       <div className="grid grid-cols-2 gap-x-4 gap-y-14 lg:grid-cols-3">
         {visible.map((p, i) => (
-          <Reveal
-            key={`${filter}-${p.slug}`}
-            delay={i * 70}
-            className={i % 3 === 1 ? "lg:translate-y-12" : ""}
-          >
+          <Reveal key={`${filter}-${p.slug}`} delay={i * 70}>
             <ProductCard product={p} />
           </Reveal>
         ))}

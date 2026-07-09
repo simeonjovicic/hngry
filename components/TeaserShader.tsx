@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import NextImage from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 /*
  * Coming-soon shader. Black room, bone smoke. The logo assembles itself out
@@ -147,22 +148,35 @@ export default function TeaserShader({
   onFloodedRef.current = onFlooded;
   onGlitchRef.current = onGlitch;
 
+  const [fallback, setFallback] = useState(false);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    // context creation can fail or come back already lost (HMR, GPU pressure)
     const gl = canvas.getContext("webgl", { antialias: false, alpha: false });
-    if (!gl) return;
+    if (!gl || gl.isContextLost()) {
+      setFallback(true);
+      return;
+    }
 
     const compile = (type: number, src: string) => {
-      const shader = gl.createShader(type)!;
+      const shader = gl.createShader(type);
+      if (!shader) return null;
       gl.shaderSource(shader, src);
       gl.compileShader(shader);
       return shader;
     };
 
-    const program = gl.createProgram()!;
-    gl.attachShader(program, compile(gl.VERTEX_SHADER, VERT));
-    gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAG));
+    const vert = compile(gl.VERTEX_SHADER, VERT);
+    const frag = compile(gl.FRAGMENT_SHADER, FRAG);
+    const program = gl.createProgram();
+    if (!vert || !frag || !program) {
+      setFallback(true);
+      return;
+    }
+    gl.attachShader(program, vert);
+    gl.attachShader(program, frag);
     gl.linkProgram(program);
     gl.useProgram(program);
 
@@ -259,8 +273,7 @@ export default function TeaserShader({
     };
 
     const img = new Image();
-    img.src = "/brand/hngry-logo.png";
-    img.onload = () => {
+    const onTexture = () => {
       const tex = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, tex);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
@@ -276,6 +289,9 @@ export default function TeaserShader({
         raf = requestAnimationFrame(loop);
       }
     };
+    img.onload = onTexture;
+    img.src = "/brand/hngry-logo.png";
+    if (img.complete && img.naturalWidth > 0) onTexture(); // cached image
 
     // reduced motion still needs the flood loop once unlocking starts
     const unlockWatcher = setInterval(() => {
@@ -288,9 +304,25 @@ export default function TeaserShader({
       cancelAnimationFrame(raf);
       clearInterval(unlockWatcher);
       window.removeEventListener("pointermove", onMove);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      // NOTE: do not loseContext() here — the canvas node can be reused on
+      // back-navigation and would come back with a dead context
     };
   }, []);
+
+  if (fallback) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center bg-[#0d0d0c]">
+        <NextImage
+          src="/brand/hngry-logo.png"
+          alt="HNGRŸ — Drop 001 coming 20.07.2026, 20:15"
+          width={1080}
+          height={1080}
+          priority
+          className="logo-invert w-3/4 max-w-2xl"
+        />
+      </div>
+    );
+  }
 
   return (
     <canvas

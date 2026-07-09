@@ -16,30 +16,24 @@ const REVIEWS: Review[] = [
   { rating: 5, quote: "Sizing is spot on for the boxy look. Never taking it off.", author: "JON P.", detail: "STAY HNGRŸ HOODIE" },
 ];
 
-function initials(name: string) {
-  return name.split(" ").slice(0, 2).map((p) => p[0]).join("").toUpperCase();
-}
-
 function Card({ r }: { r: Review }) {
   return (
-    <figure className="flex w-[80vw] max-w-[400px] shrink-0 flex-col gap-6 border border-ink/15 bg-ink/[0.02] p-8">
-      <div className="flex items-center justify-between">
-        <span className="text-lg tracking-[0.15em] text-tag" aria-hidden>
+    <figure className="flex w-[78vw] max-w-[440px] shrink-0 flex-col justify-between gap-8 border-l border-ink/10 px-10 py-2">
+      <div className="flex items-center gap-3">
+        <span className="text-base tracking-[0.2em] text-tag" aria-hidden>
           {"★".repeat(r.rating)}
         </span>
-        <span className="font-mono text-[10px] tracking-[0.2em] text-tag">✓ VERIFIED</span>
+        <span className="font-mono text-[9px] tracking-[0.25em] text-ink/35">
+          VERIFIED
+        </span>
       </div>
-      <p className="flex-1 text-xl font-medium leading-snug tracking-tight">
+      <p className="text-2xl font-medium leading-[1.35] tracking-tight">
         {r.quote}
       </p>
-      <figcaption className="flex items-center gap-3 border-t border-ink/10 pt-6">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center bg-ink font-mono text-xs text-bone">
-          {initials(r.author)}
-        </span>
-        <span className="flex flex-col gap-0.5">
-          <span className="font-mono text-[11px] tracking-[0.15em]">{r.author}</span>
-          <span className="font-mono text-[10px] tracking-[0.15em] text-ink/50">{r.detail}</span>
-        </span>
+      <figcaption className="flex items-center gap-2.5 font-mono text-[11px] tracking-[0.18em]">
+        <span>{r.author}</span>
+        <span className="text-ink/25">/</span>
+        <span className="text-ink/45">{r.detail}</span>
       </figcaption>
     </figure>
   );
@@ -83,7 +77,7 @@ export default function Reviews() {
       {/* scrolling review marquee — on-brand with the site's tickers */}
       <div className="group mt-14 select-none" style={EDGE_FADE}>
         <div
-          className="animate-ticker flex w-max gap-4 px-2 group-hover:[animation-play-state:paused]"
+          className="animate-ticker flex w-max group-hover:[animation-play-state:paused]"
           style={{ animationDuration: "70s" }}
         >
           {[...track, ...track].map((r, i) => (

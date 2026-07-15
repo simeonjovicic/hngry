@@ -1,0 +1,156 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hngry-hero",
+      "settings": {
+        "label_left": "EST. 2026 — CLOTHES FOR THE HUNGRY",
+        "label_right": "DROP 001 / SUMMER 26",
+        "tagline": "HEAVYWEIGHT ONLY.\nNO OFFICE HOURS.\nSTAY HNGRŸ.",
+        "button_label": "SHOP DROP",
+        "link_label": "EXPLORE"
+      }
+    },
+    "collections": {
+      "type": "hngry-collections",
+      "settings": {
+        "label": "(01) — THE ARSENAL",
+        "heading_line1": "Choose Your",
+        "heading_word": "Weapon",
+        "color_scheme": "scheme-3"
+      },
+      "blocks": {
+        "tile1": {
+          "type": "tile",
+          "settings": {
+            "title": "TEES",
+            "subtitle": "HEAVYWEIGHT. BOXY. LOUD.",
+            "collection": "drop-001"
+          }
+        },
+        "tile2": {
+          "type": "tile",
+          "settings": {
+            "title": "HOODIES",
+            "subtitle": "WASHED. FADED. OVERSIZED.",
+            "collection": "drop-001"
+          }
+        },
+        "tile3": {
+          "type": "tile",
+          "settings": {
+            "title": "DROP 001",
+            "subtitle": "THE FIRST STATEMENT.",
+            "collection": "drop-001"
+          }
+        }
+      },
+      "block_order": [
+        "tile1",
+        "tile2",
+        "tile3"
+      ],
+      "disabled": true
+    },
+    "marquee": {
+      "type": "hngry-marquee",
+      "settings": {
+        "line1": "TOO FLYYY FOR A 9–5",
+        "line2": "STAY HNGRŸ",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "manifesto": {
+      "type": "hngry-manifesto",
+      "settings": {}
+    },
+    "reviews": {
+      "type": "hngry-reviews",
+      "settings": {
+        "label": "(04) — THE VERDICT",
+        "heading_line1": "Worn By The",
+        "heading_word": "Hungry",
+        "score_number": "4.9",
+        "score_count": "300+ VERIFIED REVIEWS",
+        "color_scheme": "scheme-1"
+      },
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Heaviest tee I own. Fit is exactly as promised — too flyyy for a 9-5.",
+            "author": "MARCO K.",
+            "detail": "FLYYY 9–5 TEE",
+            "verified": true
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Copped the drop in 4 minutes flat. Quality is unreal, print doesn't crack.",
+            "author": "AYA R.",
+            "detail": "NO 9–5 TEE",
+            "verified": true
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Washed hoodie hits different. Already waiting on the next drop.",
+            "author": "DEN B.",
+            "detail": "STAY HNGRŸ HOODIE",
+            "verified": true
+          }
+        },
+        "r4": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Fabric is thick, stitching is clean. Feels like triple the price.",
+            "author": "LEO M.",
+            "detail": "FLYYY 9–5 TEE",
+            "verified": true
+          }
+        },
+        "r5": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Got stopped three times asking where it's from. That's the whole point.",
+            "author": "SIMI T.",
+            "detail": "NO 9–5 TEE",
+            "verified": true
+          }
+        },
+        "r6": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Sizing is spot on for the boxy look. Never taking it off.",
+            "author": "JON P.",
+            "detail": "STAY HNGRŸ HOODIE",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5",
+        "r6"
+      ],
+      "disabled": true
+    }
+  },
+  "order": [
+    "hero",
+    "collections",
+    "marquee",
+    "manifesto",
+    "reviews"
+  ]
+}

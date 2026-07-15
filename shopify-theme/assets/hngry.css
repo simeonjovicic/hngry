@@ -1,0 +1,544 @@
+/* HNGRY design system — ported from the Next.js build.
+   Loaded after Dawn's base.css so these tokens win. */
+
+@font-face {
+  font-family: "Anton";
+  src: url("hngry-anton.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("hngry-grotesk.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Space Mono";
+  src: url("hngry-mono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Space Mono";
+  src: url("hngry-mono-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --hngry-bone: #f1efe9;
+  --hngry-ink: #0c0c0c;
+  --hngry-smoke: #e3e1da;
+  --hngry-tag: #f4731c;
+  --hngry-display: "Anton", "Arial Black", sans-serif;
+  --hngry-sans: "Space Grotesk", sans-serif;
+  --hngry-mono: "Space Mono", monospace;
+}
+
+::selection {
+  background: var(--hngry-ink);
+  color: var(--hngry-bone);
+}
+
+/* brand off-white everywhere — keeps transparent sections (e.g. manifesto)
+   consistent with the bone color-scheme sections */
+body {
+  background-color: var(--hngry-bone);
+}
+
+/* -- utility classes shared by hngry sections ---------------------------- */
+
+.hngry-mono {
+  font-family: var(--hngry-mono);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+.hngry-display {
+  font-family: var(--hngry-display);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.hngry-outline {
+  -webkit-text-stroke: 1.5px var(--hngry-ink);
+  color: transparent;
+}
+
+.hngry-outline--bone {
+  -webkit-text-stroke: 1.5px var(--hngry-bone);
+  color: transparent;
+}
+
+/* logo png has transparent/white background */
+.hngry-logo-multiply {
+  mix-blend-mode: multiply;
+}
+
+.hngry-logo-invert {
+  filter: invert(1);
+  mix-blend-mode: screen;
+}
+
+/* film grain overlay */
+.hngry-grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  opacity: 0.055;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* -- animations ----------------------------------------------------------- */
+
+@keyframes hngry-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.hngry-ticker-track {
+  animation: hngry-ticker 22s linear infinite;
+}
+
+.hngry-ticker-track--slow {
+  animation: hngry-ticker 40s linear infinite;
+}
+
+@keyframes hngry-ticker-rev {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.hngry-ticker-track--rev {
+  animation: hngry-ticker-rev 46s linear infinite;
+}
+
+@keyframes hngry-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hngry-rise {
+  animation: hngry-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes hngry-shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+.hngry-shake {
+  animation: hngry-shake 0.5s ease both;
+}
+
+@keyframes hngry-dom-glitch {
+  0% { transform: translate(0, 0) skewX(0); text-shadow: none; }
+  20% {
+    transform: translate(-3px, 1px) skewX(-2deg);
+    text-shadow: 2px 0 rgba(255, 40, 70, 0.55), -2px 0 rgba(40, 200, 255, 0.55);
+  }
+  40% {
+    transform: translate(3px, -1px) skewX(1.5deg);
+    text-shadow: -2px 0 rgba(255, 40, 70, 0.55), 2px 0 rgba(40, 200, 255, 0.55);
+  }
+  60% {
+    transform: translate(-2px, 0) skewX(-1deg);
+    text-shadow: 1px 0 rgba(255, 40, 70, 0.4), -1px 0 rgba(40, 200, 255, 0.4);
+  }
+  100% { transform: translate(0, 0) skewX(0); text-shadow: none; }
+}
+
+.hngry-dom-glitch {
+  animation: hngry-dom-glitch 0.24s steps(3) both;
+}
+
+/* only hide reveal elements once JS confirms it can reveal them again —
+   without JS (or if it fails) content stays fully visible */
+.js-reveal .hngry-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.js-reveal .hngry-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hngry-reveal { opacity: 1; transform: none; }
+  .hngry-ticker-track,
+  .hngry-ticker-track--slow,
+  .hngry-ticker-track--rev,
+  .hngry-rise,
+  .hngry-dom-glitch {
+    animation: none;
+  }
+}
+
+/* ======================================================================
+   Global Dawn overrides — colors, typography, shapes
+   ====================================================================== */
+
+:root {
+  --font-body-family: "Space Grotesk", sans-serif;
+  --font-heading-family: "Anton", "Arial Black", sans-serif;
+  --buttons-radius: 0px;
+  --buttons-radius-outset: 0px;
+  --buttons-border-width: 1px;
+  --inputs-radius: 0px;
+  --inputs-radius-outset: 0px;
+  --variant-pills-radius: 0px;
+  --media-radius: 0px;
+  --card-corner-radius: 0px;
+  --text-boxes-radius: 0px;
+  --popup-corner-radius: 0px;
+  --drawer-border-width: 1px;
+}
+
+/* light scheme — bone/ink */
+.color-scheme-1,
+.color-scheme-2 {
+  --color-background: 241, 239, 233;
+  --gradient-background: #f1efe9;
+  --color-foreground: 12, 12, 12;
+  --color-button: 12, 12, 12;
+  --color-button-text: 241, 239, 233;
+  --color-secondary-button: 241, 239, 233;
+  --color-secondary-button-text: 12, 12, 12;
+  --color-link: 12, 12, 12;
+  --color-badge-background: 12, 12, 12;
+  --color-badge-border: 12, 12, 12;
+  --color-badge-foreground: 241, 239, 233;
+}
+
+/* dark scheme — ink/bone */
+.color-scheme-3,
+.color-scheme-4,
+.color-scheme-5 {
+  --color-background: 12, 12, 12;
+  --gradient-background: #0c0c0c;
+  --color-foreground: 241, 239, 233;
+  --color-button: 241, 239, 233;
+  --color-button-text: 12, 12, 12;
+  --color-secondary-button: 12, 12, 12;
+  --color-secondary-button-text: 241, 239, 233;
+  --color-link: 241, 239, 233;
+  --color-badge-background: 241, 239, 233;
+  --color-badge-border: 241, 239, 233;
+  --color-badge-foreground: 12, 12, 12;
+}
+
+/* headings always shout */
+h1, h2, h3, .h0, .h1, .h2, .h3,
+.card__heading {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* mono details: nav, prices, buttons, badges, labels */
+.header__menu-item,
+.header__menu-item span,
+summary.header__menu-item span {
+  font-family: var(--hngry-mono);
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.price,
+.price *,
+.totals__total-value,
+.cart-item__price-wrapper {
+  font-family: var(--hngry-mono);
+}
+
+.button,
+.shopify-challenge__button,
+.customer button,
+button.shopify-payment-button__button--unbranded {
+  font-family: var(--hngry-mono);
+  font-size: 1.2rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.badge {
+  font-family: var(--hngry-mono);
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border-radius: 0;
+}
+
+/* product cards — smoke tile look */
+.card--standard .card__inner .card__media {
+  background: var(--hngry-smoke);
+}
+
+.card__heading {
+  font-family: var(--hngry-display);
+}
+
+.card-information .caption-with-letter-spacing,
+.card__information .caption-with-letter-spacing {
+  font-family: var(--hngry-mono);
+}
+
+/* variant pills — square, strikethrough handled by Dawn */
+.product-form__input input[type='radio'] + label {
+  font-family: var(--hngry-mono);
+  letter-spacing: 0.1em;
+  border-radius: 0;
+}
+
+/* announcement/ticker place */
+.utility-bar {
+  border: none;
+}
+
+/* footer compact + mono */
+.footer__content-bottom .copyright__content,
+.footer__content-bottom small {
+  font-family: var(--hngry-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.hngry-footer-credit {
+  color: currentColor;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  transition: opacity 0.2s;
+}
+.hngry-footer-credit:hover {
+  opacity: 0.65;
+}
+
+/* ======================================================================
+   Collection + Product page chrome
+   ====================================================================== */
+
+.hngry-back {
+  display: inline-block;
+  margin-bottom: 1.6rem;
+  font-size: 1.1rem;
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+  text-underline-offset: 0.3em;
+}
+.hngry-back:hover {
+  text-decoration: underline;
+}
+
+.hngry-collection-eyebrow {
+  font-size: 1.1rem;
+  letter-spacing: 0.3em;
+  opacity: 0.4;
+  margin: 0 0 1rem;
+}
+
+.hngry-collection-title.collection-hero__title {
+  font-family: var(--hngry-display);
+  font-size: clamp(4.5rem, 10vw, 11rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+/* product page: make the title area feel editorial */
+.product__title h1,
+.product__title .h1 {
+  font-family: var(--hngry-display);
+  text-transform: uppercase;
+}
+
+/* payment note under buy buttons */
+.hngry-pay-note {
+  margin-top: 1.2rem;
+  text-align: center;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  opacity: 0.4;
+}
+
+/* footer brand column */
+.hngry-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+.hngry-footer-logo {
+  width: 16rem;
+  height: auto;
+}
+.hngry-footer-tagline {
+  max-width: 30rem;
+  font-size: 1rem;
+  line-height: 1.8;
+  letter-spacing: 0.15em;
+  opacity: 0.55;
+  margin: 0;
+}
+/* footer info links: mono, uppercase, no bullets */
+.footer-block__heading {
+  font-family: var(--hngry-mono);
+  font-size: 1.1rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+.footer-block__details-content a,
+.footer-block__details-content p {
+  font-family: var(--hngry-mono);
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.hngry-powered {
+  margin-left: 1.5rem;
+}
+@media (max-width: 749px) {
+  .hngry-powered { margin-left: 0; }
+}
+
+/* ======================================================================
+   Compact header — desktop only. Mobile keeps its original larger size.
+   ====================================================================== */
+/* logo sized by height only — aspect ratio always preserved, never squished */
+.hngry-wordmark {
+  width: auto !important;
+  height: auto !important;
+  max-height: 4rem; /* mobile default — original larger size */
+  object-fit: contain;
+}
+@media screen and (min-width: 750px) {
+  .header {
+    padding-top: 1.1rem;
+    padding-bottom: 1.1rem;
+  }
+  .hngry-wordmark {
+    max-height: 2.6rem; /* compact desktop */
+  }
+}
+
+/* ======================================================================
+   Mobile footer — single column, generous spacing
+   ====================================================================== */
+@media (max-width: 749px) {
+  .hngry-footer {
+    padding: 3rem 0 2rem;
+    text-align: left;
+  }
+  .hngry-footer__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.6rem 1.5rem;
+  }
+  /* mobile: drop the brand column (logo + tagline) */
+  .hngry-footer__brand {
+    display: none;
+  }
+  .hngry-footer__tagline {
+    margin-top: 1rem;
+  }
+  .hngry-footer__heading {
+    margin-bottom: 1.1rem;
+    font-size: 1rem;
+  }
+  .hngry-footer__links {
+    gap: 0.9rem;
+  }
+  /* customer service + socials sit side by side to save height */
+  .hngry-footer__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hngry-footer__brand,
+  .hngry-footer__signup,
+  .hngry-footer__bottom {
+    grid-column: 1 / -1;
+  }
+  .hngry-footer__form-row {
+    flex-wrap: wrap;
+    gap: 1.2rem;
+  }
+  .hngry-footer__submit {
+    margin-left: auto;
+  }
+  .hngry-footer__bottom {
+    margin-top: 2.4rem;
+    padding-top: 1.6rem;
+    gap: 0.8rem;
+  }
+  .hngry-footer__legal {
+    gap: 1.2rem;
+  }
+}
+
+/* ======================================================================
+   Transparent header over hero (homepage) → solid on scroll
+   ====================================================================== */
+.hngry-header-overlay .header-wrapper,
+.hngry-header-overlay .header,
+.hngry-header-overlay .header__heading-link,
+.hngry-header-overlay .header__menu-item,
+.hngry-header-overlay .header__menu-item span,
+.hngry-header-overlay .header__icon,
+.hngry-header-overlay .header__icon svg,
+.hngry-header-overlay .hngry-wordmark {
+  transition:
+    background-color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    stroke 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* solid state gets a soft frosted backdrop for a cleaner settle */
+.hngry-header-solid .header-wrapper {
+  backdrop-filter: saturate(1.1);
+}
+
+/* transparent state: header sits over the hero, light content */
+.hngry-header-overlay:not(.hngry-header-solid) .header-wrapper,
+.hngry-header-overlay:not(.hngry-header-solid) .header-wrapper.gradient,
+.hngry-header-overlay:not(.hngry-header-solid) .header {
+  background: transparent !important;
+  border-bottom-color: transparent !important;
+}
+.hngry-header-overlay:not(.hngry-header-solid) .header__heading-link,
+.hngry-header-overlay:not(.hngry-header-solid) .header__menu-item,
+.hngry-header-overlay:not(.hngry-header-solid) .header__menu-item span,
+.hngry-header-overlay:not(.hngry-header-solid) .header__icon,
+.hngry-header-overlay:not(.hngry-header-solid) .header__icon .icon,
+.hngry-header-overlay:not(.hngry-header-solid) .header__icon svg {
+  color: var(--hngry-bone);
+}
+.hngry-header-overlay:not(.hngry-header-solid) .header__icon svg {
+  stroke: var(--hngry-bone);
+}
+/* logo turns white over the image while transparent */
+.hngry-header-overlay:not(.hngry-header-solid) .hngry-wordmark {
+  filter: invert(1);
+  mix-blend-mode: screen;
+}
+/* the burger lines on mobile */
+.hngry-header-overlay:not(.hngry-header-solid) .header__icon--menu .icon-bars line,
+.hngry-header-overlay:not(.hngry-header-solid) .header__icon--menu .icon line {
+  stroke: var(--hngry-bone);
+}
+
+/* solid state = the normal bone header */
+.hngry-header-solid .header-wrapper,
+.hngry-header-solid .header {
+  background: rgb(var(--color-background)) !important;
+}

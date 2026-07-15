@@ -1,0 +1,223 @@
+<script src="{{ 'hngry-reveal.js' | asset_url }}" defer></script>
+
+<section class="hngry-manifesto" {{ section.shopify_attributes }}>
+  <div class="page-width">
+    <div class="hngry-manifesto__grid hngry-reveal">
+      <div>
+        <p class="hngry-manifesto__label hngry-mono">{{ section.settings.label }}</p>
+        <h2 class="hngry-manifesto__heading hngry-display">
+          {{ section.settings.heading_line1 }}<br>
+          <span class="hngry-outline">{{ section.settings.heading_line2 }}</span>
+        </h2>
+      </div>
+      <div class="hngry-manifesto__body">
+        <p class="hngry-manifesto__text hngry-mono">{{ section.settings.text }}</p>
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hngry-manifesto__cta hngry-mono">
+            {{ section.settings.button_label }} →
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .hngry-manifesto {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+    background: var(--hngry-bone);
+    color: var(--hngry-ink);
+  }
+
+  .hngry-manifesto__grid,
+  .hngry-manifesto__newsletter {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 750px) {
+    .hngry-manifesto__grid,
+    .hngry-manifesto__newsletter {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .hngry-manifesto__label {
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    color: rgba(12, 12, 12, 0.4);
+    margin: 0 0 1rem;
+  }
+
+  .hngry-manifesto__heading {
+    font-size: clamp(3rem, 5vw, 4.6rem);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .hngry-manifesto__subheading {
+    font-size: clamp(2.4rem, 4vw, 3.4rem);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .hngry-manifesto__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .hngry-manifesto__text {
+    max-width: 44rem;
+    font-size: 1.2rem;
+    line-height: 2.1;
+    letter-spacing: 0.08em;
+    color: rgba(12, 12, 12, 0.7);
+    margin: 0;
+  }
+
+  .hngry-manifesto__cta {
+    display: inline-block;
+    width: max-content;
+    border: 1px solid var(--hngry-ink);
+    padding: 1.4rem 3.4rem;
+    font-size: 1.2rem;
+    color: var(--hngry-ink);
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .hngry-manifesto__cta:hover {
+    background: var(--hngry-ink);
+    color: var(--hngry-bone);
+  }
+
+  .hngry-manifesto__newsletter {
+    margin-top: 5rem;
+    border-top: 1px solid var(--hngry-ink);
+    padding-top: 4rem;
+  }
+
+  .hngry-manifesto__signup {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1.5rem;
+  }
+
+  .hngry-newsletter__row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    max-width: 40rem;
+  }
+
+  .hngry-newsletter__input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(12, 12, 12, 0.4);
+    border-radius: 0;
+    padding: 0 0 0.6rem;
+    font-size: 1.3rem;
+    letter-spacing: 0.2em;
+    color: var(--hngry-ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .hngry-newsletter__input:focus {
+    border-color: var(--hngry-ink);
+  }
+
+  .hngry-newsletter__input::placeholder {
+    color: rgba(12, 12, 12, 0.3);
+  }
+
+  .hngry-newsletter__submit {
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(12, 12, 12, 0.4);
+    padding: 0 0 0.6rem;
+    font-size: 1.3rem;
+    color: var(--hngry-ink);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .hngry-newsletter__submit:hover {
+    color: var(--hngry-tag);
+    border-color: var(--hngry-ink);
+  }
+
+  .hngry-newsletter__done {
+    font-size: 1.3rem;
+    margin: 0;
+  }
+
+  .hngry-newsletter__error {
+    font-size: 1rem;
+    color: var(--hngry-tag);
+    margin: 0.6rem 0 0;
+  }
+
+  .hngry-manifesto__note {
+    font-size: 1rem;
+    letter-spacing: 0.25em;
+    color: rgba(12, 12, 12, 0.4);
+    margin: 0;
+  }
+
+  .hngry-socials {
+    display: flex;
+    gap: 0.9rem;
+  }
+
+  .hngry-socials__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.4rem;
+    height: 4.4rem;
+    border: 1px solid rgba(12, 12, 12, 0.3);
+    color: var(--hngry-ink);
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+
+  .hngry-socials__item:hover {
+    background: var(--hngry-ink);
+    color: var(--hngry-bone);
+    border-color: var(--hngry-ink);
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "HNGRY Manifesto",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "(03) — THE POINT" },
+    { "type": "text", "id": "heading_line1", "label": "Heading line 1", "default": "Clothes for the ones" },
+    { "type": "text", "id": "heading_line2", "label": "Heading line 2 (outlined)", "default": "who want more." },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Manifesto text",
+      "default": "HNGRŸ IS NOT A BRAND FOR EVERYBODY. IT'S FOR THE ONES WHO SKIP THE MEETING, TAKE THE STAIRS TWO AT A TIME AND NEVER ASK FOR PERMISSION. HEAVYWEIGHT FABRICS, HONEST CUTS, PRINTS THAT SAY WHAT YOU THINK. STAY HUNGRY."
+    },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "ENTER THE SHOP" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "header", "content": "Newsletter" },
+    { "type": "text", "id": "newsletter_label", "label": "Newsletter label", "default": "NEWSLETTER — GET THE DROP FIRST" },
+    { "type": "text", "id": "newsletter_line1", "label": "Newsletter heading line 1", "default": "Drop 001 lands 20.07." },
+    { "type": "text", "id": "newsletter_line2", "label": "Newsletter heading line 2 (outlined)", "default": "Be there first." },
+    { "type": "text", "id": "newsletter_note", "label": "Note", "default": "NO SPAM. ONLY DROPS. UNSUBSCRIBE WHENEVER." },
+    { "type": "header", "content": "Socials" },
+    { "type": "url", "id": "instagram_url", "label": "Instagram URL" },
+    { "type": "url", "id": "tiktok_url", "label": "TikTok URL" },
+    { "type": "url", "id": "whatsapp_url", "label": "WhatsApp URL" }
+  ],
+  "presets": [{ "name": "HNGRY Manifesto" }]
+}
+{% endschema %}

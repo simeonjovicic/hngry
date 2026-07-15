@@ -1,0 +1,67 @@
+{%- liquid
+  assign line1 = section.settings.line1
+  assign line2 = section.settings.line2
+-%}
+
+<section class="hngry-marquee color-{{ section.settings.color_scheme }}" {{ section.shopify_attributes }}>
+  <p class="hngry-marquee__line hngry-ticker-track--slow hngry-display">
+    <span>{{ line1 }}&nbsp;✦&nbsp;{{ line1 }}&nbsp;✦&nbsp;</span>
+    <span aria-hidden="true">{{ line1 }}&nbsp;✦&nbsp;{{ line1 }}&nbsp;✦&nbsp;</span>
+  </p>
+  <p class="hngry-marquee__line hngry-marquee__line--outline hngry-ticker-track--rev hngry-display">
+    <span>{{ line2 }}&nbsp;✦&nbsp;{{ line2 }}&nbsp;✦&nbsp;{{ line2 }}&nbsp;✦&nbsp;</span>
+    <span aria-hidden="true">{{ line2 }}&nbsp;✦&nbsp;{{ line2 }}&nbsp;✦&nbsp;{{ line2 }}&nbsp;✦&nbsp;</span>
+  </p>
+</section>
+
+{% style %}
+  .hngry-marquee {
+    overflow: hidden;
+    padding: 1.35rem 0;
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+    border-top: 1px solid rgb(var(--color-foreground));
+    border-bottom: 1px solid rgb(var(--color-foreground));
+  }
+
+  .hngry-marquee__line {
+    display: flex;
+    width: max-content;
+    white-space: nowrap;
+    margin: 0;
+    font-size: clamp(1.7rem, 3.75vw, 3.4rem);
+  }
+
+  .hngry-marquee__line--outline {
+    margin-top: 0.4rem;
+    -webkit-text-stroke: 1px rgb(var(--color-foreground));
+    color: transparent;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "HNGRY Marquee",
+  "settings": [
+    {
+      "type": "text",
+      "id": "line1",
+      "label": "Line 1 (filled)",
+      "default": "TOO FLYYY FOR A 9–5"
+    },
+    {
+      "type": "text",
+      "id": "line2",
+      "label": "Line 2 (outlined)",
+      "default": "STAY HNGRŸ"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [{ "name": "HNGRY Marquee" }]
+}
+{% endschema %}

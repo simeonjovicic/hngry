@@ -1,0 +1,228 @@
+<script src="{{ 'hngry-reveal.js' | asset_url }}" defer></script>
+
+<section class="hngry-reviews color-{{ section.settings.color_scheme }}" {{ section.shopify_attributes }}>
+  <div class="page-width">
+    <div class="hngry-reviews__head hngry-reveal">
+      <p class="hngry-reviews__label hngry-mono">{{ section.settings.label }}</p>
+      <div class="hngry-reviews__head-row">
+        <h2 class="hngry-reviews__heading hngry-display">
+          {{ section.settings.heading_line1 }}<br>
+          <span class="hngry-outline">{{ section.settings.heading_word }}</span>
+        </h2>
+        <div class="hngry-reviews__aggregate">
+          <span class="hngry-reviews__big-score hngry-display">{{ section.settings.score_number }}</span>
+          <div class="hngry-reviews__agg-meta">
+            <span class="hngry-reviews__stars" aria-hidden="true">★★★★★</span>
+            <span class="hngry-reviews__agg-count hngry-mono">{{ section.settings.score_count }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} build the card row once, then repeat it for a seamless marquee {%- endcomment -%}
+  {%- capture review_cards -%}
+    {%- for block in section.blocks -%}
+      {%- assign r = block.settings.rating | default: 5 -%}
+      <figure class="hngry-reviews__card" {{ block.shopify_attributes }}>
+        <div class="hngry-reviews__card-top">
+          <span class="hngry-reviews__card-stars" aria-hidden="true">
+            {%- for i in (1..5) -%}{% if i <= r %}★{% else %}<span class="is-empty">★</span>{% endif %}{%- endfor -%}
+          </span>
+          {%- if block.settings.verified -%}
+            <span class="hngry-reviews__verified hngry-mono">VERIFIED</span>
+          {%- endif -%}
+        </div>
+        <p class="hngry-reviews__quote">{{ block.settings.quote }}</p>
+        <figcaption class="hngry-reviews__author hngry-mono">
+          <span>{{ block.settings.author }}</span>
+          {%- if block.settings.detail != blank -%}
+            <span class="hngry-reviews__sep">/</span>
+            <span class="hngry-reviews__author-detail">{{ block.settings.detail }}</span>
+          {%- endif -%}
+        </figcaption>
+      </figure>
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  <div class="hngry-reviews__marquee">
+    <div class="hngry-reviews__track">
+      {{ review_cards }}{{ review_cards }}{{ review_cards }}{{ review_cards }}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .hngry-reviews {
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+    padding: 6.5rem 0;
+    overflow: hidden;
+    border-top: 1px solid rgba(var(--color-foreground), 0.1);
+  }
+
+  .hngry-reviews__label {
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    opacity: 0.45;
+    margin: 0 0 1.4rem;
+  }
+
+  .hngry-reviews__head-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem 3rem;
+    flex-wrap: wrap;
+  }
+
+  .hngry-reviews__heading {
+    font-size: clamp(3.4rem, 8vw, 8rem);
+    line-height: 0.82;
+    margin: 0;
+  }
+
+  .hngry-reviews__aggregate {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.4rem;
+  }
+
+  .hngry-reviews__big-score {
+    font-size: clamp(4rem, 8vw, 8rem);
+    line-height: 0.75;
+  }
+
+  .hngry-reviews__agg-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .hngry-reviews__stars {
+    color: var(--hngry-tag);
+    font-size: 1.6rem;
+    letter-spacing: 0.15em;
+  }
+
+  .hngry-reviews__agg-count {
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    opacity: 0.55;
+  }
+
+  /* marquee */
+  .hngry-reviews__marquee {
+    margin-top: 3.5rem;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  }
+
+  .hngry-reviews__track {
+    display: flex;
+    width: max-content;
+    animation: hngry-ticker 70s linear infinite;
+  }
+
+  .hngry-reviews__marquee:hover .hngry-reviews__track {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hngry-reviews__track { animation: none; }
+  }
+
+  /* clean, borderless cards separated by a hairline */
+  .hngry-reviews__card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 44rem;
+    max-width: 78vw;
+    flex-shrink: 0;
+    padding: 0.5rem 4rem;
+    margin: 0;
+    border-left: 1px solid rgba(var(--color-foreground), 0.12);
+  }
+
+  .hngry-reviews__card-top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .hngry-reviews__card-stars {
+    color: var(--hngry-tag);
+    font-size: 1.3rem;
+    letter-spacing: 0.15em;
+  }
+
+  .hngry-reviews__card-stars .is-empty { opacity: 0.2; }
+
+  .hngry-reviews__verified {
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    opacity: 0.35;
+  }
+
+  .hngry-reviews__quote {
+    margin: 0;
+    font-family: var(--hngry-sans);
+    font-style: normal;
+    font-size: 2rem;
+    line-height: 1.35;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .hngry-reviews__author {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 1.05rem;
+    letter-spacing: 0.18em;
+  }
+
+  .hngry-reviews__sep { opacity: 0.25; }
+  .hngry-reviews__author-detail { opacity: 0.45; }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "HNGRY Reviews",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "(04) — THE VERDICT" },
+    { "type": "text", "id": "heading_line1", "label": "Heading start", "default": "Worn By The" },
+    { "type": "text", "id": "heading_word", "label": "Heading word (outlined)", "default": "Hungry" },
+    { "type": "text", "id": "score_number", "label": "Aggregate score", "default": "4.9" },
+    { "type": "text", "id": "score_count", "label": "Review count", "default": "300+ VERIFIED REVIEWS" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "range", "id": "rating", "min": 1, "max": 5, "step": 1, "label": "Rating", "default": 5 },
+        { "type": "textarea", "id": "quote", "label": "Quote", "default": "Heaviest tee I own. Fit is exactly as promised — too flyyy for a 9-5." },
+        { "type": "text", "id": "author", "label": "Author", "default": "MARCO K." },
+        { "type": "text", "id": "detail", "label": "Detail", "default": "FLYYY 9–5 TEE" },
+        { "type": "checkbox", "id": "verified", "label": "Verified buyer", "default": true }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "HNGRY Reviews",
+      "blocks": [
+        { "type": "review", "settings": { "rating": 5, "quote": "Heaviest tee I own. Fit is exactly as promised — too flyyy for a 9-5.", "author": "MARCO K.", "detail": "FLYYY 9–5 TEE", "verified": true } },
+        { "type": "review", "settings": { "rating": 5, "quote": "Copped the drop in 4 minutes flat. Quality is unreal, print doesn't crack.", "author": "AYA R.", "detail": "NO 9–5 TEE", "verified": true } },
+        { "type": "review", "settings": { "rating": 5, "quote": "Washed hoodie hits different. Already waiting on the next drop.", "author": "DEN B.", "detail": "STAY HNGRŸ HOODIE", "verified": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}

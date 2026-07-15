@@ -1,0 +1,64 @@
+{%- capture ticker_line -%}
+  {%- for block in section.blocks -%}
+    {{ block.settings.text }}&nbsp;&nbsp;&nbsp;✦&nbsp;&nbsp;&nbsp;
+  {%- endfor -%}
+{%- endcapture -%}
+
+<div class="hngry-ticker" {{ section.shopify_attributes }}>
+  <div class="hngry-ticker__track hngry-ticker-track hngry-mono">
+    <span>{{ ticker_line }}</span>
+    <span aria-hidden="true">{{ ticker_line }}</span>
+  </div>
+</div>
+
+{% style %}
+  .hngry-ticker {
+    display: flex;
+    align-items: center;
+    height: 3.2rem;
+    overflow: hidden;
+    background: var(--hngry-ink);
+    color: var(--hngry-bone);
+  }
+
+  .hngry-ticker__track {
+    display: flex;
+    width: max-content;
+    white-space: nowrap;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "HNGRY Ticker",
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "STAY HNGRŸ"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HNGRY Ticker",
+      "blocks": [
+        { "type": "message", "settings": { "text": "STAY HNGRŸ" } },
+        { "type": "message", "settings": { "text": "FREE SHIPPING OVER €80" } },
+        { "type": "message", "settings": { "text": "DROP 001 — OUT NOW" } },
+        { "type": "message", "settings": { "text": "TOO FLYYY FOR A 9–5" } },
+        { "type": "message", "settings": { "text": "WORLDWIDE SHIPPING" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

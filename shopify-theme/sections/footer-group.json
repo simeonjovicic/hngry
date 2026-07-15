@@ -1,0 +1,24 @@
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "hngry-footer": {
+      "type": "hngry-footer",
+      "settings": {
+        "color_scheme": "scheme-3",
+        "tagline": "CLOTHES FOR THE ONES WHO WANT MORE. EST. 2026.",
+        "col1_title": "CUSTOMER SERVICE",
+        "col1_label_1": "SHIPPING",
+        "col1_label_2": "RETURNS",
+        "col1_label_3": "FAQ",
+        "socials_title": "SOCIALS",
+        "show_placeholder_socials": true,
+        "newsletter_title": "SIGN UP FOR EARLY ACCESS",
+        "legal_label_1": "DATENSCHUTZ",
+        "legal_label_2": "AGB",
+        "legal_label_3": "IMPRESSUM"
+      }
+    }
+  },
+  "order": ["hngry-footer"]
+}

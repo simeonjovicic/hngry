@@ -1,0 +1,273 @@
+{%- liquid
+  if section.settings.image != blank
+    assign hero_img = section.settings.image | image_url: width: 2400
+    assign hero_alt = section.settings.image.alt | default: shop.name
+  else
+    assign hero_img = 'hngry-hero.png' | asset_url
+    assign hero_alt = shop.name
+  endif
+
+  if section.settings.image_mobile != blank
+    assign hero_img_mobile = section.settings.image_mobile | image_url: width: 1200
+  else
+    assign hero_img_mobile = 'hngry-hero-mobile.png' | asset_url
+  endif
+-%}
+
+<section class="hngry-hero" style="--hero-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};">
+  <picture>
+    <source media="(max-width: 749px)" srcset="{{ hero_img_mobile }}">
+    <img
+      src="{{ hero_img }}"
+      alt="{{ hero_alt | escape }}"
+      class="hngry-hero__img"
+      width="1600"
+      height="900"
+      fetchpriority="high"
+    >
+  </picture>
+  <div class="hngry-hero__scrim"></div>
+
+  <div class="hngry-hero__overlay">
+    <div class="hngry-hero__top hngry-mono hngry-rise">
+      <span>{{ section.settings.label_left }}</span>
+      <span class="hngry-hero__top-right">{{ section.settings.label_right }}</span>
+    </div>
+
+    <div class="hngry-hero__foot hngry-rise" style="animation-delay: 200ms">
+      <div class="hngry-hero__ctas">
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hngry-hero__cta hngry-mono">
+            {{ section.settings.button_label }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.link_label != blank -%}
+          <a href="{{ section.settings.link_url | default: routes.all_products_collection_url }}" class="hngry-hero__link hngry-mono">
+            {{ section.settings.link_label }} →
+          </a>
+        {%- endif -%}
+      </div>
+      <p class="hngry-hero__tagline hngry-mono">{{ section.settings.tagline }}</p>
+    </div>
+  </div>
+
+  <span class="hngry-hero__scroll hngry-mono">SCROLL ↓</span>
+</section>
+
+{% style %}
+  .hngry-hero {
+    position: relative;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    /* slide up under the transparent header so it overlays the image */
+    margin-top: calc(-1 * var(--header-height, 5.5rem));
+    /* fill the screen below the ticker (the header floats on top) */
+    height: calc(100svh - 3.2rem);
+    min-height: 46rem;
+    overflow: hidden;
+    background: var(--hngry-ink);
+  }
+
+  .hngry-hero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  @media (max-width: 749px) {
+    .hngry-hero__img {
+      object-position: center center;
+    }
+  }
+
+  /* dark scrim so the mono labels/buttons stay legible over the photo */
+  .hngry-hero__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(12, 12, 12, calc(var(--hero-overlay) * 0.9)) 0%,
+      rgba(12, 12, 12, calc(var(--hero-overlay) * 0.15)) 35%,
+      rgba(12, 12, 12, calc(var(--hero-overlay) * 0.55)) 100%
+    );
+  }
+
+  .hngry-hero__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1.8rem;
+    padding: 2.5rem;
+    color: var(--hngry-bone);
+    pointer-events: none;
+  }
+
+  /* top labels sit out of flow, clear of the overlaid header */
+  .hngry-hero__top {
+    position: absolute;
+    top: calc(2.5rem + var(--header-height, 5.5rem));
+    left: 2.5rem;
+    right: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 749px) {
+    /* header covers this label on mobile — hide the whole top row */
+    .hngry-hero__top { display: none; }
+    .hngry-hero__overlay { padding: 1.5rem; gap: 1.2rem; }
+  }
+
+  /* bottom bar: CTAs on the left, tagline on the right */
+  .hngry-hero__foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .hngry-hero__ctas {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    pointer-events: auto;
+  }
+
+  .hngry-hero__tagline {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    margin: 0;
+    white-space: pre-line;
+    text-align: right;
+  }
+
+  .hngry-hero__cta {
+    display: inline-block;
+    background: var(--hngry-bone);
+    color: var(--hngry-ink);
+    padding: 1.6rem 4rem;
+    font-size: 1.3rem;
+    letter-spacing: 0.25em;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .hngry-hero__cta:hover {
+    background: var(--hngry-tag);
+    color: var(--hngry-bone);
+  }
+
+  .hngry-hero__link {
+    font-size: 1.2rem;
+    color: var(--hngry-bone);
+    text-decoration: underline;
+    text-underline-offset: 0.8rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 749px) {
+    .hngry-hero__foot {
+      flex-direction: column-reverse;
+      align-items: stretch;
+      gap: 1.2rem;
+    }
+    .hngry-hero__tagline { text-align: left; }
+    .hngry-hero__link { display: none; }
+    .hngry-hero__cta { text-align: center; }
+  }
+
+  @keyframes hngry-scroll-hint {
+    0%, 100% { transform: translate(-50%, 0); opacity: 0.5; }
+    50% { transform: translate(-50%, 6px); opacity: 1; }
+  }
+
+  .hngry-hero__scroll {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    color: var(--hngry-bone);
+    font-size: 1rem;
+    animation: hngry-scroll-hint 1.8s ease-in-out infinite;
+  }
+
+  @media (max-width: 749px) {
+    .hngry-hero__scroll { display: none; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "HNGRY Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero image (desktop)",
+      "info": "Full-bleed background. Falls back to the bundled campaign shot."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Hero image (mobile / portrait)",
+      "info": "Shown on phones. Falls back to the bundled portrait shot."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Darken image",
+      "default": 35
+    },
+    {
+      "type": "text",
+      "id": "label_left",
+      "label": "Top left label",
+      "default": "EST. 2026 — CLOTHES FOR THE HUNGRY"
+    },
+    {
+      "type": "text",
+      "id": "label_right",
+      "label": "Top right label",
+      "default": "DROP 001 / SUMMER 26"
+    },
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "HEAVYWEIGHT ONLY.\nNO OFFICE HOURS.\nSTAY HNGRŸ."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "SHOP DROP 001"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Secondary link label",
+      "default": "EXPLORE"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Secondary link"
+    }
+  ],
+  "presets": [{ "name": "HNGRY Hero" }]
+}
+{% endschema %}

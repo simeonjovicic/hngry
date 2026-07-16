@@ -53,7 +53,7 @@ export default function Reviews() {
       <div className="mx-auto max-w-7xl px-4 sm:px-8">
         <Reveal>
           <p className="mb-5 font-mono text-[11px] tracking-[0.3em] text-ink/40">
-            (04) — THE VERDICT
+            (06) — THE VERDICT
           </p>
           <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-6">
             <h2 className="font-display text-6xl uppercase leading-[0.82] sm:text-8xl">

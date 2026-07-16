@@ -1,121 +1,196 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import HeroShader from "@/components/HeroShader";
 import NewsletterForm from "@/components/NewsletterForm";
-import ProductVisual from "@/components/ProductVisual";
+import EditorialSplit from "@/components/EditorialSplit";
+import LookbookBlock from "@/components/LookbookBlock";
 import SocialIcons from "@/components/SocialIcons";
 import Reveal from "@/components/Reveal";
-import Reviews from "@/components/Reviews";
 import Teaser from "@/components/Teaser";
 import { ACCESS_COOKIE, ACCESS_VALUE } from "@/lib/access";
+import { ALL_SIZES, formatPrice, getProduct } from "@/lib/products";
+import heroSky from "@/public/img/Hngry-horizontal_2.png";
+import lookStairs from "@/public/img/Hngry-horizontal_1.png";
+import crewRooftop from "@/public/img/Hngry_1.png";
+import crewStairs from "@/public/img/Hngry_2.png";
+import crewBench from "@/public/img/Hngry_3.png";
 
 export default async function Home() {
   const store = await cookies();
   const unlocked = store.get(ACCESS_COOKIE)?.value === ACCESS_VALUE;
   if (!unlocked) return <Teaser />;
 
+  const drop = getProduct("flyyy-9-5-tee")!;
+
   return (
     <>
-      {/* HERO — fills exactly one viewport below ticker (h-8) + header (h-16) */}
-      <section className="relative h-[calc(100dvh-6rem)] min-h-[540px] overflow-hidden border-b border-ink/15">
-        <HeroShader />
-        <div className="pointer-events-none absolute inset-0 flex flex-col justify-between p-5 sm:p-10">
-          <div className="animate-rise flex items-baseline justify-between font-mono text-[11px] tracking-[0.25em]">
+      {/* HERO — horizontal campaign image at its natural aspect ratio */}
+      <section className="relative w-full overflow-hidden border-b border-ink/15">
+        <Image
+          src={heroSky}
+          alt="Three crew members in HNGRY tees on a rooftop against a blue sky"
+          preload
+          sizes="100vw"
+          className="h-auto w-full"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/15 to-ink/25" />
+
+        <div className="absolute inset-0 flex flex-col justify-between p-4 sm:p-10">
+          <div className="animate-rise flex items-baseline justify-between font-mono text-[11px] tracking-[0.25em] text-bone/90">
             <span>EST. 2026 — CLOTHES FOR THE HUNGRY</span>
             <span className="hidden sm:block">DROP 001 / SUMMER 26</span>
           </div>
 
-          <div className="animate-rise flex flex-col items-start gap-8 [animation-delay:250ms] sm:flex-row sm:items-end sm:justify-between">
-            <p className="font-mono text-[11px] leading-relaxed tracking-[0.25em]">
-              HEAVYWEIGHT ONLY.
-              <br />
-              NO OFFICE HOURS.
-              <br />
-              STAY HNGRŸ.
-            </p>
-            <div className="pointer-events-auto flex items-center gap-6">
+          <div className="animate-rise flex flex-col items-start gap-4 [animation-delay:250ms] sm:flex-row sm:items-end sm:justify-between sm:gap-8">
+            <div>
+              <h1 className="font-display text-3xl uppercase leading-[0.95] text-bone sm:text-6xl lg:text-7xl">
+                Too flyyy
+                <br />
+                for a 9–5.
+              </h1>
+              <p className="mt-3 hidden font-mono text-[11px] tracking-[0.25em] text-bone/80 sm:block">
+                HEAVYWEIGHT DROP 001 — LIVE 20.07.
+              </p>
+            </div>
+            <div className="flex items-center gap-6">
               <Link
                 href="/shop"
-                className="bg-ink px-10 py-4 font-mono text-xs tracking-[0.25em] text-bone transition-colors hover:bg-tag"
+                className="bg-bone px-6 py-3 font-mono text-xs tracking-[0.25em] text-ink transition-colors hover:bg-tag hover:text-bone sm:px-10 sm:py-4"
               >
                 SHOP DROP 001
               </Link>
               <Link
                 href="/shop"
-                className="hidden font-mono text-xs tracking-[0.25em] underline underline-offset-8 sm:block"
+                className="hidden font-mono text-xs tracking-[0.25em] text-bone underline underline-offset-8 sm:block"
               >
                 EXPLORE →
               </Link>
             </div>
           </div>
         </div>
-        <span className="animate-scroll-hint absolute bottom-4 left-1/2 hidden -translate-x-1/2 font-mono text-[10px] tracking-[0.3em] sm:block">
-          SCROLL ↓
-        </span>
       </section>
 
-      {/* CHOOSE YOUR WEAPON — dark, editorial grid */}
-      <section className="bg-ink py-20 text-bone">
-        <div className="mx-auto max-w-7xl px-4 sm:px-8">
-          <Reveal>
-            <p className="mb-4 font-mono text-[11px] tracking-[0.3em] text-bone/40">
-              (01) — THE ARSENAL
+      {/* (01) THE FIT — portrait image, text at the side */}
+      <EditorialSplit
+        index="01"
+        eyebrow="THE FIT"
+        title={
+          <>
+            Built heavyweight.
+            <br />
+            Worn everywhere.
+          </>
+        }
+        caption="320GSM COTTON. BOXY CUT. PRINTS THAT DON'T WHISPER. MADE TO BE LIVED IN, NOT FOLDED AWAY."
+        cta={{ href: "/shop", label: "SHOP THE FIT" }}
+        image={{
+          src: crewRooftop,
+          alt: "Crew member in a HNGRY tee reading MY FIT IS TOO FLYYY FOR A 9-5, glass towers behind",
+        }}
+      />
+
+      {/* (02) THE MENTALITY — inverted: text left, portrait image right */}
+      <EditorialSplit
+        index="02"
+        eyebrow="THE MENTALITY"
+        title={
+          <>
+            No office hours.
+            <br />
+            Stay hngrÿ.
+          </>
+        }
+        caption="FOR THE ONES WHO SKIP THE MEETING AND TAKE THE STAIRS TWO AT A TIME. NEVER ASK FOR PERMISSION."
+        cta={{ href: "/shop", label: "ENTER THE SHOP" }}
+        image={{
+          src: crewBench,
+          alt: "Three crew members in HNGRY tees sitting on a bench in the city",
+        }}
+        flip
+      />
+
+      {/* (03) THE DROP — editorial split PDP for the one live product */}
+      <section className="border-b border-ink/15">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:grid-cols-12 sm:items-center sm:gap-12 sm:px-8 sm:py-20">
+          <div className="sm:col-span-5">
+            <Image
+              src={crewStairs}
+              alt="Overhead shot of the crew standing around a HNGRY tee laid out on stairs"
+              sizes="(min-width: 1152px) 480px, (min-width: 640px) 42vw, 100vw"
+              className="h-auto w-full"
+            />
+          </div>
+
+          <div className="flex flex-col justify-center sm:col-span-7">
+            <Reveal>
+            <p className="mb-4 font-mono text-[11px] tracking-[0.3em] text-ink/40">
+              (03) — THE DROP
             </p>
-            <div className="mb-12 flex items-end justify-between">
-              <h2 className="font-display text-5xl uppercase sm:text-7xl">
-                Choose Your <span className="text-outline-bone">Weapon</span>
+
+            <div className="flex items-start justify-between gap-4">
+              <h2 className="font-display text-4xl uppercase leading-[0.95] sm:text-5xl">
+                {drop.name}
               </h2>
-              <Link
-                href="/shop"
-                className="hidden font-mono text-[11px] tracking-[0.25em] underline underline-offset-8 sm:block"
-              >
-                VIEW ALL →
-              </Link>
+              {drop.badge && (
+                <span className="mt-2 bg-ink px-2 py-1 font-mono text-[10px] tracking-[0.2em] text-bone">
+                  {drop.badge}
+                </span>
+              )}
             </div>
+            <p className="mt-3 font-mono text-lg">
+              {formatPrice(drop.price)}
+              <span className="ml-3 text-xs tracking-[0.2em] text-ink/40">
+                {drop.color}
+              </span>
+            </p>
+
+            <ul className="mt-8 border-t border-ink/15">
+              {drop.details.map((detail) => (
+                <li
+                  key={detail}
+                  className="border-b border-ink/15 py-3 font-mono text-xs uppercase tracking-wider text-ink/70"
+                >
+                  {detail}
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 flex items-center gap-3">
+              {ALL_SIZES.map((size) => {
+                const available = drop.availableSizes.includes(size);
+                return (
+                  <span
+                    key={size}
+                    className={`flex h-10 w-10 items-center justify-center border font-mono text-xs ${
+                      available
+                        ? "border-ink text-ink"
+                        : "border-ink/20 text-ink/25 line-through"
+                    }`}
+                  >
+                    {size}
+                  </span>
+                );
+              })}
+            </div>
+
+            <Link
+              href={`/product/${drop.slug}`}
+              className="mt-10 inline-block w-max bg-ink px-10 py-4 font-mono text-xs tracking-[0.25em] text-bone transition-colors hover:bg-tag"
+            >
+              SHOP THE TEE →
+            </Link>
           </Reveal>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-12 lg:grid-cols-3">
-            {[
-              { label: "TEES", sub: "HEAVYWEIGHT. BOXY. LOUD.", art: "flyyy-front" as const },
-              { label: "HOODIES", sub: "WASHED. FADED. OVERSIZED.", art: "hoodie-grey" as const },
-              { label: "DROP 001", sub: "THE FIRST STATEMENT.", art: "logo-black-tee" as const },
-            ].map((cat, i) => (
-              <Reveal
-                key={cat.label}
-                delay={i * 120}
-                className={i % 3 === 1 ? "lg:translate-y-10" : ""}
-              >
-                <Link href="/shop" className="group block">
-                  <div className="relative aspect-square overflow-hidden bg-bone/10">
-                    <ProductVisual
-                      art={cat.art}
-                      className="h-full w-full p-6 transition-transform duration-500 group-hover:-rotate-2 group-hover:scale-105"
-                    />
-                    <span className="absolute inset-x-0 bottom-0 translate-y-full bg-bone py-2 text-center font-mono text-[11px] tracking-[0.25em] text-ink transition-transform duration-300 group-hover:translate-y-0">
-                      SHOP {cat.label} →
-                    </span>
-                  </div>
-                  <div className="mt-3 flex items-start justify-between gap-2">
-                    <h3 className="font-display text-xl uppercase tracking-wide">
-                      {cat.label}
-                    </h3>
-                    <p className="mt-1 font-mono text-[10px] tracking-[0.2em] text-bone/50">
-                      {cat.sub}
-                    </p>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
           </div>
         </div>
       </section>
 
       {/* STATEMENT — double marquee, opposite directions */}
-      <section className="overflow-hidden border-b border-ink bg-bone py-14">
-        <p className="animate-ticker-slow flex w-max whitespace-nowrap font-display text-7xl uppercase leading-none sm:text-9xl">
+      <section className="overflow-hidden border-b border-ink bg-bone py-6">
+        <p className="animate-ticker-slow flex w-max whitespace-nowrap font-display text-xl uppercase leading-none sm:text-3xl">
           <span>TOO FLYYY FOR A 9–5&nbsp;✦&nbsp;TOO FLYYY FOR A 9–5&nbsp;✦&nbsp;</span>
           <span aria-hidden>TOO FLYYY FOR A 9–5&nbsp;✦&nbsp;TOO FLYYY FOR A 9–5&nbsp;✦&nbsp;</span>
         </p>
-        <p className="animate-ticker-rev mt-4 flex w-max whitespace-nowrap font-display text-7xl uppercase leading-none sm:text-9xl">
+        <p className="animate-ticker-rev mt-2 flex w-max whitespace-nowrap font-display text-xl uppercase leading-none sm:text-3xl">
           <span className="text-outline">
             STAY HNGRŸ&nbsp;✦&nbsp;STAY HNGRŸ&nbsp;✦&nbsp;STAY HNGRŸ&nbsp;✦&nbsp;
           </span>
@@ -125,39 +200,29 @@ export default async function Home() {
         </p>
       </section>
 
-      {/* THE POINT — manifesto + newsletter */}
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-8">
-        <div className="grid gap-10 sm:grid-cols-2">
-          <Reveal>
-            <p className="mb-4 font-mono text-[11px] tracking-[0.3em] text-ink/40">
-              (03) — THE POINT
-            </p>
-            <h2 className="font-display text-4xl uppercase leading-tight sm:text-5xl">
-              Clothes for the ones
-              <br />
-              <span className="text-outline">who want more.</span>
-            </h2>
-          </Reveal>
-          <Reveal delay={150}>
-            <div className="flex h-full flex-col justify-between gap-8">
-              <p className="max-w-md font-mono text-xs leading-loose tracking-wider text-ink/70">
-                HNGRŸ IS NOT A BRAND FOR EVERYBODY. IT&apos;S FOR THE ONES WHO SKIP
-                THE MEETING, TAKE THE STAIRS TWO AT A TIME AND NEVER ASK FOR
-                PERMISSION. HEAVYWEIGHT FABRICS, HONEST CUTS, PRINTS THAT SAY WHAT
-                YOU THINK. STAY HUNGRY.
-              </p>
-              <Link
-                href="/shop"
-                className="w-max border border-ink px-10 py-4 font-mono text-xs tracking-[0.25em] transition-colors hover:bg-ink hover:text-bone"
-              >
-                ENTER THE SHOP →
-              </Link>
-            </div>
-          </Reveal>
-        </div>
+      {/* (04) THE CREW — full-bleed lookbook with text overlay */}
+      <LookbookBlock
+        index="04"
+        eyebrow="THE CREW"
+        title={
+          <>
+            Take the stairs.
+            <br />
+            Two at a time.
+          </>
+        }
+        caption="SHOT ON LOCATION, NOT IN A STUDIO. WORN BY THE ONES WHO MEAN IT."
+        cta={{ href: "/shop", label: "SHOP THE DROP" }}
+        image={{
+          src: lookStairs,
+          alt: "Overhead shot of the crew on a staircase around a HNGRY tee laid on the steps",
+        }}
+        align="right"
+      />
 
-        {/* newsletter */}
-        <Reveal className="mt-20 border-t border-ink pt-12">
+      {/* NEWSLETTER */}
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-8">
+        <Reveal>
           <div className="grid gap-8 sm:grid-cols-2">
             <div>
               <p className="mb-4 font-mono text-[11px] tracking-[0.3em] text-ink/40">
@@ -179,8 +244,6 @@ export default async function Home() {
           </div>
         </Reveal>
       </section>
-
-      <Reviews />
     </>
   );
 }

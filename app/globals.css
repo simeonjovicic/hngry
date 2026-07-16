@@ -94,6 +94,15 @@ body {
   color: transparent;
 }
 
+/* placeholder image surface — subtle diagonal hatch on smoke */
+.placeholder-hatch {
+  background-image: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--ink) 7%, transparent) 0 2px,
+    transparent 2px 16px
+  );
+}
+
 /* scroll reveal */
 .reveal {
   opacity: 0;

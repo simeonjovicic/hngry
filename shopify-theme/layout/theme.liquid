@@ -322,7 +322,16 @@
     </script>
   </head>
 
-  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}{% if template.name == 'index' %} hngry-home{% endif %}">
+    {%- if template.name == 'index' -%}
+      <div class="hngry-page-intro" aria-hidden="true">
+        <span class="hngry-page-intro__mark">
+          <img src="{{ 'hngry-logo.png' | asset_url }}" alt="" width="1080" height="1080">
+        </span>
+        <span class="hngry-page-intro__line"></span>
+      </div>
+    {%- endif -%}
+
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>

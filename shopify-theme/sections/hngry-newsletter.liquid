@@ -2,17 +2,17 @@
 
 <section class="hngry-newsletter" {{ section.shopify_attributes }}>
   <div class="page-width">
-    <div class="hngry-newsletter__grid hngry-reveal">
+    <div class="hngry-newsletter__grid">
       <div>
-        <p class="hngry-newsletter__label hngry-mono">{{ section.settings.label }}</p>
+        <p class="hngry-newsletter__label hngry-mono hngry-reveal hngry-reveal--left">{{ section.settings.label }}</p>
         <h2 class="hngry-newsletter__heading hngry-display">
-          {{ section.settings.heading_line1 }}<br>
-          <span class="hngry-outline">{{ section.settings.heading_line2 }}</span>
+          <span class="hngry-newsletter__heading-line hngry-reveal hngry-reveal--left" style="--hngry-reveal-delay: 90ms;">{{ section.settings.heading_line1 }}</span><br>
+          <span class="hngry-newsletter__heading-line hngry-outline hngry-reveal hngry-reveal--left" style="--hngry-reveal-delay: 180ms;">{{ section.settings.heading_line2 }}</span>
         </h2>
       </div>
 
       <div class="hngry-newsletter__signup">
-        {%- form 'customer', class: 'hngry-newsletter__form' -%}
+        {%- form 'customer', class: 'hngry-newsletter__form hngry-reveal hngry-reveal--right' -%}
           <input type="hidden" name="contact[tags]" value="newsletter">
           {%- if form.posted_successfully? -%}
             <p class="hngry-newsletter__done hngry-mono">YOU'RE IN. STAY HNGRŸ.</p>
@@ -35,9 +35,9 @@
           {%- endif -%}
         {%- endform -%}
 
-        <p class="hngry-newsletter__note hngry-mono">{{ section.settings.note }}</p>
+        <p class="hngry-newsletter__note hngry-mono hngry-reveal hngry-reveal--right" style="--hngry-reveal-delay: 100ms;">{{ section.settings.note }}</p>
 
-        <div class="hngry-newsletter__socials hngry-mono">
+        <div class="hngry-newsletter__socials hngry-mono hngry-reveal hngry-reveal--right" style="--hngry-reveal-delay: 200ms;">
           {%- if section.settings.instagram_url != blank -%}
             <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">INSTAGRAM ↗</a>
           {%- endif -%}
@@ -78,6 +78,10 @@
     font-size: clamp(2.8rem, 4vw, 4rem);
     line-height: 1.1;
     text-transform: uppercase;
+  }
+
+  .hngry-newsletter__heading-line {
+    display: inline-block;
   }
 
   .hngry-newsletter__signup {
@@ -167,13 +171,13 @@
       "type": "text",
       "id": "label",
       "label": "Label",
-      "default": "NEWSLETTER — GET THE DROP FIRST"
+      "default": "EARLY ACCESS — NEVER MISS A DROP"
     },
     {
       "type": "text",
       "id": "heading_line1",
       "label": "Heading line 1",
-      "default": "Drop 001 lands 20.07."
+      "default": "Ready for what's next?"
     },
     {
       "type": "text",
@@ -185,7 +189,7 @@
       "type": "text",
       "id": "note",
       "label": "Note",
-      "default": "NO SPAM. ONLY DROPS. UNSUBSCRIBE WHENEVER."
+      "default": "NEW DROPS. EARLY ACCESS. NO SPAM."
     },
     { "type": "url", "id": "instagram_url", "label": "Instagram URL" },
     { "type": "url", "id": "tiktok_url", "label": "TikTok URL" }

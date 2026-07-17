@@ -66,10 +66,10 @@
     "newsletter": {
       "type": "hngry-newsletter",
       "settings": {
-        "label": "NEWSLETTER — GET THE DROP FIRST",
-        "heading_line1": "Drop 001 lands 20.07.",
+        "label": "EARLY ACCESS — NEVER MISS A DROP",
+        "heading_line1": "Ready for what's next?",
         "heading_line2": "Be there first.",
-        "note": "NO SPAM. ONLY DROPS. UNSUBSCRIBE WHENEVER."
+        "note": "NEW DROPS. EARLY ACCESS. NO SPAM."
       }
     }
   },

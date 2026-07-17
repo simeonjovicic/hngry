@@ -5,9 +5,9 @@
 <script src="{{ 'hngry-reveal.js' | asset_url }}" defer></script>
 
 <section class="hngry-featured" {{ section.shopify_attributes }}>
-  <div class="hngry-featured__head hngry-reveal">
-    <p class="hngry-featured__label hngry-mono">{{ section.settings.label }}</p>
-    <h2 class="hngry-featured__title hngry-display">{{ section.settings.heading }}</h2>
+  <div class="hngry-featured__head">
+    <p class="hngry-featured__label hngry-mono hngry-reveal hngry-reveal--soft">{{ section.settings.label }}</p>
+    <h2 class="hngry-featured__title hngry-display hngry-reveal hngry-reveal--soft" style="--hngry-reveal-delay: 100ms;">{{ section.settings.heading }}</h2>
   </div>
 
   {%- if product != blank -%}
@@ -17,7 +17,7 @@
         assign hover_media = product.media[1]
       -%}
 
-      <a href="{{ product.url }}" class="hngry-featured__media hngry-reveal">
+      <a href="{{ product.url }}" class="hngry-featured__media hngry-reveal hngry-reveal--scale">
         {%- if section.settings.badge != blank -%}
           <span class="hngry-featured__badge hngry-mono">{{ section.settings.badge }}</span>
         {%- endif -%}
@@ -46,16 +46,16 @@
         {%- endif -%}
       </a>
 
-      <div class="hngry-featured__panel hngry-reveal">
-        <h3 class="hngry-featured__name hngry-display">{{ product.title }}</h3>
-        <p class="hngry-featured__price hngry-mono">
+      <div class="hngry-featured__panel">
+        <h3 class="hngry-featured__name hngry-display hngry-reveal hngry-reveal--right">{{ product.title }}</h3>
+        <p class="hngry-featured__price hngry-mono hngry-reveal hngry-reveal--right" style="--hngry-reveal-delay: 90ms;">
           {{ product.price | money }}
           <span class="hngry-featured__price-sub">{{ section.settings.sub_label }}</span>
         </p>
 
         <div class="hngry-featured__divider"></div>
 
-        {%- form 'product', product, class: 'hngry-featured__form' -%}
+        {%- form 'product', product, class: 'hngry-featured__form hngry-reveal hngry-reveal--right', style: '--hngry-reveal-delay: 180ms;' -%}
           {%- if product.has_only_default_variant -%}
             <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
           {%- else -%}
@@ -99,7 +99,7 @@
 
         <div class="hngry-featured__divider"></div>
 
-        <a href="{{ product.url }}" class="hngry-featured__details hngry-mono">
+        <a href="{{ product.url }}" class="hngry-featured__details hngry-mono hngry-reveal hngry-reveal--right" style="--hngry-reveal-delay: 270ms;">
           VIEW PRODUCT DETAILS →
         </a>
       </div>
@@ -146,7 +146,7 @@
 
   .hngry-featured__title {
     margin: 1rem 0 0;
-    font-size: clamp(2.8rem, 3.5vw, 4rem);
+    font-size: clamp(3rem, 3.8vw, 4.6rem);
     letter-spacing: 0.15em;
     text-transform: uppercase;
   }
@@ -155,15 +155,15 @@
     display: grid;
     gap: 3rem;
     margin-top: 5rem;
-    max-width: 104rem;
+    max-width: 120rem;
   }
 
   @media (min-width: 750px) {
     .hngry-featured__grid {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
       align-items: center;
-      gap: 5rem;
-      margin-top: 6.5rem;
+      gap: 6rem;
+      margin-top: 5.5rem;
     }
   }
 
@@ -265,7 +265,10 @@
   }
 
   /* buy panel */
-  .hngry-featured__panel { max-width: 44rem; }
+  .hngry-featured__panel {
+    width: 100%;
+    max-width: 50rem;
+  }
 
   .hngry-featured__name {
     margin: 0;

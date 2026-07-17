@@ -1,4 +1,4 @@
-/* HNGRY password-page teaser: liquid logo shader, countdown, sound, glitch.
+/* HNGRY password-page teaser: liquid logo shader and countdown.
    Vanilla port of the Next.js TeaserShader/Teaser components. */
 
 (function () {
@@ -31,38 +31,118 @@
   tick();
   setInterval(tick, 1000);
 
-  /* -------------------------------------------------------------- sound */
-  var audio = root.querySelector("audio");
-  var soundBtn = root.querySelector("[data-sound-toggle]");
-  var soundOn = true;
-  function tryPlay() {
-    if (audio && soundOn && audio.paused) {
-      audio.volume = 0.3;
-      audio.play().catch(function () {});
-    }
-  }
-  if (audio) {
-    tryPlay();
-    window.addEventListener("pointerdown", tryPlay);
-    window.addEventListener("keydown", tryPlay);
-  }
-  if (soundBtn) {
-    soundBtn.addEventListener("click", function () {
-      soundOn = !soundOn;
-      soundBtn.textContent = "SOUND " + (soundOn ? "ON" : "OFF");
-      if (!audio) return;
-      if (soundOn) tryPlay();
-      else audio.pause();
-    });
-  }
-
-  /* ------------------------------------------------- form: shake + flood */
+  /* ----------------------------------------- form: validate, shake + flood */
   var form = root.querySelector("form");
   var unlocking = false;
+  var checking = false;
+  var unlockUrl = new URL("/", window.location.origin).href;
+  var unlockFallbackTimer = 0;
+  var unlockNavigated = false;
+
+  function navigateToShop() {
+    if (unlockNavigated) return;
+    unlockNavigated = true;
+    if (unlockFallbackTimer) window.clearTimeout(unlockFallbackTimer);
+    window.location.assign(unlockUrl);
+  }
+
+  function startUnlock(destination) {
+    if (unlocking) return;
+    unlocking = true;
+    checking = false;
+    unlockUrl = destination || unlockUrl;
+    root.classList.remove("is-checking");
+    root.classList.add("is-unlocking");
+    root.dispatchEvent(new CustomEvent("hngry:unlock"));
+
+    // WebGL calls navigateToShop as soon as the flood is complete. This
+    // fallback preserves the transition if WebGL or the logo texture fails.
+    unlockFallbackTimer = window.setTimeout(navigateToShop, 1900);
+  }
+
   if (form) {
-    form.addEventListener("submit", function () {
-      unlocking = true; // optimistic ink flood while the form posts
-      if (audio) audio.pause();
+    var passwordInput = form.querySelector('input[name="password"]');
+    var submitButton = form.querySelector('button[type="submit"]');
+    var errorMessage = form.querySelector(".hngry-teaser__error");
+    var formRow = form.querySelector(".hngry-teaser__form-row");
+    var submitLabel = submitButton ? submitButton.textContent : "";
+
+    function setChecking(nextChecking) {
+      checking = nextChecking;
+      form.setAttribute("aria-busy", nextChecking ? "true" : "false");
+      root.classList.toggle("is-checking", nextChecking);
+      if (passwordInput) passwordInput.readOnly = nextChecking;
+      if (submitButton) {
+        submitButton.disabled = nextChecking;
+        submitButton.textContent = nextChecking ? "…" : submitLabel;
+      }
+    }
+
+    function showWrongPassword() {
+      setChecking(false);
+      if (passwordInput) {
+        passwordInput.value = "";
+        passwordInput.setAttribute("aria-invalid", "true");
+        passwordInput.focus();
+      }
+      if (errorMessage) errorMessage.classList.add("is-visible");
+      if (formRow) {
+        formRow.classList.remove("hngry-shake");
+        void formRow.offsetWidth;
+        formRow.classList.add("hngry-shake");
+      }
+    }
+
+    function nativeSubmit() {
+      setChecking(false);
+      HTMLFormElement.prototype.submit.call(form);
+    }
+
+    if (passwordInput) {
+      passwordInput.addEventListener("input", function () {
+        passwordInput.removeAttribute("aria-invalid");
+        if (errorMessage) errorMessage.classList.remove("is-visible");
+      });
+    }
+
+    form.addEventListener("submit", function (event) {
+      if (checking || unlocking) {
+        event.preventDefault();
+        return;
+      }
+      if (!passwordInput || !passwordInput.value || !window.fetch || !window.FormData) return;
+
+      event.preventDefault();
+      var formData = new FormData(form);
+      setChecking(true);
+
+      fetch(form.action, {
+        method: (form.method || "post").toUpperCase(),
+        body: formData,
+        credentials: "same-origin",
+        redirect: "follow",
+        headers: { Accept: "text/html" },
+      })
+        .then(function (response) {
+          var responseUrl = new URL(response.url || form.action, window.location.href);
+          var isPasswordPage = /\/password\/?$/.test(responseUrl.pathname);
+
+          if (response.redirected && !isPasswordPage) {
+            startUnlock(responseUrl.href);
+            return;
+          }
+
+          // A wrong storefront password returns the password template with a
+          // 200 response. Unexpected failures fall back to Shopify's native
+          // form flow so platform-level handling remains intact.
+          if (response.ok && isPasswordPage) {
+            showWrongPassword();
+            return;
+          }
+
+          nativeSubmit();
+        })
+        .catch(nativeSubmit);
     });
   }
 
@@ -73,7 +153,7 @@
   var FRAG = [
     "precision highp float;",
     "uniform vec2 uRes;uniform float uTime;uniform vec2 uMouse;",
-    "uniform float uForm;uniform float uGlitch;uniform float uUnlock;",
+    "uniform float uForm;uniform float uUnlock;",
     "uniform sampler2D uLogo;",
     "float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}",
     "float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);vec2 u=f*f*(3.0-2.0*f);",
@@ -83,8 +163,6 @@
     "return tex.a*(1.0-tex.r)*mask;}",
     "void main(){",
     "vec2 uv=gl_FragCoord.xy/uRes;",
-    "float band=floor(gl_FragCoord.y/(uRes.y*0.022));",
-    "uv.x+=(hash(vec2(band,floor(uTime*24.0)))-0.5)*0.09*uGlitch;",
     "float aspect=uRes.x/uRes.y;",
     "vec2 p=vec2(uv.x*aspect,uv.y);",
     "float t=uTime*0.05;",
@@ -98,7 +176,7 @@
     "float ripple=exp(-md*md*12.0);",
     "vec2 poke=(p-m)/max(md,0.001)*ripple*0.022*sin(uTime*2.4-md*30.0);",
     "float breathe=1.0+0.015*sin(uTime*0.45);",
-    "float quadW=min(0.78*aspect,1.72)*breathe;",
+    "float quadW=min(0.68*aspect,1.50)*breathe;",
     "float quadH=quadW*0.5;",
     "vec2 center=vec2(0.5*aspect,0.60);",
     "vec2 luv=(p-center)/vec2(quadW,quadH)+0.5;",
@@ -108,12 +186,7 @@
     "vec2 edge=smoothstep(0.0,0.02,s)*smoothstep(0.0,0.02,1.0-s);",
     "float mask=edge.x*edge.y*smoothstep(0.05,0.9,uForm);",
     "float ink=logoInk(s,mask);",
-    "float off=0.007*uGlitch;",
-    "float inkR=logoInk(s+vec2(off,0.0),mask);",
-    "float inkB=logoInk(s-vec2(off,0.0),mask);",
     "col=mix(col,bone,ink*0.97);",
-    "col.r+=(inkR-ink)*0.85;",
-    "col.b+=(inkB-ink)*0.85;",
     "col*=1.0-0.5*pow(length(uv-vec2(0.5,0.55)),1.9);",
     "float floodR=uUnlock*uUnlock*2.8;",
     "float flood=1.0-smoothstep(floodR-0.45,floodR,distance(p,center)+fbm(p*3.5+t*3.0)*0.35);",
@@ -167,7 +240,6 @@
     time: gl.getUniformLocation(program, "uTime"),
     mouse: gl.getUniformLocation(program, "uMouse"),
     form: gl.getUniformLocation(program, "uForm"),
-    glitch: gl.getUniformLocation(program, "uGlitch"),
     unlock: gl.getUniformLocation(program, "uUnlock"),
   };
 
@@ -193,20 +265,10 @@
   );
 
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var glitch = 0;
   var unlock = 0;
+  var unlockComplete = false;
   var last = performance.now();
-  var nextGlitch = last + 3000 + Math.random() * 4000;
   var start = last;
-  var glitchEls = root.querySelectorAll("[data-glitch-target]");
-
-  function domGlitch() {
-    glitchEls.forEach(function (el) {
-      el.classList.remove("hngry-dom-glitch");
-      void el.offsetWidth; // restart animation
-      el.classList.add("hngry-dom-glitch");
-    });
-  }
 
   function frame(now) {
     var dt = Math.min((now - last) / 1000, 0.05);
@@ -217,13 +279,6 @@
     var f = Math.min(1, elapsed / 3.2);
     var form01 = f * f * (3 - 2 * f);
 
-    if (now > nextGlitch && form01 >= 1) {
-      glitch = 1;
-      nextGlitch = now + 3500 + Math.random() * 4500;
-      domGlitch();
-    }
-    glitch *= Math.pow(0.0025, dt);
-
     if (unlocking) unlock = Math.min(1, unlock + dt / 1.3);
 
     mouse.x += (mouse.tx - mouse.x) * 0.07;
@@ -233,18 +288,26 @@
     gl.uniform1f(u.time, elapsed);
     gl.uniform2f(u.mouse, mouse.x, mouse.y);
     gl.uniform1f(u.form, reducedMotion ? 1 : form01);
-    gl.uniform1f(u.glitch, reducedMotion ? 0 : glitch);
     gl.uniform1f(u.unlock, unlock);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    if (unlock >= 1 && !unlockComplete) {
+      unlockComplete = true;
+      window.setTimeout(navigateToShop, 100);
+    }
   }
 
+  var raf = 0;
   function loop(now) {
     frame(now);
-    requestAnimationFrame(loop);
+    raf = requestAnimationFrame(loop);
   }
 
+  var textureReady = false;
   var img = new Image();
   img.onload = function () {
+    if (textureReady) return;
+    textureReady = true;
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
@@ -253,16 +316,17 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    if (reducedMotion) {
+    if (reducedMotion && !unlocking) {
       frame(performance.now());
-      // still needs the loop for the unlock flood
-      form && form.addEventListener("submit", function () {
-        requestAnimationFrame(loop);
-      });
     } else {
-      requestAnimationFrame(loop);
+      raf = requestAnimationFrame(loop);
     }
   };
+
+  root.addEventListener("hngry:unlock", function () {
+    if (reducedMotion && textureReady && !raf) raf = requestAnimationFrame(loop);
+  });
+
   img.src = logoSrc;
   if (img.complete && img.naturalWidth > 0) img.onload();
 })();

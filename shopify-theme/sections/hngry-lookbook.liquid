@@ -14,17 +14,17 @@
   class="hngry-lookbook{% if section.settings.align == 'right' %} hngry-lookbook--right{% endif %}"
   {{ section.shopify_attributes }}
 >
-  <img src="{{ look_img }}" alt="{{ look_alt | escape }}" loading="lazy" class="hngry-lookbook__img" width="2200" height="1321">
+  <img src="{{ look_img }}" alt="{{ look_alt | escape }}" loading="lazy" class="hngry-lookbook__img hngry-reveal" width="2200" height="1321">
   <div class="hngry-lookbook__scrim"></div>
 
-  <div class="hngry-lookbook__overlay hngry-reveal">
-    <p class="hngry-lookbook__label hngry-mono">{{ section.settings.label }}</p>
-    <h2 class="hngry-lookbook__heading hngry-display">{{ section.settings.heading }}</h2>
+  <div class="hngry-lookbook__overlay">
+    <p class="hngry-lookbook__label hngry-lookbook__item hngry-lookbook__item--1 hngry-mono hngry-reveal">{{ section.settings.label }}</p>
+    <h2 class="hngry-lookbook__heading hngry-lookbook__item hngry-lookbook__item--2 hngry-display hngry-reveal">{{ section.settings.heading }}</h2>
     {%- if section.settings.caption != blank -%}
-      <p class="hngry-lookbook__caption hngry-mono">{{ section.settings.caption }}</p>
+      <p class="hngry-lookbook__caption hngry-lookbook__item hngry-lookbook__item--3 hngry-mono hngry-reveal">{{ section.settings.caption }}</p>
     {%- endif -%}
     {%- if section.settings.button_label != blank -%}
-      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hngry-lookbook__cta hngry-mono">
+      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hngry-lookbook__cta hngry-lookbook__item hngry-lookbook__item--4 hngry-mono hngry-reveal">
         {{ section.settings.button_label }} →
       </a>
     {%- endif -%}
@@ -44,12 +44,36 @@
     aspect-ratio: 5 / 3;
   }
 
+  @media (min-width: 750px) {
+    .hngry-lookbook {
+      /* Full-screen campaign frame with the sticky header included. */
+      height: calc(100vh - var(--header-height, 5.5rem));
+      height: calc(100svh - var(--header-height, 5.5rem));
+      min-height: 48rem;
+      aspect-ratio: auto;
+      scroll-margin-top: var(--header-height, 5.5rem);
+    }
+  }
+
   .hngry-lookbook__img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .js-reveal .hngry-lookbook__img.hngry-reveal {
+    opacity: 0;
+    transform: scale(1.06);
+    transition:
+      opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .js-reveal .hngry-lookbook__img.hngry-reveal.is-visible {
+    opacity: 1;
+    transform: scale(1);
   }
 
   /* doubled class beats Dawn's `div:empty { display: none }` in base.css */
@@ -79,6 +103,29 @@
     align-items: flex-end;
     text-align: right;
   }
+
+  .js-reveal .hngry-lookbook__item.hngry-reveal {
+    opacity: 0;
+    transform: translateX(-6rem);
+    transition:
+      opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .js-reveal .hngry-lookbook--right .hngry-lookbook__item.hngry-reveal {
+    transform: translateX(6rem);
+  }
+
+  .js-reveal .hngry-lookbook__item.hngry-reveal.is-visible,
+  .js-reveal .hngry-lookbook--right .hngry-lookbook__item.hngry-reveal.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .hngry-lookbook__item--1 { transition-delay: 80ms !important; }
+  .hngry-lookbook__item--2 { transition-delay: 170ms !important; }
+  .hngry-lookbook__item--3 { transition-delay: 260ms !important; }
+  .hngry-lookbook__item--4 { transition-delay: 350ms !important; }
 
   .hngry-lookbook__label {
     font-size: 1.1rem;
@@ -121,6 +168,16 @@
   .hngry-lookbook__cta:hover {
     background: var(--hngry-bone);
     color: var(--hngry-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js-reveal .hngry-lookbook__img.hngry-reveal,
+    .js-reveal .hngry-lookbook__item.hngry-reveal,
+    .js-reveal .hngry-lookbook--right .hngry-lookbook__item.hngry-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 {% endstyle %}
 

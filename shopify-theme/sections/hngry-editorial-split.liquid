@@ -6,6 +6,16 @@
     assign split_img = 'hngry-split-bench.jpg' | asset_url
     assign split_alt = shop.name
   endif
+
+  if section.settings.flip
+    assign text_reveal_direction = 'hngry-reveal--left'
+  else
+    assign text_reveal_direction = 'hngry-reveal--right'
+  endif
+
+  assign split_heading = section.settings.heading | escape
+  assign split_heading = split_heading | replace: 'hngrÿ', 'hngr<span class="hngry-brand-y">y</span>'
+  assign split_heading = split_heading | replace: 'HNGRŸ', 'HNGR<span class="hngry-brand-y">Y</span>'
 -%}
 
 <script src="{{ 'hngry-reveal.js' | asset_url }}" defer></script>
@@ -14,18 +24,18 @@
   class="hngry-split{% if section.settings.flip %} hngry-split--flip{% endif %}"
   {{ section.shopify_attributes }}
 >
-  <div class="hngry-split__image">
+  <div class="hngry-split__image hngry-reveal hngry-reveal--scale">
     <img src="{{ split_img }}" alt="{{ split_alt | escape }}" loading="lazy" width="1200" height="2166">
   </div>
 
-  <div class="hngry-split__body hngry-reveal">
-    <p class="hngry-split__label hngry-mono">{{ section.settings.label }}</p>
-    <h2 class="hngry-split__heading hngry-display">{{ section.settings.heading }}</h2>
+  <div class="hngry-split__body">
+    <p class="hngry-split__label hngry-mono hngry-reveal {{ text_reveal_direction }}">{{ section.settings.label }}</p>
+    <h2 class="hngry-split__heading hngry-display hngry-reveal {{ text_reveal_direction }}" style="--hngry-reveal-delay: 100ms;">{{ split_heading }}</h2>
     {%- if section.settings.caption != blank -%}
-      <p class="hngry-split__caption hngry-mono">{{ section.settings.caption }}</p>
+      <p class="hngry-split__caption hngry-mono hngry-reveal {{ text_reveal_direction }}" style="--hngry-reveal-delay: 200ms;">{{ section.settings.caption }}</p>
     {%- endif -%}
     {%- if section.settings.button_label != blank -%}
-      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hngry-split__cta hngry-mono">
+      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hngry-split__cta hngry-mono hngry-reveal {{ text_reveal_direction }}" style="--hngry-reveal-delay: 300ms;">
         {{ section.settings.button_label }} →
       </a>
     {%- endif -%}
@@ -43,10 +53,23 @@
   @media (min-width: 750px) {
     .hngry-split {
       grid-template-columns: 1fr 1fr;
+      height: clamp(74rem, 99vh, 94rem);
+      height: clamp(74rem, 99svh, 94rem);
     }
     /* flip = image right, text left — via DOM order swap */
     .hngry-split--flip .hngry-split__image { order: 2; }
     .hngry-split--flip .hngry-split__body { order: 1; }
+
+    .hngry-split__image {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .hngry-split__image img {
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
   }
 
   .hngry-split__image img {
@@ -85,6 +108,24 @@
     line-height: 0.95;
     text-transform: uppercase;
     white-space: pre-line;
+  }
+
+  .hngry-brand-y {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hngry-brand-y::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -0.09em;
+    width: 0.085em;
+    height: 0.085em;
+    transform: translateX(-0.12em);
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0.155em 0 0 currentColor;
   }
 
   .hngry-split__caption {

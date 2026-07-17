@@ -29,19 +29,19 @@
   <div class="hngry-hero__scrim"></div>
 
   <div class="hngry-hero__overlay">
-    <div class="hngry-hero__top hngry-mono hngry-rise">
-      <span>{{ section.settings.label_left }}</span>
-      <span class="hngry-hero__top-right">{{ section.settings.label_right }}</span>
+    <div class="hngry-hero__top hngry-mono">
+      <span class="hngry-hero-enter hngry-hero-enter--top-left">{{ section.settings.label_left }}</span>
+      <span class="hngry-hero__top-right hngry-hero-enter hngry-hero-enter--top-right">{{ section.settings.label_right }}</span>
     </div>
 
-    <div class="hngry-hero__foot hngry-rise" style="animation-delay: 200ms">
+    <div class="hngry-hero__foot">
       <div class="hngry-hero__headline-block">
-        <h1 class="hngry-hero__headline hngry-display">{{ section.settings.heading }}</h1>
+        <h1 class="hngry-hero__headline hngry-display hngry-hero-enter hngry-hero-enter--headline">{{ section.settings.heading }}</h1>
         {%- if section.settings.subline != blank -%}
-          <p class="hngry-hero__subline hngry-mono">{{ section.settings.subline }}</p>
+          <p class="hngry-hero__subline hngry-mono hngry-hero-enter hngry-hero-enter--subline">{{ section.settings.subline }}</p>
         {%- endif -%}
       </div>
-      <div class="hngry-hero__ctas">
+      <div class="hngry-hero__ctas hngry-hero-enter hngry-hero-enter--ctas">
         {%- if section.settings.button_label != blank -%}
           <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hngry-hero__cta hngry-mono">
             {{ section.settings.button_label }}
@@ -60,6 +60,16 @@
 </section>
 
 {% style %}
+  @keyframes hngry-hero-enter {
+    from { opacity: 0; transform: translateY(4rem); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes hngry-hero-image-enter {
+    from { transform: scale(1.045); }
+    to { transform: scale(1); }
+  }
+
   .hngry-hero {
     position: relative;
     width: 100vw;
@@ -74,6 +84,16 @@
     background: var(--hngry-ink);
   }
 
+  @media (min-width: 750px) {
+    .hngry-hero {
+      /* The hero begins directly below the 3.2rem ticker because the header
+         overlays it. Keep both together within the first viewport. */
+      height: calc(100vh - 3.2rem);
+      height: calc(100svh - 3.2rem);
+      aspect-ratio: auto;
+    }
+  }
+
   .hngry-hero__img {
     position: absolute;
     inset: 0;
@@ -83,10 +103,36 @@
     object-position: center 30%;
   }
 
+  .hngry-home .hngry-hero__img {
+    animation: hngry-hero-image-enter 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.48s both;
+  }
+
+  .hngry-home .hngry-hero-enter {
+    animation: hngry-hero-enter 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .hngry-home .hngry-hero-enter--headline { animation-delay: 0.82s; }
+  .hngry-home .hngry-hero-enter--subline { animation-delay: 0.98s; }
+  .hngry-home .hngry-hero-enter--ctas { animation-delay: 1.12s; }
+  .hngry-home .hngry-hero-enter--top-left { animation-delay: 1.38s; }
+  .hngry-home .hngry-hero-enter--top-right { animation-delay: 1.52s; }
+
   @media (max-width: 749px) {
     .hngry-hero__img {
       object-position: center center;
     }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hngry-home .hngry-hero__img,
+    .hngry-home .hngry-hero-enter {
+      animation: none;
+    }
+  }
+
+  .shopify-design-mode .hngry-home .hngry-hero__img,
+  .shopify-design-mode .hngry-home .hngry-hero-enter {
+    animation: none;
   }
 
   /* dark scrim so the mono labels/buttons stay legible over the photo;

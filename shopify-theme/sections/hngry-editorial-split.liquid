@@ -1,0 +1,150 @@
+{%- liquid
+  if section.settings.image != blank
+    assign split_img = section.settings.image | image_url: width: 1400
+    assign split_alt = section.settings.image.alt | default: shop.name
+  else
+    assign split_img = 'hngry-split-bench.jpg' | asset_url
+    assign split_alt = shop.name
+  endif
+-%}
+
+<script src="{{ 'hngry-reveal.js' | asset_url }}" defer></script>
+
+<section
+  class="hngry-split{% if section.settings.flip %} hngry-split--flip{% endif %}"
+  {{ section.shopify_attributes }}
+>
+  <div class="hngry-split__image">
+    <img src="{{ split_img }}" alt="{{ split_alt | escape }}" loading="lazy" width="1200" height="2166">
+  </div>
+
+  <div class="hngry-split__body hngry-reveal">
+    <p class="hngry-split__label hngry-mono">{{ section.settings.label }}</p>
+    <h2 class="hngry-split__heading hngry-display">{{ section.settings.heading }}</h2>
+    {%- if section.settings.caption != blank -%}
+      <p class="hngry-split__caption hngry-mono">{{ section.settings.caption }}</p>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hngry-split__cta hngry-mono">
+        {{ section.settings.button_label }} →
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% style %}
+  .hngry-split {
+    display: grid;
+    background: var(--hngry-bone);
+    color: var(--hngry-ink);
+    border-bottom: 1px solid rgba(12, 12, 12, 0.15);
+  }
+
+  @media (min-width: 750px) {
+    .hngry-split {
+      grid-template-columns: 1fr 1fr;
+    }
+    /* flip = image right, text left — via DOM order swap */
+    .hngry-split--flip .hngry-split__image { order: 2; }
+    .hngry-split--flip .hngry-split__body { order: 1; }
+  }
+
+  .hngry-split__image img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .hngry-split__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 5rem 2.5rem;
+  }
+
+  @media (min-width: 750px) {
+    .hngry-split__body { padding: 5rem; }
+  }
+
+  @media (min-width: 990px) {
+    .hngry-split__body { padding: 8rem; }
+  }
+
+  .hngry-split__label {
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    color: rgba(12, 12, 12, 0.4);
+    margin: 0 0 1.5rem;
+  }
+
+  .hngry-split__heading {
+    margin: 0;
+    max-width: 20ch;
+    font-size: clamp(3.2rem, 4.5vw, 5.6rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+    white-space: pre-line;
+  }
+
+  .hngry-split__caption {
+    max-width: 44rem;
+    margin: 2.2rem 0 0;
+    font-size: 1.1rem;
+    line-height: 2.1;
+    letter-spacing: 0.08em;
+    color: rgba(12, 12, 12, 0.7);
+  }
+
+  .hngry-split__cta {
+    display: inline-block;
+    margin-top: 2.8rem;
+    border: 1px solid var(--hngry-ink);
+    padding: 1.3rem 3rem;
+    font-size: 1.1rem;
+    color: var(--hngry-ink);
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .hngry-split__cta:hover {
+    background: var(--hngry-ink);
+    color: var(--hngry-bone);
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "HNGRY Editorial Split",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (portrait)",
+      "info": "Shown at its natural aspect ratio. Falls back to the bundled bench shot."
+    },
+    {
+      "type": "checkbox",
+      "id": "flip",
+      "label": "Image on the right",
+      "default": false
+    },
+    { "type": "text", "id": "label", "label": "Label", "default": "(01) — THE MENTALITY" },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "No office hours.\nStay hngrÿ."
+    },
+    {
+      "type": "textarea",
+      "id": "caption",
+      "label": "Caption",
+      "default": "FOR THE ONES WHO SKIP THE MEETING AND TAKE THE STAIRS TWO AT A TIME. NEVER ASK FOR PERMISSION."
+    },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "GET THE TEE" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "HNGRY Editorial Split" }]
+}
+{% endschema %}

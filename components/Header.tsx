@@ -5,8 +5,7 @@ import Link from "next/link";
 import { useCart } from "@/lib/cart";
 
 const NAV = [
-  { href: "/shop", label: "SHOP" },
-  { href: "/shop", label: "DROP 001" },
+  { href: "/product/flyyy-9-5-tee", label: "DROP 001" },
   { href: "/#about", label: "ABOUT" },
 ];
 
@@ -26,8 +25,11 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
-          <Link href="/shop" className="underline-offset-4 hover:underline sm:hidden">
-            SHOP
+          <Link
+            href="/product/flyyy-9-5-tee"
+            className="underline-offset-4 hover:underline sm:hidden"
+          >
+            DROP 001
           </Link>
         </nav>
 

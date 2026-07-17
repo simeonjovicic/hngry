@@ -1,0 +1,165 @@
+{%- liquid
+  if section.settings.image != blank
+    assign look_img = section.settings.image | image_url: width: 2400
+    assign look_alt = section.settings.image.alt | default: shop.name
+  else
+    assign look_img = 'hngry-lookbook-stairs.jpg' | asset_url
+    assign look_alt = shop.name
+  endif
+-%}
+
+<script src="{{ 'hngry-reveal.js' | asset_url }}" defer></script>
+
+<section
+  class="hngry-lookbook{% if section.settings.align == 'right' %} hngry-lookbook--right{% endif %}"
+  {{ section.shopify_attributes }}
+>
+  <img src="{{ look_img }}" alt="{{ look_alt | escape }}" loading="lazy" class="hngry-lookbook__img" width="2200" height="1321">
+  <div class="hngry-lookbook__scrim"></div>
+
+  <div class="hngry-lookbook__overlay hngry-reveal">
+    <p class="hngry-lookbook__label hngry-mono">{{ section.settings.label }}</p>
+    <h2 class="hngry-lookbook__heading hngry-display">{{ section.settings.heading }}</h2>
+    {%- if section.settings.caption != blank -%}
+      <p class="hngry-lookbook__caption hngry-mono">{{ section.settings.caption }}</p>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hngry-lookbook__cta hngry-mono">
+        {{ section.settings.button_label }} →
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% style %}
+  .hngry-lookbook {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-height: 48rem;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(12, 12, 12, 0.15);
+    background: var(--hngry-ink);
+    /* section takes the image's natural aspect ratio where it fits */
+    aspect-ratio: 5 / 3;
+  }
+
+  .hngry-lookbook__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* doubled class beats Dawn's `div:empty { display: none }` in base.css */
+  .hngry-lookbook .hngry-lookbook__scrim {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(12, 12, 12, 0.75), rgba(12, 12, 12, 0.2) 50%, transparent);
+  }
+
+  .hngry-lookbook__overlay {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    width: 100%;
+    padding: 2.5rem;
+    color: var(--hngry-bone);
+  }
+
+  @media (min-width: 750px) {
+    .hngry-lookbook__overlay { padding: 5rem; }
+  }
+
+  .hngry-lookbook--right .hngry-lookbook__overlay {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .hngry-lookbook__label {
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    color: rgba(241, 239, 233, 0.6);
+    margin: 0 0 1.2rem;
+  }
+
+  .hngry-lookbook__heading {
+    margin: 0;
+    max-width: 20ch;
+    font-size: clamp(3.4rem, 5vw, 6rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+    white-space: pre-line;
+    /* explicit — Dawn's h2 rule would otherwise paint this ink */
+    color: var(--hngry-bone);
+  }
+
+  .hngry-lookbook__caption {
+    max-width: 44rem;
+    margin: 1.8rem 0 0;
+    font-size: 1.1rem;
+    line-height: 2;
+    letter-spacing: 0.08em;
+    color: rgba(241, 239, 233, 0.7);
+  }
+
+  .hngry-lookbook__cta {
+    display: inline-block;
+    margin-top: 2.4rem;
+    border: 1px solid var(--hngry-bone);
+    padding: 1.3rem 3rem;
+    font-size: 1.1rem;
+    color: var(--hngry-bone);
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .hngry-lookbook__cta:hover {
+    background: var(--hngry-bone);
+    color: var(--hngry-ink);
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "HNGRY Lookbook",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (landscape)",
+      "info": "Full-bleed with text overlay. Falls back to the bundled staircase shot."
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right"
+    },
+    { "type": "text", "id": "label", "label": "Label", "default": "(03) — THE CREW" },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Take the stairs.\nTwo at a time."
+    },
+    {
+      "type": "textarea",
+      "id": "caption",
+      "label": "Caption",
+      "default": "SHOT ON LOCATION, NOT IN A STUDIO. WORN BY THE ONES WHO MEAN IT."
+    },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "SHOP THE DROP" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "HNGRY Lookbook" }]
+}
+{% endschema %}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AddToCart from "@/components/AddToCart";
@@ -28,25 +29,50 @@ export default async function ProductPage({
   const product = getProduct(slug);
   if (!product) notFound();
 
-  const related = products.filter((p) => p.slug !== product.slug).slice(0, 3);
-
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-8">
       <Link
-        href="/shop"
+        href="/"
         className="font-mono text-[11px] tracking-[0.25em] underline-offset-4 hover:underline"
       >
-        ← BACK TO SHOP
+        ← BACK TO HOME
       </Link>
 
       <div className="mt-8 grid gap-12 lg:grid-cols-2">
-        <div className="relative aspect-square bg-smoke">
-          {product.badge && (
-            <span className="absolute left-4 top-4 z-10 bg-ink px-2 py-1 font-mono text-[10px] tracking-[0.2em] text-bone">
-              {product.badge}
-            </span>
+        <div>
+          <div className="relative bg-smoke">
+            {product.badge && (
+              <span className="absolute left-4 top-4 z-10 bg-ink px-2 py-1 font-mono text-[10px] tracking-[0.2em] text-bone">
+                {product.badge}
+              </span>
+            )}
+            {product.photos ? (
+              <Image
+                src={product.photos[0].src}
+                alt={product.photos[0].alt}
+                preload
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="h-auto w-full"
+              />
+            ) : (
+              <div className="aspect-square">
+                <ProductVisual art={product.art} className="h-full w-full p-10" />
+              </div>
+            )}
+          </div>
+          {product.photos && product.photos.length > 1 && (
+            <div className="mt-4 grid grid-cols-3 gap-4">
+              {product.photos.slice(1).map((photo) => (
+                <Image
+                  key={photo.alt}
+                  src={photo.src}
+                  alt={photo.alt}
+                  sizes="(min-width: 1024px) 16vw, 33vw"
+                  className="h-auto w-full bg-smoke"
+                />
+              ))}
+            </div>
           )}
-          <ProductVisual art={product.art} className="h-full w-full p-10" />
         </div>
 
         <div className="max-w-lg">
@@ -89,27 +115,6 @@ export default async function ProductPage({
         </div>
       </div>
 
-      <div className="mt-24">
-        <h2 className="mb-8 font-display text-3xl uppercase sm:text-4xl">
-          You might also want
-        </h2>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-3">
-          {related.map((p) => (
-            <Link key={p.slug} href={`/product/${p.slug}`} className="group block">
-              <div className="aspect-square overflow-hidden bg-smoke">
-                <ProductVisual
-                  art={p.art}
-                  className="h-full w-full p-6 transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="mt-3 flex justify-between">
-                <h3 className="font-display text-sm uppercase">{p.name}</h3>
-                <p className="font-mono text-xs">{formatPrice(p.price)}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

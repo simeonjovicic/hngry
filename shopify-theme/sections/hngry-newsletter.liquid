@@ -1,0 +1,195 @@
+<script src="{{ 'hngry-reveal.js' | asset_url }}" defer></script>
+
+<section class="hngry-newsletter" {{ section.shopify_attributes }}>
+  <div class="page-width">
+    <div class="hngry-newsletter__grid hngry-reveal">
+      <div>
+        <p class="hngry-newsletter__label hngry-mono">{{ section.settings.label }}</p>
+        <h2 class="hngry-newsletter__heading hngry-display">
+          {{ section.settings.heading_line1 }}<br>
+          <span class="hngry-outline">{{ section.settings.heading_line2 }}</span>
+        </h2>
+      </div>
+
+      <div class="hngry-newsletter__signup">
+        {%- form 'customer', class: 'hngry-newsletter__form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p class="hngry-newsletter__done hngry-mono">YOU'RE IN. STAY HNGRŸ.</p>
+          {%- else -%}
+            <div class="hngry-newsletter__row">
+              <input
+                type="email"
+                name="contact[email]"
+                class="hngry-newsletter__input hngry-mono"
+                placeholder="YOUR@EMAIL.COM"
+                required
+                autocomplete="email"
+                {% if form.errors %}autofocus aria-invalid="true"{% endif %}
+              >
+              <button type="submit" class="hngry-newsletter__submit hngry-mono">JOIN →</button>
+            </div>
+            {%- if form.errors -%}
+              <p class="hngry-newsletter__error hngry-mono">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
+
+        <p class="hngry-newsletter__note hngry-mono">{{ section.settings.note }}</p>
+
+        <div class="hngry-newsletter__socials hngry-mono">
+          {%- if section.settings.instagram_url != blank -%}
+            <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">INSTAGRAM ↗</a>
+          {%- endif -%}
+          {%- if section.settings.tiktok_url != blank -%}
+            <a href="{{ section.settings.tiktok_url }}" target="_blank" rel="noopener">TIKTOK ↗</a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .hngry-newsletter {
+    padding: 7rem 0;
+    background: var(--hngry-bone);
+    color: var(--hngry-ink);
+  }
+
+  .hngry-newsletter__grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 750px) {
+    .hngry-newsletter__grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .hngry-newsletter__label {
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    color: rgba(12, 12, 12, 0.4);
+    margin: 0 0 1.5rem;
+  }
+
+  .hngry-newsletter__heading {
+    margin: 0;
+    font-size: clamp(2.8rem, 4vw, 4rem);
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  .hngry-newsletter__signup {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1.5rem;
+  }
+
+  .hngry-newsletter__row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    max-width: 40rem;
+  }
+
+  .hngry-newsletter__input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(12, 12, 12, 0.4);
+    border-radius: 0;
+    padding: 0 0 0.6rem;
+    font-size: 1.3rem;
+    letter-spacing: 0.2em;
+    color: var(--hngry-ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .hngry-newsletter__input:focus { border-color: var(--hngry-ink); }
+  .hngry-newsletter__input::placeholder { color: rgba(12, 12, 12, 0.3); }
+
+  .hngry-newsletter__submit {
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(12, 12, 12, 0.4);
+    padding: 0 0 0.6rem;
+    font-size: 1.3rem;
+    color: var(--hngry-ink);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .hngry-newsletter__submit:hover {
+    color: var(--hngry-tag);
+    border-color: var(--hngry-ink);
+  }
+
+  .hngry-newsletter__done { font-size: 1.3rem; margin: 0; }
+
+  .hngry-newsletter__error {
+    font-size: 1rem;
+    color: var(--hngry-tag);
+    margin: 0.6rem 0 0;
+  }
+
+  .hngry-newsletter__note {
+    font-size: 1rem;
+    letter-spacing: 0.25em;
+    color: rgba(12, 12, 12, 0.4);
+    margin: 0;
+  }
+
+  .hngry-newsletter__socials {
+    display: flex;
+    gap: 2rem;
+    font-size: 1.1rem;
+  }
+
+  .hngry-newsletter__socials a {
+    color: var(--hngry-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.6rem;
+    transition: color 0.2s;
+  }
+
+  .hngry-newsletter__socials a:hover { color: var(--hngry-tag); }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "HNGRY Newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "NEWSLETTER — GET THE DROP FIRST"
+    },
+    {
+      "type": "text",
+      "id": "heading_line1",
+      "label": "Heading line 1",
+      "default": "Drop 001 lands 20.07."
+    },
+    {
+      "type": "text",
+      "id": "heading_line2",
+      "label": "Heading line 2 (outlined)",
+      "default": "Be there first."
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Note",
+      "default": "NO SPAM. ONLY DROPS. UNSUBSCRIBE WHENEVER."
+    },
+    { "type": "url", "id": "instagram_url", "label": "Instagram URL" },
+    { "type": "url", "id": "tiktok_url", "label": "TikTok URL" }
+  ],
+  "presets": [{ "name": "HNGRY Newsletter" }]
+}
+{% endschema %}

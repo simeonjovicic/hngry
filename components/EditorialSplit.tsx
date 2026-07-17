@@ -17,9 +17,10 @@ type EditorialSplitProps = {
 };
 
 /**
- * Contained two-column editorial section: a portrait campaign image at its
- * natural aspect ratio next to a text column. `flip` swaps the columns via
- * DOM order (image right, text left). Stacks image-first on small screens.
+ * Full-bleed two-column editorial section: a portrait campaign image at its
+ * natural aspect ratio next to a centered text column. `flip` swaps the
+ * columns via DOM order (image right, text left). Stacks image-first on
+ * small screens.
  */
 export default function EditorialSplit({
   index,
@@ -32,18 +33,18 @@ export default function EditorialSplit({
   dark = false,
 }: EditorialSplitProps) {
   const imageCol = (
-    <div className={`sm:col-span-5 ${flip ? "max-sm:order-first" : ""}`}>
+    <div className={flip ? "max-sm:order-first" : ""}>
       <Image
         src={image.src}
         alt={image.alt}
-        sizes="(min-width: 1152px) 480px, (min-width: 640px) 42vw, 100vw"
+        sizes="(min-width: 640px) 50vw, 100vw"
         className="h-auto w-full"
       />
     </div>
   );
 
   const textCol = (
-    <div className="flex flex-col justify-center sm:col-span-7">
+    <div className="flex flex-col justify-center p-6 py-14 sm:p-12 lg:p-20">
       <Reveal>
         <p
           className={`mb-4 font-mono text-[11px] tracking-[0.3em] ${
@@ -52,7 +53,7 @@ export default function EditorialSplit({
         >
           ({index}) — {eyebrow}
         </p>
-        <h2 className="max-w-xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl">
+        <h2 className="max-w-xl font-display text-4xl uppercase leading-[0.95] sm:text-5xl lg:text-6xl">
           {title}
         </h2>
         <p
@@ -80,23 +81,21 @@ export default function EditorialSplit({
 
   return (
     <section
-      className={`border-b ${
+      className={`grid border-b sm:grid-cols-2 ${
         dark ? "border-ink bg-ink text-bone" : "border-ink/15 bg-bone text-ink"
       }`}
     >
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:grid-cols-12 sm:items-center sm:gap-12 sm:px-8 sm:py-20">
-        {flip ? (
-          <>
-            {textCol}
-            {imageCol}
-          </>
-        ) : (
-          <>
-            {imageCol}
-            {textCol}
-          </>
-        )}
-      </div>
+      {flip ? (
+        <>
+          {textCol}
+          {imageCol}
+        </>
+      ) : (
+        <>
+          {imageCol}
+          {textCol}
+        </>
+      )}
     </section>
   );
 }

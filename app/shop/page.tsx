@@ -1,29 +1,8 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import ShopGrid from "@/components/ShopGrid";
+import { redirect } from "next/navigation";
+import { featuredProduct } from "@/lib/products";
 
-export const metadata: Metadata = {
-  title: "SHOP — HNGRŸ",
-};
-
+// Drop 001 is a single piece — a shop overview adds nothing yet, so /shop
+// sends people straight to the product. Bring the grid back with Drop 002.
 export default function ShopPage() {
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-14 sm:px-8">
-      <Link
-        href="/"
-        className="mb-8 inline-block font-mono text-[11px] tracking-[0.25em] underline-offset-4 hover:underline"
-      >
-        ← BACK TO HOME
-      </Link>
-      <div className="mb-12">
-        <p className="mb-3 font-mono text-[11px] tracking-[0.3em] text-ink/40">
-          SUMMER 26 — EVERYTHING WE GOT
-        </p>
-        <h1 className="font-display text-6xl uppercase leading-none sm:text-8xl lg:text-9xl">
-          Drop <span className="text-outline">001</span>
-        </h1>
-      </div>
-      <ShopGrid />
-    </div>
-  );
+  redirect(`/product/${featuredProduct.slug}`);
 }

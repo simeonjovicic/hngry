@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCart } from "@/lib/cart";
 import { formatPrice, getProduct } from "@/lib/products";
 import ProductVisual from "./ProductVisual";
@@ -51,8 +52,18 @@ export default function CartDrawer() {
                   key={`${item.slug}-${item.size}`}
                   className="flex gap-4 border-b border-ink/15 py-5"
                 >
-                  <div className="h-24 w-24 shrink-0 bg-smoke">
-                    <ProductVisual art={product.art} className="h-full w-full" />
+                  <div className="relative h-24 w-24 shrink-0 overflow-hidden bg-smoke">
+                    {product.photos ? (
+                      <Image
+                        src={product.photos[0].src}
+                        alt={product.photos[0].alt}
+                        fill
+                        sizes="96px"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <ProductVisual art={product.art} className="h-full w-full" />
+                    )}
                   </div>
                   <div className="flex flex-1 flex-col justify-between">
                     <div className="flex items-start justify-between gap-2">

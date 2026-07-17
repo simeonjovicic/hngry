@@ -86,8 +86,10 @@ export default function AddToCart({ product }: { product: Product }) {
         </button>
       </div>
 
-      <p className="mt-4 text-center font-mono text-[10px] tracking-[0.2em] text-ink/40">
-        VISA / MASTERCARD / APPLE PAY / GOOGLE PAY — VIA STRIPE
+      <p className="mt-4 text-center font-mono text-[10px] leading-relaxed tracking-[0.2em] text-ink/40">
+        VISA / MASTERCARD / APPLE PAY / GOOGLE PAY
+        <br />
+        SECURE CHECKOUT VIA STRIPE
       </p>
     </div>
   );

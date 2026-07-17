@@ -3,7 +3,7 @@
     assign hero_img = section.settings.image | image_url: width: 2400
     assign hero_alt = section.settings.image.alt | default: shop.name
   else
-    assign hero_img = 'hngry-hero.png' | asset_url
+    assign hero_img = 'hngry-hero-sky.jpg' | asset_url
     assign hero_alt = shop.name
   endif
 
@@ -35,6 +35,12 @@
     </div>
 
     <div class="hngry-hero__foot hngry-rise" style="animation-delay: 200ms">
+      <div class="hngry-hero__headline-block">
+        <h1 class="hngry-hero__headline hngry-display">{{ section.settings.heading }}</h1>
+        {%- if section.settings.subline != blank -%}
+          <p class="hngry-hero__subline hngry-mono">{{ section.settings.subline }}</p>
+        {%- endif -%}
+      </div>
       <div class="hngry-hero__ctas">
         {%- if section.settings.button_label != blank -%}
           <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hngry-hero__cta hngry-mono">
@@ -47,7 +53,6 @@
           </a>
         {%- endif -%}
       </div>
-      <p class="hngry-hero__tagline hngry-mono">{{ section.settings.tagline }}</p>
     </div>
   </div>
 
@@ -61,9 +66,10 @@
     margin-left: calc(50% - 50vw);
     /* slide up under the transparent header so it overlays the image */
     margin-top: calc(-1 * var(--header-height, 5.5rem));
-    /* fill the screen below the ticker (the header floats on top) */
-    height: calc(100svh - 3.2rem);
-    min-height: 46rem;
+    /* follow the image's natural aspect ratio; min-height only guards
+       against the overlay content outgrowing very small screens */
+    aspect-ratio: 16 / 9;
+    min-height: 42rem;
     overflow: hidden;
     background: var(--hngry-ink);
   }
@@ -83,8 +89,10 @@
     }
   }
 
-  /* dark scrim so the mono labels/buttons stay legible over the photo */
-  .hngry-hero__scrim {
+  /* dark scrim so the mono labels/buttons stay legible over the photo;
+     doubled class beats Dawn's `div:empty { display: none }` in base.css */
+  .hngry-hero .hngry-hero__scrim {
+    display: block;
     position: absolute;
     inset: 0;
     background: linear-gradient(
@@ -124,12 +132,12 @@
     .hngry-hero__overlay { padding: 1.5rem; gap: 1.2rem; }
   }
 
-  /* bottom bar: CTAs on the left, tagline on the right */
+  /* bottom block: headline, subline and CTAs stacked bottom-left */
   .hngry-hero__foot {
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 2rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2.4rem;
   }
 
   .hngry-hero__ctas {
@@ -139,12 +147,19 @@
     pointer-events: auto;
   }
 
-  .hngry-hero__tagline {
-    font-size: 1.1rem;
-    line-height: 1.9;
+  .hngry-hero__headline {
     margin: 0;
+    font-size: clamp(3.2rem, 6.5vw, 7.2rem);
+    line-height: 0.95;
+    text-transform: uppercase;
     white-space: pre-line;
-    text-align: right;
+    color: var(--hngry-bone);
+  }
+
+  .hngry-hero__subline {
+    margin: 1rem 0 0;
+    font-size: 1.1rem;
+    color: rgba(241, 239, 233, 0.8);
   }
 
   .hngry-hero__cta {
@@ -173,11 +188,10 @@
 
   @media (max-width: 749px) {
     .hngry-hero__foot {
-      flex-direction: column-reverse;
       align-items: stretch;
-      gap: 1.2rem;
+      gap: 1.6rem;
     }
-    .hngry-hero__tagline { text-align: left; }
+    .hngry-hero__subline { display: none; }
     .hngry-hero__link { display: none; }
     .hngry-hero__cta { text-align: center; }
   }
@@ -241,9 +255,15 @@
     },
     {
       "type": "textarea",
-      "id": "tagline",
-      "label": "Tagline",
-      "default": "HEAVYWEIGHT ONLY.\nNO OFFICE HOURS.\nSTAY HNGRŸ."
+      "id": "heading",
+      "label": "Headline",
+      "default": "Too flyyy\nfor a 9–5."
+    },
+    {
+      "type": "text",
+      "id": "subline",
+      "label": "Subline",
+      "default": "HEAVYWEIGHT DROP 001 — LIVE 20.07."
     },
     {
       "type": "text",

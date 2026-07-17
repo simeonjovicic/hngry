@@ -1,3 +1,8 @@
+import type { StaticImageData } from "next/image";
+import productFlyyyFront from "@/public/img/Hngry_Product1.jpeg";
+import productNoNineFiveBack from "@/public/img/Hngry_Product2.jpeg";
+import productFlyyyStack from "@/public/img/Hngry_Product3.jpeg";
+
 export type Size = "XS" | "S" | "M" | "L" | "XL";
 
 export const ALL_SIZES: Size[] = ["XS", "S", "M", "L", "XL"];
@@ -20,6 +25,8 @@ export interface Product {
   description: string;
   details: string[];
   art: ProductArt;
+  /** real product shots; first one is the main image, art is the fallback */
+  photos?: { src: StaticImageData; alt: string }[];
   badge?: "NEW" | "SOLD OUT" | "LAST UNITS";
   availableSizes: Size[];
   color: string;
@@ -32,109 +39,37 @@ export const products: Product[] = [
     name: "FLYYY 9–5 TEE",
     price: 4900,
     description:
-      "Heavyweight boxy tee. Front print: MY FIT IS TOO FLYYY FOR A 9-5. For everyone allergic to office hours.",
+      "Heavyweight boxy tee. Front print: MY FIT IS TOO FLYYY FOR A 9-5. Crossed-out businessman on the back. For everyone allergic to office hours.",
     details: [
       "280 GSM heavyweight cotton",
       "Boxy oversized fit — size down for regular",
-      "Puff print front",
+      "Puff print front, screen print back",
       "Woven HNGRŸ label at hem",
     ],
     art: "flyyy-front",
+    photos: [
+      {
+        src: productFlyyyFront,
+        alt: "White heavyweight tee with black MY FIT IS TOO FLYYY FOR A 9-5 front print",
+      },
+      {
+        src: productNoNineFiveBack,
+        alt: "White heavyweight tee with crossed-out running businessman back print",
+      },
+      {
+        src: productFlyyyStack,
+        alt: "Folded stack of white FLYYY 9-5 tees",
+      },
+    ],
     category: "TEES",
     badge: "NEW",
     availableSizes: ["XS", "S", "M", "L", "XL"],
     color: "WHITE",
   },
-  {
-    slug: "no-9-5-tee",
-    name: "NO 9–5 TEE",
-    price: 4900,
-    description:
-      "Heavyweight boxy tee. Back print: businessman, crossed out. Say it without saying it.",
-    details: [
-      "280 GSM heavyweight cotton",
-      "Boxy oversized fit — size down for regular",
-      "Screen print back",
-      "Woven HNGRŸ label at hem",
-    ],
-    art: "no-nine-five-back",
-    category: "TEES",
-    badge: "NEW",
-    availableSizes: ["S", "M", "L", "XL"],
-    color: "WHITE",
-  },
-  {
-    slug: "hngry-logo-tee-bone",
-    name: "HNGRŸ LOGO TEE",
-    price: 4500,
-    description:
-      "The classic. Liquid HNGRŸ logo across the chest on bone white heavyweight cotton.",
-    details: [
-      "280 GSM heavyweight cotton",
-      "Boxy oversized fit",
-      "High-density chest print",
-      "Woven HNGRŸ label at hem",
-    ],
-    art: "logo-white-tee",
-    category: "TEES",
-    availableSizes: ["XS", "S", "M", "L"],
-    color: "BONE",
-  },
-  {
-    slug: "hngry-logo-tee-black",
-    name: "HNGRŸ LOGO TEE",
-    price: 4500,
-    description:
-      "The classic, blacked out. Liquid HNGRŸ logo in white on washed black heavyweight cotton.",
-    details: [
-      "280 GSM heavyweight cotton",
-      "Boxy oversized fit",
-      "High-density chest print",
-      "Woven HNGRŸ label at hem",
-    ],
-    art: "logo-black-tee",
-    category: "TEES",
-    badge: "LAST UNITS",
-    availableSizes: ["M", "L"],
-    color: "WASHED BLACK",
-  },
-  {
-    slug: "stay-hngry-hoodie-grey",
-    name: "STAY HNGRŸ HOODIE",
-    price: 8900,
-    compareAt: 9900,
-    description:
-      "Washed heavyweight zip hoodie. Faded like you wore it for three summers already.",
-    details: [
-      "450 GSM brushed fleece",
-      "Garment washed — every piece fades different",
-      "Oversized drop shoulder",
-      "Embroidered HNGRŸ at chest",
-    ],
-    art: "hoodie-grey",
-    category: "HOODIES",
-    availableSizes: ["S", "M", "L", "XL"],
-    color: "WASHED GREY",
-  },
-  {
-    slug: "stay-hngry-hoodie-black",
-    name: "STAY HNGRŸ HOODIE",
-    price: 8900,
-    description:
-      "Washed heavyweight zip hoodie in faded black. The opium uniform.",
-    details: [
-      "450 GSM brushed fleece",
-      "Garment washed — every piece fades different",
-      "Oversized drop shoulder",
-      "Embroidered HNGRŸ at chest",
-    ],
-    art: "hoodie-black",
-    category: "HOODIES",
-    badge: "SOLD OUT",
-    availableSizes: [],
-    color: "WASHED BLACK",
-  },
 ];
+
+/** the one live product — Drop 001 is a single tee for now */
+export const featuredProduct = products[0];
 
 export function getProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);

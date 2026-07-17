@@ -6,26 +6,17 @@
     assign hero_img = 'hngry-hero-sky.jpg' | asset_url
     assign hero_alt = shop.name
   endif
-
-  if section.settings.image_mobile != blank
-    assign hero_img_mobile = section.settings.image_mobile | image_url: width: 1200
-  else
-    assign hero_img_mobile = 'hngry-hero-mobile.png' | asset_url
-  endif
 -%}
 
 <section class="hngry-hero" style="--hero-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};">
-  <picture>
-    <source media="(max-width: 749px)" srcset="{{ hero_img_mobile }}">
-    <img
-      src="{{ hero_img }}"
-      alt="{{ hero_alt | escape }}"
-      class="hngry-hero__img"
-      width="1600"
-      height="900"
-      fetchpriority="high"
-    >
-  </picture>
+  <img
+    src="{{ hero_img }}"
+    alt="{{ hero_alt | escape }}"
+    class="hngry-hero__img"
+    width="1600"
+    height="900"
+    fetchpriority="high"
+  >
   <div class="hngry-hero__scrim"></div>
 
   <div class="hngry-hero__overlay">
@@ -76,22 +67,14 @@
     margin-left: calc(50% - 50vw);
     /* slide up under the transparent header so it overlays the image */
     margin-top: calc(-1 * var(--header-height, 5.5rem));
-    /* follow the image's natural aspect ratio; min-height only guards
-       against the overlay content outgrowing very small screens */
-    aspect-ratio: 16 / 9;
+    /* Fill the first screen on every device. The header overlays the image,
+       so only the ticker height needs to be removed from the viewport. */
+    height: calc(100vh - 3.2rem);
+    height: calc(100svh - 3.2rem);
+    aspect-ratio: auto;
     min-height: 42rem;
     overflow: hidden;
     background: var(--hngry-ink);
-  }
-
-  @media (min-width: 750px) {
-    .hngry-hero {
-      /* The hero begins directly below the 3.2rem ticker because the header
-         overlays it. Keep both together within the first viewport. */
-      height: calc(100vh - 3.2rem);
-      height: calc(100svh - 3.2rem);
-      aspect-ratio: auto;
-    }
   }
 
   .hngry-hero__img {
@@ -119,7 +102,7 @@
 
   @media (max-width: 749px) {
     .hngry-hero__img {
-      object-position: center center;
+      object-position: 25% center;
     }
   }
 
@@ -270,12 +253,6 @@
       "id": "image",
       "label": "Hero image (desktop)",
       "info": "Full-bleed background. Falls back to the bundled campaign shot."
-    },
-    {
-      "type": "image_picker",
-      "id": "image_mobile",
-      "label": "Hero image (mobile / portrait)",
-      "info": "Shown on phones. Falls back to the bundled portrait shot."
     },
     {
       "type": "range",

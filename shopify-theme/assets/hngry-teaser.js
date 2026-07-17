@@ -11,6 +11,7 @@
 
   /* ---------------------------------------------------------- countdown */
   var dropDate = new Date(root.getAttribute("data-drop-date"));
+  var publicAccessWatchStarted = false;
   var cells = {
     days: root.querySelector("[data-count-days]"),
     hrs: root.querySelector("[data-count-hrs]"),
@@ -20,13 +21,56 @@
   function pad(n) {
     return String(n).padStart(2, "0");
   }
+
+  function watchForPublicAccess() {
+    fetch(new URL("/", window.location.origin).href, {
+      credentials: "same-origin",
+      redirect: "follow",
+      cache: "no-store",
+      headers: { Accept: "text/html" },
+    })
+      .then(function (response) {
+        return response.text().then(function (html) {
+          return { response: response, html: html };
+        });
+      })
+      .then(function (result) {
+        var responseUrl = new URL(result.response.url || "/", window.location.origin);
+        var stillLocked =
+          /\/password\/?$/.test(responseUrl.pathname) ||
+          result.html.indexOf("data-hngry-teaser") !== -1;
+
+        if (!stillLocked) {
+          window.location.replace(responseUrl.href);
+          return;
+        }
+
+        window.setTimeout(watchForPublicAccess, 15000);
+      })
+      .catch(function () {
+        window.setTimeout(watchForPublicAccess, 30000);
+      });
+  }
+
+  function startPublicAccessWatch() {
+    if (publicAccessWatchStarted || !window.fetch) return;
+    publicAccessWatchStarted = true;
+    watchForPublicAccess();
+  }
+
   function tick() {
-    var ms = Math.max(0, dropDate.getTime() - Date.now());
+    var remaining = dropDate.getTime() - Date.now();
+    var ms = Math.max(0, remaining);
     var s = Math.floor(ms / 1000);
     if (cells.days) cells.days.textContent = pad(Math.floor(s / 86400));
     if (cells.hrs) cells.hrs.textContent = pad(Math.floor((s % 86400) / 3600));
     if (cells.min) cells.min.textContent = pad(Math.floor((s % 3600) / 60));
     if (cells.sec) cells.sec.textContent = pad(s % 60);
+
+    if (remaining <= 0) {
+      root.classList.add("is-public-access-time");
+      startPublicAccessWatch();
+    }
   }
   tick();
   setInterval(tick, 1000);
@@ -168,19 +212,17 @@
     "float t=uTime*0.05;",
     "vec3 black=vec3(0.05,0.05,0.048);",
     "vec3 bone=vec3(0.945,0.937,0.914);",
-    "vec2 q=vec2(fbm(p*1.5+t*0.7),fbm(p*1.5-t*0.5+4.2));",
-    "float smoke=fbm(p*2.0+q*1.8-vec2(0.0,t*0.6));",
-    "vec3 col=black+bone*smoothstep(0.45,1.1,smoke)*0.085;",
+    "vec3 col=black;",
     "vec2 m=vec2(uMouse.x*aspect,uMouse.y);",
     "float md=distance(p,m);",
     "float ripple=exp(-md*md*12.0);",
-    "vec2 poke=(p-m)/max(md,0.001)*ripple*0.022*sin(uTime*2.4-md*30.0);",
-    "float breathe=1.0+0.015*sin(uTime*0.45);",
-    "float quadW=min(0.68*aspect,1.50)*breathe;",
+    "vec2 poke=(p-m)/max(md,0.001)*ripple*0.006*sin(uTime*2.4-md*30.0);",
+    "float breathe=1.0+0.010*sin(uTime*0.45);",
+    "float quadW=min(0.60*aspect,1.32)*breathe;",
     "float quadH=quadW*0.5;",
     "vec2 center=vec2(0.5*aspect,0.60);",
     "vec2 luv=(p-center)/vec2(quadW,quadH)+0.5;",
-    "float amp=mix(0.42,0.05,uForm);",
+    "float amp=mix(0.32,0.03,uForm);",
     "vec2 warp=(vec2(fbm(luv*2.8+t+(1.0-uForm)*3.0),fbm(luv*2.8-t+7.3))-0.5)*amp+poke;",
     "vec2 s=luv+warp;",
     "vec2 edge=smoothstep(0.0,0.02,s)*smoothstep(0.0,0.02,1.0-s);",
@@ -191,7 +233,6 @@
     "float floodR=uUnlock*uUnlock*2.8;",
     "float flood=1.0-smoothstep(floodR-0.45,floodR,distance(p,center)+fbm(p*3.5+t*3.0)*0.35);",
     "col=mix(col,bone,clamp(flood,0.0,1.0));",
-    "col+=(hash(gl_FragCoord.xy+fract(uTime)*61.0)-0.5)*0.06;",
     "gl_FragColor=vec4(col,1.0);",
     "}",
   ].join("\n");

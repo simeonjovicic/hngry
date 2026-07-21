@@ -1,0 +1,100 @@
+{% comment %}
+  HNGRŸ — Shopify Zahlungsbeleg für Bestellung
+
+  Empfohlener E-Mail-Betreff:
+  ZAHLUNG BESTÄTIGT — BESTELLUNG {{ name }}
+
+  Diese Datei vollständig in Shopify unter
+  Einstellungen → Benachrichtigungen → Zahlungsbeleg für Bestellung einfügen.
+{% endcomment %}
+
+{% assign receipt_transaction = nil %}
+{% for transaction in transactions %}
+  {% if transaction.id == transaction_id %}{% assign receipt_transaction = transaction %}{% endif %}
+{% endfor %}
+
+{% capture email_title %}{% if receipt_transaction.status == 'pending' %}Deine Zahlung wird verarbeitet{% else %}Deine Zahlung wurde verarbeitet{% endif %}{% endcapture %}
+{% capture display_title %}{% if receipt_transaction.status == 'pending' %}PAYMENT PENDING.{% else %}PAYMENT RECEIVED.{% endif %}{% endcapture %}
+{% capture payment_method %}
+  {% if receipt_transaction.payment_details.type == 'card' %}
+    {{ receipt_transaction.payment_details.credit_card_company }} •••• {{ receipt_transaction.payment_details.credit_card_last_four_digits }}
+  {% elsif receipt_transaction.payment_details.local_payment? %}
+    {{ receipt_transaction.payment_details.payment_method_display_name }}
+  {% else %}
+    {{ receipt_transaction.gateway_display_name }}
+  {% endif %}
+{% endcapture %}
+
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <title>{{ email_title | strip }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only">
+    <meta name="supported-color-schemes" content="light only">
+    <link rel="stylesheet" type="text/css" href="/assets/notifications/styles.css">
+    <style>
+      body,.hngry-body{margin:0!important;padding:0!important;width:100%!important;background:#e3e1da!important;color:#0c0c0c!important}table{border-collapse:collapse;border-spacing:0}img{border:0;display:block;line-height:100%}p,h1,h2,h3,h4{margin:0}a,a:hover,a:active,a:visited{color:#0c0c0c}
+      .hngry-shell{width:100%;background:#e3e1da}.hngry-container{width:640px;max-width:640px}.hngry-preheader{display:none!important;max-height:0!important;overflow:hidden!important;opacity:0!important;color:transparent!important}.hngry-ticker{background:#0c0c0c;color:#f1efe9;font:700 9px/14px "Courier New",Courier,monospace;letter-spacing:2px;padding:9px 18px;text-align:center}
+      .hngry-header{background:#f1efe9;border-bottom:1px solid #0c0c0c;padding:22px 32px}.hngry-logo-text{color:#0c0c0c!important;font:900 29px/32px Impact,Haettenschweiler,"Arial Black",sans-serif;letter-spacing:-1px;text-decoration:none}.hngry-order-label{color:#0c0c0c;font:700 10px/16px "Courier New",Courier,monospace;letter-spacing:1.5px;text-align:right}
+      .hngry-hero{background:#0c0c0c;color:#f1efe9;padding:46px 40px 42px}.hngry-kicker{color:#9c9a94;font:700 10px/16px "Courier New",Courier,monospace;letter-spacing:2.5px;padding-bottom:17px}.hngry-title{color:#f1efe9;font:900 51px/51px Impact,Haettenschweiler,"Arial Narrow Bold","Arial Black",sans-serif;letter-spacing:-1px;text-transform:uppercase}.hngry-title-accent{color:#f4731c}.hngry-copy{color:#f1efe9;font:400 13px/23px "Courier New",Courier,monospace;letter-spacing:.4px;padding-top:25px}.hngry-order-chip{background:transparent;border:1px solid #4a4a47;color:#f1efe9;display:inline-block;font:700 10px/14px "Courier New",Courier,monospace;letter-spacing:2px;padding:9px 12px;text-transform:uppercase}
+      .hngry-content,.hngry-section{background:#f1efe9;padding:38px 40px}.hngry-section{border-top:1px solid #0c0c0c}.hngry-section-number{color:#77756f;font:700 9px/15px "Courier New",Courier,monospace;letter-spacing:2.2px;padding-bottom:10px}.hngry-heading{color:#0c0c0c;font:900 31px/35px Impact,Haettenschweiler,"Arial Narrow Bold","Arial Black",sans-serif;padding-bottom:22px;text-transform:uppercase}
+      .hngry-receipt{background:#e3e1da;border:1px solid #c8c6bf;color:#0c0c0c;padding:20px}.hngry-receipt-label{color:#77756f;font:700 9px/15px "Courier New",Courier,monospace;letter-spacing:1.8px}.hngry-receipt-amount{color:#0c0c0c;font:900 34px/39px Impact,Haettenschweiler,"Arial Narrow Bold","Arial Black",sans-serif;padding:5px 0 10px}.hngry-receipt-meta{border-top:1px solid #c8c6bf;color:#0c0c0c;font:400 11px/18px "Courier New",Courier,monospace;padding-top:10px}.hngry-status{display:inline-block;border:1px solid #0c0c0c;font:700 9px/14px "Courier New",Courier,monospace;letter-spacing:1.4px;margin-top:12px;padding:6px 9px;text-transform:uppercase}
+      .hngry-button-cell{background:#0c0c0c;border:1px solid #0c0c0c}.hngry-button{color:#f1efe9!important;display:inline-block;font:700 11px/18px "Courier New",Courier,monospace;letter-spacing:1.7px;padding:15px 24px;text-decoration:none;text-transform:uppercase}.hngry-button-secondary-cell{border:1px solid #0c0c0c}.hngry-button-secondary{color:#0c0c0c!important;display:inline-block;font:700 11px/18px "Courier New",Courier,monospace;letter-spacing:1.3px;padding:14px 20px;text-decoration:none;text-transform:uppercase}
+      .hngry-info-card{border-top:1px solid #c8c6bf;color:#0c0c0c;padding:17px 18px 17px 0;vertical-align:top;width:50%}.hngry-info-card-right{padding-left:18px}.hngry-info-label{color:#77756f;font:700 9px/15px "Courier New",Courier,monospace;letter-spacing:1.7px;padding-bottom:6px}.hngry-info-copy{color:#0c0c0c;font:400 12px/19px "Courier New",Courier,monospace}.hngry-info-copy p{margin:0}
+      .hngry-footer{background:#0c0c0c;border-top:1px solid #4a4a47;color:#9c9a94;font:400 9px/16px "Courier New",Courier,monospace;letter-spacing:1px;padding:26px 40px 34px}.hngry-footer a{color:#f1efe9!important}
+      @media only screen and (max-width:680px){.hngry-container{width:100%!important}.hngry-header,.hngry-hero,.hngry-content,.hngry-section,.hngry-footer{padding-left:22px!important;padding-right:22px!important}.hngry-title{font-size:38px!important;line-height:39px!important}.hngry-heading{font-size:27px!important;line-height:31px!important}.hngry-order-label{font-size:9px!important;letter-spacing:1px!important}.hngry-button-wrap,.hngry-button-wrap tbody,.hngry-button-wrap tr,.hngry-button-wrap td,.hngry-stack,.hngry-stack tbody,.hngry-stack tr,.hngry-stack td{box-sizing:border-box!important;display:block!important;width:100%!important}.hngry-button,.hngry-button-secondary{box-sizing:border-box!important;text-align:center!important;width:100%!important}.hngry-button-gap{height:10px!important}.hngry-info-card-right{padding-left:0!important}}
+    </style>
+  </head>
+
+  <body class="hngry-body">
+    <div class="hngry-preheader">Zahlungsbeleg über {% if receipt_transaction %}{{ receipt_transaction.amount | money_with_currency }}{% endif %} für Bestellung {{ order_name }}.</div>
+    <table role="presentation" class="hngry-shell" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center">
+      <table role="presentation" class="hngry-container" width="640" cellpadding="0" cellspacing="0" border="0">
+        <tr><td class="hngry-ticker">PAYMENT RECEIVED &nbsp;✦&nbsp; STAY HNGRŸ &nbsp;✦&nbsp; ORDER {{ name }} &nbsp;✦&nbsp; PAYMENT RECEIVED</td></tr>
+        <tr><td class="hngry-header"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+          <td align="left" valign="middle">{% if shop.email_logo_url %}<a href="{{ shop.url }}"><img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" width="{{ shop.email_logo_width }}" style="max-width:150px;height:auto"></a>{% else %}<a href="{{ shop.url }}" class="hngry-logo-text">HNGRŸ</a>{% endif %}</td>
+          <td class="hngry-order-label" align="right" valign="middle">RECEIPT {{ order_name }}{% if po_number %}<br>PO {{ po_number }}{% endif %}</td>
+        </tr></table></td></tr>
+
+        <tr><td class="hngry-hero">
+          <div class="hngry-kicker">(01) — PAYMENT RECEIPT</div>
+          <h1 class="hngry-title">{{ display_title | strip | replace: '.', '<span class="hngry-title-accent">.</span>' }}</h1>
+          <div class="hngry-copy">{% if receipt_transaction %}Dir wurden <strong>{{ receipt_transaction.amount | money_with_currency }}</strong> für deine Bestellung {{ order_name }} berechnet.{% else %}Deine Zahlung für Bestellung {{ order_name }} wurde verarbeitet.{% endif %}</div>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:26px"><tr><td class="hngry-order-chip">{{ order_name }} / RECEIPT</td></tr></table>
+        </td></tr>
+
+        <tr><td class="hngry-content">
+          <div class="hngry-receipt">
+            <div class="hngry-receipt-label">BERECHNETER BETRAG</div>
+            <div class="hngry-receipt-amount">{% if receipt_transaction %}{{ receipt_transaction.amount | money_with_currency }}{% else %}—{% endif %}</div>
+            <div class="hngry-receipt-meta">ZAHLUNG / {{ payment_method | strip | default: 'NICHT ANGEGEBEN' }}{% if receipt_transaction.id %}<br>TRANSACTION / {{ receipt_transaction.id }}{% endif %}</div>
+            <div class="hngry-status">{% if receipt_transaction.status == 'pending' %}WIRD VERARBEITET{% else %}BEZAHLT{% endif %}</div>
+          </div>
+          {% if order_status_url or shop.url %}<table role="presentation" class="hngry-button-wrap" cellpadding="0" cellspacing="0" border="0" style="margin-top:18px"><tr>
+            {% if order_status_url %}<td class="hngry-button-cell"><a href="{{ order_status_url }}" class="hngry-button">BESTELLUNG ANSEHEN →</a></td>{% endif %}
+            {% if order_status_url and shop.url %}<td class="hngry-button-gap" width="10">&nbsp;</td>{% endif %}
+            {% if shop.url %}<td class="hngry-button-secondary-cell"><a href="{{ shop.url }}" class="hngry-button-secondary">ZUM SHOP</a></td>{% endif %}
+          </tr></table>{% endif %}
+        </td></tr>
+
+        <tr><td class="hngry-section">
+          <div class="hngry-section-number">(02) — RECEIPT DETAILS</div><h2 class="hngry-heading">KUNDENINFORMATIONEN</h2>
+          <table role="presentation" class="hngry-stack" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+            <td class="hngry-info-card"><div class="hngry-info-label">RECHNUNGSADRESSE</div><div class="hngry-info-copy">{{ address | format_address }}</div></td>
+            {% if receipt_transaction %}<td class="hngry-info-card hngry-info-card-right"><div class="hngry-info-label">ZAHLUNG</div><div class="hngry-info-copy">{{ payment_method | strip }}<br>{{ receipt_transaction.amount | money }}{% if receipt_transaction.status == 'pending' %}<br>STATUS: AUSSTEHEND{% endif %}</div></td>{% endif %}
+          </tr></table>
+          {% if company_location %}<table role="presentation" class="hngry-stack" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="hngry-info-card"><div class="hngry-info-label">STANDORT</div><div class="hngry-info-copy">{{ company_location.name }}</div></td><td class="hngry-info-card hngry-info-card-right">&nbsp;</td></tr></table>{% endif %}
+        </td></tr>
+
+        <tr><td class="hngry-footer"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr><td><strong style="color:#f1efe9;font-size:12px">STAY HNGRŸ.</strong><br>CLOTHES FOR THE ONES WHO WANT MORE.<br>EST. 2026</td></tr>
+          <tr><td style="padding-top:22px;border-top:1px solid #343431">FRAGEN ZU DEINER ZAHLUNG? ANTWORTE DIREKT AUF DIESE E-MAIL ODER SCHREIB AN <a href="mailto:{{ shop.email }}">{{ shop.email }}</a>.</td></tr>
+          <tr><td style="padding-top:18px;color:#66655f">© {{ 'now' | date: '%Y' }} HNGRŸ — ALL RIGHTS RESERVED</td></tr>
+        </table></td></tr>
+      </table>
+    </td></tr></table>
+    <img src="{{ 'notifications/spacer.png' | shopify_asset_url }}" alt="" width="1" height="1" style="display:block;height:1px;width:1px">
+  </body>
+</html>

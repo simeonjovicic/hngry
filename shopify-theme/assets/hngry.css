@@ -34,7 +34,7 @@
 :root {
   --hngry-bone: #ffffff;
   --hngry-ink: #0c0c0c;
-  --hngry-smoke: #e3e1da;
+  --hngry-smoke: #ffffff;
   --hngry-tag: #0c0c0c;
   --hngry-display: "Open Sans", sans-serif;
   --hngry-sans: "Open Sans", sans-serif;
@@ -49,8 +49,8 @@
   color: var(--hngry-bone);
 }
 
-/* brand off-white everywhere — keeps transparent sections (e.g. manifesto)
-   consistent with the bone color-scheme sections */
+/* Brand white everywhere — keeps transparent sections (e.g. manifesto)
+   consistent with the light color-scheme sections. */
 body {
   background-color: var(--hngry-bone);
 }
@@ -304,36 +304,36 @@ body {
   --drawer-border-width: 1px;
 }
 
-/* light scheme — bone/ink */
+/* light scheme — white/ink */
 .color-scheme-1,
 .color-scheme-2 {
-  --color-background: 241, 239, 233;
-  --gradient-background: #f1efe9;
+  --color-background: 255, 255, 255;
+  --gradient-background: #ffffff;
   --color-foreground: 12, 12, 12;
   --color-button: 12, 12, 12;
-  --color-button-text: 241, 239, 233;
-  --color-secondary-button: 241, 239, 233;
+  --color-button-text: 255, 255, 255;
+  --color-secondary-button: 255, 255, 255;
   --color-secondary-button-text: 12, 12, 12;
   --color-link: 12, 12, 12;
   --color-badge-background: 12, 12, 12;
   --color-badge-border: 12, 12, 12;
-  --color-badge-foreground: 241, 239, 233;
+  --color-badge-foreground: 255, 255, 255;
 }
 
-/* dark scheme — ink/bone */
+/* dark scheme — ink/white */
 .color-scheme-3,
 .color-scheme-4,
 .color-scheme-5 {
   --color-background: 12, 12, 12;
   --gradient-background: #0c0c0c;
-  --color-foreground: 241, 239, 233;
-  --color-button: 241, 239, 233;
+  --color-foreground: 255, 255, 255;
+  --color-button: 255, 255, 255;
   --color-button-text: 12, 12, 12;
   --color-secondary-button: 12, 12, 12;
-  --color-secondary-button-text: 241, 239, 233;
-  --color-link: 241, 239, 233;
-  --color-badge-background: 241, 239, 233;
-  --color-badge-border: 241, 239, 233;
+  --color-secondary-button-text: 255, 255, 255;
+  --color-link: 255, 255, 255;
+  --color-badge-background: 255, 255, 255;
+  --color-badge-border: 255, 255, 255;
   --color-badge-foreground: 12, 12, 12;
 }
 

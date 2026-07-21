@@ -1,0 +1,1207 @@
+{% comment %}
+  HNGRŸ — Shopify Bestellbestätigung
+
+  Empfohlener E-Mail-Betreff:
+  BESTELLUNG {{ name }} BESTÄTIGT — STAY HNGRŸ
+
+  Diese Datei vollständig in Shopify unter
+  Einstellungen → Benachrichtigungen → Bestellbestätigung einfügen.
+{% endcomment %}
+
+{% assign delivery_method_types = delivery_agreements | map: 'delivery_method_type' | uniq %}
+{% assign has_split_cart = false %}
+{% assign non_none_count = 0 %}
+{% for type in delivery_method_types %}
+  {% unless type == 'none' %}
+    {% assign non_none_count = non_none_count | plus: 1 %}
+  {% endunless %}
+{% endfor %}
+{% if non_none_count > 1 %}
+  {% assign has_split_cart = true %}
+{% endif %}
+
+{% assign non_none_agreements_count = 0 %}
+{% for agreement in delivery_agreements %}
+  {% unless agreement.delivery_method_type == 'none' %}
+    {% assign non_none_agreements_count = non_none_agreements_count | plus: 1 %}
+  {% endunless %}
+{% endfor %}
+
+{% capture customer_name %}
+  {% if customer.first_name != blank %}{{ customer.first_name }}{% else %}HNGRŸ ONE{% endif %}
+{% endcapture %}
+
+{% capture email_title %}
+  {% if has_pending_payment and buyer_action_required %}
+    ZAHLUNG ABSCHLIESSEN.
+  {% elsif has_pending_payment %}
+    ZAHLUNG WIRD GEPRÜFT.
+  {% else %}
+    ORDER CONFIRMED.
+  {% endif %}
+{% endcapture %}
+
+{% capture email_body %}
+  {% if has_pending_payment %}
+    {% if buyer_action_required %}
+      Hey {{ customer_name | strip }}, deine Pieces sind reserviert. Schließe jetzt die Zahlung ab – danach ist deine Order offiziell bestätigt.
+    {% else %}
+      Hey {{ customer_name | strip }}, deine Zahlung wird gerade verarbeitet. Sobald alles bestätigt ist, bekommst du ein Update von uns.
+    {% endif %}
+  {% elsif payment_charged_on_fulfillment %}
+    Hey {{ customer_name | strip }}, wir haben deine Bestellung erhalten. Deine Zahlungsmethode wird belastet, sobald deine Order bereit für die Ausführung ist. Wir melden uns, wenn sie unterwegs ist.
+  {% else %}
+    {% if requires_shipping %}
+      {% if has_split_cart %}
+        {% case split_cart_delivery_method %}
+          {% when 'pick-up' %}
+            Hey {{ customer_name | strip }}, deine Order ist locked. Du bekommst ein Update, sobald deine Pieces zur Abholung bereitstehen.
+          {% when 'local' %}
+            Hey {{ customer_name | strip }}, deine Order ist locked. Wir machen deine Pieces gerade für die lokale Zustellung ready.
+          {% else %}
+            Hey {{ customer_name | strip }}, deine Order ist locked. Wir packen deine Pieces und melden uns, sobald sie unterwegs sind.
+        {% endcase %}
+      {% else %}
+        {% case delivery_method %}
+          {% when 'pick-up' %}
+            Hey {{ customer_name | strip }}, deine Order ist locked. Du bekommst ein Update, sobald deine Pieces zur Abholung bereitstehen.
+          {% when 'local' %}
+            Hey {{ customer_name | strip }}, deine Order ist locked. Wir machen deine Pieces gerade für die lokale Zustellung ready.
+          {% else %}
+            Hey {{ customer_name | strip }}, deine Order ist locked. Wir packen deine Pieces und melden uns, sobald sie unterwegs sind.
+        {% endcase %}
+      {% endif %}
+    {% else %}
+      Hey {{ customer_name | strip }}, deine Order ist bestätigt. Alle weiteren Infos findest du unten.
+    {% endif %}
+  {% endif %}
+{% endcapture %}
+
+{% assign gift_card_line_items = line_items | where: 'gift_card' %}
+{% assign found_gift_card_with_recipient_email = false %}
+{% for line_item in gift_card_line_items %}
+  {% if line_item.properties['__shopify_send_gift_card_to_recipient'] and line_item.properties['Recipient email'] %}
+    {% assign found_gift_card_with_recipient_email = true %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <title>{{ email_title | strip }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only">
+    <meta name="supported-color-schemes" content="light only">
+    <link rel="stylesheet" type="text/css" href="/assets/notifications/styles.css">
+    <style>
+      /* HNGRŸ email palette: bone / ink / smoke / tag orange */
+      body,
+      .hngry-body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        background-color: #e3e1da !important;
+        color: #0c0c0c !important;
+      }
+
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+
+      img {
+        border: 0;
+        display: block;
+        line-height: 100%;
+      }
+
+      p,
+      h1,
+      h2,
+      h3,
+      h4 {
+        margin: 0;
+      }
+
+      a,
+      a:hover,
+      a:active,
+      a:visited {
+        color: #0c0c0c;
+      }
+
+      .hngry-shell {
+        width: 100%;
+        background-color: #e3e1da;
+      }
+
+      .hngry-container {
+        width: 640px;
+        max-width: 640px;
+      }
+
+      .hngry-mono,
+      .hngry-mono p,
+      .hngry-mono td,
+      .hngry-mono a {
+        font-family: "Courier New", Courier, monospace !important;
+      }
+
+      .hngry-display {
+        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", "Arial Black", sans-serif !important;
+        font-stretch: condensed;
+      }
+
+      .hngry-preheader {
+        display: none !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        color: transparent !important;
+      }
+
+      .hngry-ticker {
+        background-color: #0c0c0c;
+        color: #f1efe9;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 9px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        line-height: 14px;
+        padding: 9px 18px;
+        text-align: center;
+      }
+
+      .hngry-header {
+        background-color: #f1efe9;
+        border-bottom: 1px solid #0c0c0c;
+        padding: 22px 32px;
+      }
+
+      .hngry-logo-text {
+        color: #0c0c0c !important;
+        font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
+        font-size: 29px;
+        font-weight: 900;
+        letter-spacing: -1px;
+        line-height: 32px;
+        text-decoration: none;
+      }
+
+      .hngry-order-label {
+        color: #0c0c0c;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 10px;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+        line-height: 16px;
+        text-align: right;
+      }
+
+      .hngry-hero {
+        background-color: #0c0c0c;
+        color: #f1efe9;
+        padding: 46px 40px 42px;
+      }
+
+      .hngry-kicker {
+        color: #9c9a94;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 10px;
+        font-weight: bold;
+        letter-spacing: 2.5px;
+        line-height: 16px;
+        padding-bottom: 17px;
+      }
+
+      .hngry-title {
+        color: #f1efe9;
+        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", "Arial Black", sans-serif;
+        font-size: 62px;
+        font-weight: 900;
+        letter-spacing: -1px;
+        line-height: 58px;
+        text-transform: uppercase;
+      }
+
+      .hngry-title-accent {
+        color: #f4731c;
+      }
+
+      .hngry-copy {
+        color: #f1efe9;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 13px;
+        letter-spacing: 0.4px;
+        line-height: 23px;
+        padding-top: 25px;
+      }
+
+      .hngry-order-chip {
+        background-color: transparent;
+        border: 1px solid #4a4a47;
+        color: #f1efe9;
+        display: inline-block;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 10px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        line-height: 14px;
+        padding: 9px 12px;
+        text-transform: uppercase;
+      }
+
+      .hngry-content {
+        background-color: #f1efe9;
+        padding: 38px 40px;
+      }
+
+      .hngry-section {
+        background-color: #f1efe9;
+        border-top: 1px solid #0c0c0c;
+        padding: 38px 40px;
+      }
+
+      .hngry-section-dark {
+        background-color: #0c0c0c;
+        border-top: 1px solid #f1efe9;
+        color: #f1efe9;
+        padding: 38px 40px;
+      }
+
+      .hngry-section-number {
+        color: #77756f;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 9px;
+        font-weight: bold;
+        letter-spacing: 2.2px;
+        line-height: 15px;
+        padding-bottom: 10px;
+      }
+
+      .hngry-section-dark .hngry-section-number {
+        color: #9c9a94;
+      }
+
+      .hngry-heading {
+        color: #0c0c0c;
+        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", "Arial Black", sans-serif;
+        font-size: 31px;
+        font-weight: 900;
+        letter-spacing: 0;
+        line-height: 35px;
+        padding-bottom: 22px;
+        text-transform: uppercase;
+      }
+
+      .hngry-section-dark .hngry-heading {
+        color: #f1efe9;
+      }
+
+      .hngry-button-cell {
+        background-color: #0c0c0c;
+        border: 1px solid #0c0c0c;
+      }
+
+      .hngry-button {
+        color: #f1efe9 !important;
+        display: inline-block;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 1.7px;
+        line-height: 18px;
+        padding: 15px 24px;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .hngry-button-secondary-cell {
+        background-color: #f1efe9;
+        border: 1px solid #0c0c0c;
+      }
+
+      .hngry-button-secondary {
+        color: #0c0c0c !important;
+        display: inline-block;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 1.7px;
+        line-height: 18px;
+        padding: 15px 24px;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .hngry-delivery-box {
+        background-color: #e3e1da;
+        border: 1px solid #c8c6bf;
+        color: #0c0c0c;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 11px;
+        letter-spacing: 0.4px;
+        line-height: 18px;
+        padding: 16px 18px;
+      }
+
+      .hngry-product-row {
+        border-top: 1px solid #c8c6bf;
+      }
+
+      .hngry-product-image-cell {
+        padding: 18px 16px 18px 0;
+        vertical-align: top;
+        width: 84px;
+      }
+
+      .hngry-product-image {
+        background-color: #e3e1da;
+        height: 84px;
+        object-fit: cover;
+        width: 84px;
+      }
+
+      .hngry-product-info {
+        padding: 18px 10px 18px 0;
+        vertical-align: top;
+      }
+
+      .hngry-product-title {
+        color: #0c0c0c;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 20px;
+        text-transform: uppercase;
+      }
+
+      .hngry-product-meta,
+      .hngry-product-property {
+        color: #77756f;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+        line-height: 16px;
+      }
+
+      .hngry-product-price {
+        color: #0c0c0c;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 13px;
+        font-weight: bold;
+        line-height: 20px;
+        padding: 18px 0 18px 8px;
+        text-align: right;
+        vertical-align: top;
+        white-space: nowrap;
+      }
+
+      .hngry-old-price {
+        color: #8d8b85;
+        display: block;
+        font-weight: normal;
+        text-decoration: line-through;
+      }
+
+      .hngry-discount {
+        color: #f4731c;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 9px;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        line-height: 15px;
+        padding-top: 4px;
+        text-transform: uppercase;
+      }
+
+      .hngry-child-row td {
+        background-color: #e9e7e1;
+        border-top: 1px solid #d0cec7;
+        padding-bottom: 10px;
+        padding-top: 10px;
+      }
+
+      .hngry-totals {
+        border-top: 2px solid #0c0c0c;
+        margin-top: 8px;
+      }
+
+      .hngry-total-label,
+      .hngry-total-value {
+        color: #0c0c0c;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 12px;
+        line-height: 18px;
+        padding: 6px 0;
+      }
+
+      .hngry-total-value {
+        font-weight: bold;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .hngry-grand-total td {
+        border-top: 1px solid #0c0c0c;
+        color: #0c0c0c;
+        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", "Arial Black", sans-serif;
+        font-size: 25px;
+        font-weight: 900;
+        line-height: 30px;
+        padding-top: 15px;
+        text-transform: uppercase;
+      }
+
+      .hngry-saved {
+        color: #0c0c0c;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 10px;
+        font-weight: bold;
+        letter-spacing: 0.6px;
+        line-height: 16px;
+        padding-top: 8px;
+        text-align: right;
+      }
+
+      .hngry-info-card {
+        border-top: 1px solid #4a4a47;
+        color: #f1efe9;
+        padding: 16px 14px 18px 0;
+        vertical-align: top;
+        width: 50%;
+      }
+
+      .hngry-info-card-right {
+        padding-left: 18px;
+      }
+
+      .hngry-info-label {
+        color: #9c9a94;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 9px;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+        line-height: 15px;
+        padding-bottom: 8px;
+        text-transform: uppercase;
+      }
+
+      .hngry-info-copy,
+      .hngry-info-copy p,
+      .hngry-info-copy td {
+        color: #f1efe9;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        line-height: 19px;
+      }
+
+      .hngry-info-copy img {
+        display: inline-block;
+        margin-right: 5px;
+        vertical-align: middle;
+      }
+
+      .hngry-footer {
+        background-color: #0c0c0c;
+        border-top: 1px solid #4a4a47;
+        color: #9c9a94;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 9px;
+        letter-spacing: 1px;
+        line-height: 16px;
+        padding: 26px 40px 34px;
+      }
+
+      .hngry-footer a {
+        color: #f1efe9 !important;
+      }
+
+      @media only screen and (max-width: 680px) {
+        .hngry-container {
+          width: 100% !important;
+        }
+
+        .hngry-header,
+        .hngry-hero,
+        .hngry-content,
+        .hngry-section,
+        .hngry-section-dark,
+        .hngry-footer {
+          padding-left: 22px !important;
+          padding-right: 22px !important;
+        }
+
+        .hngry-title {
+          font-size: 47px !important;
+          line-height: 45px !important;
+        }
+
+        .hngry-heading {
+          font-size: 27px !important;
+          line-height: 31px !important;
+        }
+
+        .hngry-order-label {
+          font-size: 9px !important;
+          letter-spacing: 1px !important;
+        }
+
+        .hngry-button-wrap,
+        .hngry-button-wrap tbody,
+        .hngry-button-wrap tr,
+        .hngry-button-wrap td {
+          display: block !important;
+          width: 100% !important;
+        }
+
+        .hngry-button-gap {
+          height: 10px !important;
+          padding: 0 !important;
+        }
+
+        .hngry-button,
+        .hngry-button-secondary {
+          box-sizing: border-box !important;
+          text-align: center !important;
+          width: 100% !important;
+        }
+
+        .hngry-product-image-cell {
+          width: 68px !important;
+        }
+
+        .hngry-product-image {
+          height: 68px !important;
+          width: 68px !important;
+        }
+
+        .hngry-product-title {
+          font-size: 13px !important;
+          line-height: 18px !important;
+        }
+
+        .hngry-product-price {
+          font-size: 11px !important;
+        }
+
+        .hngry-stack,
+        .hngry-stack tbody,
+        .hngry-stack tr,
+        .hngry-stack td {
+          box-sizing: border-box !important;
+          display: block !important;
+          width: 100% !important;
+        }
+
+        .hngry-info-card-right {
+          padding-left: 0 !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="hngry-body">
+    <div class="hngry-preheader">
+      Deine HNGRŸ Order {{ order_name }} ist bestätigt. Wir machen deine Pieces ready.
+    </div>
+
+    <table role="presentation" class="hngry-shell" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td align="center">
+          <table role="presentation" class="hngry-container" width="640" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td class="hngry-ticker">
+                ORDER CONFIRMED &nbsp;✦&nbsp; STAY HNGRŸ &nbsp;✦&nbsp; NO OFFICE HOURS &nbsp;✦&nbsp; ORDER CONFIRMED
+              </td>
+            </tr>
+
+            <tr>
+              <td class="hngry-header">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="left" valign="middle">
+                      {% if shop.email_logo_url %}
+                        <a href="{{ shop.url }}">
+                          <img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" width="{{ shop.email_logo_width }}" style="max-width: 150px; height: auto;">
+                        </a>
+                      {% else %}
+                        <a href="{{ shop.url }}" class="hngry-logo-text">HNGRŸ</a>
+                      {% endif %}
+                    </td>
+                    <td class="hngry-order-label" align="right" valign="middle">
+                      ORDER {{ order_name }}
+                      {% if po_number %}<br>PO {{ po_number }}{% endif %}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="hngry-hero">
+                <div class="hngry-kicker">(01) — ORDER LOCKED</div>
+                <h1 class="hngry-title">
+                  {{ email_title | strip | replace: '.', '<span class="hngry-title-accent">.</span>' }}
+                </h1>
+                <div class="hngry-copy">{{ email_body | strip }}</div>
+
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top: 26px;">
+                  <tr>
+                    <td class="hngry-order-chip">{{ order_name }} / EST. 2026</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="hngry-content">
+                {% if delivery_instructions != blank %}
+                  <div class="hngry-delivery-box" style="margin-bottom: 14px;">
+                    <strong>DELIVERY NOTE</strong><br>
+                    {{ delivery_instructions }}
+                  </div>
+                {% endif %}
+
+                {% unless delivery_method_types.size > 1 %}
+                  {% if consolidated_estimated_delivery_time %}
+                    <div class="hngry-delivery-box" style="margin-bottom: 14px;">
+                      <strong>VORAUSSICHTLICHE ZUSTELLUNG</strong><br>
+                      {{ consolidated_estimated_delivery_time }}
+                    </div>
+                  {% endif %}
+                {% endunless %}
+
+                {% if found_gift_card_with_recipient_email %}
+                  <div class="hngry-delivery-box" style="margin-bottom: 14px;">
+                    Der Empfänger deines Gutscheins erhält eine separate E-Mail mit dem Gutscheincode.
+                  </div>
+                {% elsif gift_card_line_items.first %}
+                  <div class="hngry-delivery-box" style="margin-bottom: 14px;">
+                    Du erhältst eine separate Benachrichtigung für deinen Geschenkgutschein.
+                  </div>
+                {% endif %}
+
+                {% assign transaction_count = transactions | size %}
+                {% if transaction_count > 0 %}
+                  {% for transaction in transactions %}
+                    {% if transaction.show_buyer_pending_payment_instructions? %}
+                      <div class="hngry-delivery-box" style="margin-bottom: 14px;">
+                        {{ transaction.buyer_pending_payment_notice }}
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 12px;">
+                          {% for instruction in transaction.buyer_pending_payment_instructions %}
+                            <tr>
+                              <td style="padding: 3px 8px 3px 0;"><strong>{{ instruction.header }}</strong></td>
+                              <td style="padding: 3px 0; text-align: right;">{{ instruction.value }}</td>
+                            </tr>
+                          {% endfor %}
+                          <tr>
+                            <td style="padding: 8px 8px 0 0;"><strong>BETRAG</strong></td>
+                            <td style="padding: 8px 0 0; text-align: right;"><strong>{{ transaction.amount | money }}</strong></td>
+                          </tr>
+                        </table>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+
+                <table role="presentation" class="hngry-button-wrap" cellpadding="0" cellspacing="0" border="0" style="margin-top: 18px;">
+                  <tr>
+                    {% if order_status_url %}
+                      <td class="hngry-button-cell">
+                        <a href="{{ order_status_url }}" class="hngry-button">BESTELLUNG ANSEHEN →</a>
+                      </td>
+                      <td class="hngry-button-gap" width="10">&nbsp;</td>
+                    {% endif %}
+                    {% if shop.url %}
+                      <td class="hngry-button-secondary-cell">
+                        <a href="{{ shop.url }}" class="hngry-button-secondary">WEITER SHOPPEN</a>
+                      </td>
+                    {% endif %}
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            {% if has_split_cart %}
+              <tr>
+                <td class="hngry-section">
+                  <div class="hngry-section-number">(02) — DELIVERY SPLIT</div>
+                  <h2 class="hngry-heading">DEINE LIEFERUNGEN</h2>
+                  {% for delivery_agreement in delivery_agreements %}
+                    {% unless delivery_agreement.delivery_method_type == 'none' %}
+                      <div class="hngry-delivery-box" style="margin-bottom: 10px;">
+                        <strong>{{ delivery_agreement.delivery_method_name | default: delivery_agreement.presentment_title | upcase }}</strong>
+                        {% if delivery_agreement.estimated_delivery_date %}
+                          <br>VORAUSSICHTLICH: {{ delivery_agreement.estimated_delivery_date }}
+                        {% endif %}
+                        {% if delivery_agreement.delivery_method_type == 'pick-up' %}
+                          <br>Wir melden uns, sobald deine Pieces zur Abholung bereitstehen.
+                        {% endif %}
+                      </div>
+                    {% endunless %}
+                  {% endfor %}
+                </td>
+              </tr>
+            {% endif %}
+
+            <tr>
+              <td class="hngry-section">
+                <div class="hngry-section-number">{% if has_split_cart %}(03){% else %}(02){% endif %} — THE LINE-UP</div>
+                <h2 class="hngry-heading">BESTELLÜBERSICHT</h2>
+
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  {% for line in subtotal_line_items %}
+                    {% if line.groups.size == 0 %}
+                      {% unless line.nested_line_child? %}
+                        {% if line.presentment_title %}
+                          {% assign line_title = line.presentment_title %}
+                        {% elsif line.title %}
+                          {% assign line_title = line.title %}
+                        {% else %}
+                          {% assign line_title = line.product.title %}
+                        {% endif %}
+
+                        <tr class="hngry-product-row">
+                          <td class="hngry-product-image-cell">
+                            {% if line.image %}
+                              <img src="{{ line | img_url: 'compact_cropped' }}" alt="{{ line_title | escape }}" width="84" height="84" class="hngry-product-image">
+                            {% else %}
+                              <img src="{{ 'notifications/no-image.png' | shopify_asset_url }}" alt="" width="84" height="84" class="hngry-product-image">
+                            {% endif %}
+                          </td>
+                          <td class="hngry-product-info">
+                            <div class="hngry-product-title">{{ line_title }} × {{ line.quantity }}</div>
+
+                            {% if line.variant.title != 'Default Title' %}
+                              <div class="hngry-product-meta">{{ line.variant.title }}</div>
+                            {% endif %}
+
+                            {% if line.selling_plan_allocation %}
+                              <div class="hngry-product-meta">{{ line.selling_plan_allocation.selling_plan.name }}</div>
+                            {% endif %}
+
+                            {% for group in line.groups %}
+                              <div class="hngry-product-meta">
+                                {% if group.deliverable? %}FÜR: {% else %}TEIL VON: {% endif %}{{ group.display_title }}
+                              </div>
+                            {% endfor %}
+
+                            {% for property in line.properties %}
+                              {% assign property_first_char = property.first | slice: 0 %}
+                              {% if property.last != blank and property_first_char != '_' %}
+                                <div class="hngry-product-property">
+                                  {{ property.first }}:
+                                  {% if property.last contains '/uploads/' %}
+                                    <a href="{{ property.last }}" target="_blank">{{ property.last | split: '/' | last }}</a>
+                                  {% else %}
+                                    {{ property.last }}
+                                  {% endif %}
+                                </div>
+                              {% endif %}
+                            {% endfor %}
+
+                            {% if line.refunded_quantity > 0 %}
+                              <div class="hngry-discount">ZURÜCKERSTATTET</div>
+                            {% endif %}
+
+                            {% for discount_allocation in line.discount_allocations %}
+                              {% if discount_allocation.discount_application.target_selection != 'all' %}
+                                <div class="hngry-discount">
+                                  TAG / {{ discount_allocation.discount_application.title }} −{{ discount_allocation.amount | money }}
+                                </div>
+                              {% endif %}
+                            {% endfor %}
+                          </td>
+                          <td class="hngry-product-price">
+                            {% if line.original_line_price != line.final_line_price %}
+                              <span class="hngry-old-price">{{ line.original_line_price | money }}</span>
+                            {% endif %}
+                            {% if line.final_line_price > 0 %}
+                              {{ line.final_line_price | money }}
+                            {% else %}
+                              KOSTENLOS
+                            {% endif %}
+                            {% if line.unit_price_measurement %}
+                              <div class="hngry-product-meta">
+                                {{ line.unit_price | unit_price_with_measurement: line.unit_price_measurement }}
+                              </div>
+                            {% endif %}
+                          </td>
+                        </tr>
+
+                        {% if line.nested_line_parent? %}
+                          {% for child_line in line.nested_lines %}
+                            <tr class="hngry-child-row">
+                              <td style="padding-left: 14px; text-align: center; color: #77756f; font-family: 'Courier New', monospace;">↳</td>
+                              <td class="hngry-product-info">
+                                <div class="hngry-product-title" style="font-size: 12px;">
+                                  {{ child_line.title | default: child_line.product.title }} × {{ child_line.quantity }}
+                                </div>
+                                {% if child_line.variant.title != 'Default Title' %}
+                                  <div class="hngry-product-meta">{{ child_line.variant.title }}</div>
+                                {% endif %}
+                              </td>
+                              <td class="hngry-product-price">
+                                {% if child_line.final_line_price > 0 %}{{ child_line.final_line_price | money }}{% else %}KOSTENLOS{% endif %}
+                              </td>
+                            </tr>
+                          {% endfor %}
+                        {% endif %}
+                      {% endunless %}
+                    {% endif %}
+                  {% endfor %}
+
+                  {% for line_item_group in line_item_groups %}
+                    {% assign group_final_line_price = 0 %}
+                    {% assign group_original_line_price = 0 %}
+                    {% assign group_parent = line_item_group.parent_sales_line_item %}
+
+                    {% if line_item_group.deliverable? %}
+                      {% assign group_final_line_price = group_parent.final_line_price %}
+                      {% assign group_original_line_price = group_parent.original_line_price %}
+                    {% else %}
+                      {% for component in line_item_group.components %}
+                        {% assign group_final_line_price = group_final_line_price | plus: component.final_line_price %}
+                        {% assign group_original_line_price = group_original_line_price | plus: component.original_line_price %}
+                      {% endfor %}
+                    {% endif %}
+
+                    <tr class="hngry-product-row">
+                      <td class="hngry-product-image-cell">
+                        {% if group_parent.image %}
+                          <img src="{{ group_parent | img_url: 'compact_cropped' }}" alt="{{ line_item_group.display_title | escape }}" width="84" height="84" class="hngry-product-image">
+                        {% elsif line_item_group.image %}
+                          <img src="{{ line_item_group | img_url: 'compact_cropped' }}" alt="{{ line_item_group.display_title | escape }}" width="84" height="84" class="hngry-product-image">
+                        {% else %}
+                          <img src="{{ 'notifications/no-image.png' | shopify_asset_url }}" alt="" width="84" height="84" class="hngry-product-image">
+                        {% endif %}
+                      </td>
+                      <td class="hngry-product-info">
+                        <div class="hngry-product-title">{{ line_item_group.display_title }} × {{ line_item_group.quantity }}</div>
+                        {% if line_item_group.variant and line_item_group.variant.title != 'Default Title' %}
+                          <div class="hngry-product-meta">{{ line_item_group.variant.title }}</div>
+                        {% endif %}
+                        <div class="hngry-product-meta">SET / BUNDLE</div>
+                      </td>
+                      <td class="hngry-product-price">
+                        {% if group_original_line_price != group_final_line_price %}
+                          <span class="hngry-old-price">{{ group_original_line_price | money }}</span>
+                        {% endif %}
+                        {% if group_final_line_price > 0 %}{{ group_final_line_price | money }}{% else %}KOSTENLOS{% endif %}
+                      </td>
+                    </tr>
+
+                    {% for component in line_item_group.components %}
+                      <tr class="hngry-child-row">
+                        <td style="padding-left: 14px; text-align: center; color: #77756f; font-family: 'Courier New', monospace;">↳</td>
+                        <td class="hngry-product-info">
+                          <div class="hngry-product-title" style="font-size: 12px;">
+                            {{ component.product.title | default: component.title }} × {{ component.quantity }}
+                          </div>
+                          {% if component.variant.title != 'Default Title' %}
+                            <div class="hngry-product-meta">{{ component.variant.title }}</div>
+                          {% endif %}
+                        </td>
+                        <td class="hngry-product-price">
+                          {% if line_item_group.deliverable? %}
+                            {% if component.final_line_price > 0 %}{{ component.final_line_price | money }}{% else %}KOSTENLOS{% endif %}
+                          {% else %}
+                            INKL.
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  {% endfor %}
+                </table>
+
+                {% assign total_order_discount_amount = 0 %}
+                {% assign order_discount_count = 0 %}
+                {% assign has_shipping_discount = false %}
+                {% assign shipping_discount_title = blank %}
+                {% assign shipping_discount_amount = 0 %}
+
+                {% for discount_application in discount_applications %}
+                  {% if discount_application.target_selection == 'all' and discount_application.target_type == 'line_item' %}
+                    {% assign order_discount_count = order_discount_count | plus: 1 %}
+                    {% assign total_order_discount_amount = total_order_discount_amount | plus: discount_application.total_allocated_amount %}
+                  {% endif %}
+                  {% if discount_application.target_type == 'shipping_line' %}
+                    {% assign has_shipping_discount = true %}
+                    {% assign shipping_discount_title = discount_application.title %}
+                    {% assign shipping_discount_amount = discount_application.total_allocated_amount %}
+                  {% endif %}
+                {% endfor %}
+
+                <table role="presentation" class="hngry-totals" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="hngry-total-label">ZWISCHENSUMME</td>
+                    <td class="hngry-total-value">{{ subtotal_price | plus: total_order_discount_amount | money }}</td>
+                  </tr>
+
+                  {% if order_discount_count > 0 %}
+                    <tr>
+                      <td class="hngry-total-label">BESTELLRABATT</td>
+                      <td class="hngry-total-value">−{{ total_order_discount_amount | money }}</td>
+                    </tr>
+                    {% for discount_application in discount_applications %}
+                      {% if discount_application.target_selection == 'all' and discount_application.target_type != 'shipping_line' %}
+                        <tr>
+                          <td class="hngry-total-label" style="color: #f4731c; font-size: 10px;">
+                            TAG / {{ discount_application.title | upcase }}
+                          </td>
+                          <td class="hngry-total-value" style="color: #f4731c; font-size: 10px;">
+                            −{{ discount_application.total_allocated_amount | money }}
+                          </td>
+                        </tr>
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+
+                  {% unless retail_delivery_only %}
+                    <tr>
+                      <td class="hngry-total-label">
+                        {% if delivery_method_for_subtotal == 'pick-up' %}ABHOLUNG{% else %}VERSAND{% endif %}
+                        {% if has_shipping_discount and shipping_discount_title != blank %}
+                          <br><span style="color: #f4731c; font-size: 9px;">{{ shipping_discount_title | upcase }}</span>
+                        {% endif %}
+                      </td>
+                      <td class="hngry-total-value">
+                        {% if shipping_price == 0 or has_shipping_discount and shipping_discount_amount >= shipping_price %}
+                          KOSTENLOS
+                        {% elsif has_shipping_discount %}
+                          {{ shipping_price | minus: shipping_discount_amount | money }}
+                        {% else %}
+                          {{ shipping_price | money }}
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endunless %}
+
+                  {% if total_duties %}
+                    <tr>
+                      <td class="hngry-total-label">ZOLLGEBÜHREN</td>
+                      <td class="hngry-total-value">{{ total_duties | money }}</td>
+                    </tr>
+                  {% endif %}
+
+                  <tr>
+                    <td class="hngry-total-label">STEUERN</td>
+                    <td class="hngry-total-value">{{ tax_price | money }}</td>
+                  </tr>
+
+                  {% if total_tip and total_tip > 0 %}
+                    <tr>
+                      <td class="hngry-total-label">TIP</td>
+                      <td class="hngry-total-value">{{ total_tip | money }}</td>
+                    </tr>
+                  {% endif %}
+
+                  <tr class="hngry-grand-total">
+                    <td>GESAMT</td>
+                    <td align="right">{{ total_price | money_with_currency }}</td>
+                  </tr>
+
+                  {% if total_discounts > 0 %}
+                    <tr>
+                      <td colspan="2" class="hngry-saved">YOU SAVED {{ total_discounts | money }}</td>
+                    </tr>
+                  {% endif %}
+
+                  {% if payment_terms and payment_terms.automatic_capture_at_fulfillment == false or b2b? %}
+                    {% assign next_payment = payment_terms.next_payment %}
+                    {% assign next_amount_due = total_price %}
+                    {% if next_payment %}
+                      {% assign next_amount_due = next_payment.amount_due %}
+                    {% elsif total_outstanding > 0 %}
+                      {% assign next_amount_due = total_outstanding %}
+                    {% endif %}
+                    <tr>
+                      <td class="hngry-total-label">
+                        {% if payment_terms.type == 'receipt' %}
+                          FÄLLIG BEI ERHALT
+                        {% elsif payment_terms.type == 'fulfillment' %}
+                          FÄLLIG BEI FULFILLMENT
+                        {% else %}
+                          FÄLLIG {{ next_payment.due_at | date: '%d.%m.%Y' }}
+                        {% endif %}
+                      </td>
+                      <td class="hngry-total-value">{{ next_amount_due | money_with_currency }}</td>
+                    </tr>
+                  {% endif %}
+                </table>
+
+                {% if apc_wallet_name %}
+                  <div class="hngry-delivery-box" style="margin-top: 20px;">
+                    {% if apc_currency_converted? %}
+                      {{ shop.name }} verarbeitet Zahlungen in {{ currency }}. Du hast in {{ original_presentment_currency }} eingekauft und mit {{ apc_wallet_name }} in CNY bezahlt. Den endgültigen Betrag findest du in deiner {{ apc_wallet_name }}-App.
+                    {% else %}
+                      Du hast mit {{ apc_wallet_name }} in CNY bezahlt. Den endgültigen Betrag findest du in deiner {{ apc_wallet_name }}-App.
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </td>
+            </tr>
+
+            {% capture payment_section_body %}
+              {% if payment_terms and payment_terms.automatic_capture_at_fulfillment == false %}
+                {% assign due_date = payment_terms.next_payment.due_at | default: nil %}
+                {% if payment_terms.type == 'receipt' or payment_terms.type == 'fulfillment' and payment_terms.next_payment.due_at == nil %}
+                  {{ payment_terms.translated_name }}<br>
+                {% else %}
+                  {{ payment_terms.translated_name }}: fällig am {{ due_date | date: format: 'date' }}<br>
+                {% endif %}
+              {% endif %}
+
+              {% if transactions.size > 0 %}
+                {% for transaction in transactions %}
+                  {% if transaction.status == 'success' or transaction.status == 'pending' %}
+                    {% if transaction.kind == 'capture' or transaction.kind == 'sale' %}
+                      {% if transaction.payment_details.gift_card_last_four_digits %}
+                        <img src="{{ transaction.payment_details.payment_icon_source | payment_type_img_url }}" alt="" height="24">
+                        Gutschein endet mit {{ transaction.payment_details.gift_card_last_four_digits }}<br>
+                      {% elsif transaction.payment_details.type == 'shop_pay_installments' and transaction.payment_details.credit_card_company == 'unknown' %}
+                        <img src="{{ 'notifications/shop-pay.svg' | shopify_asset_url }}" alt="Shop Pay" height="24"><br>
+                        Mit Shop Pay-Ratenzahlung bezahlt<br>
+                      {% elsif transaction.payment_details.type == 'card' %}
+                        <img src="{{ transaction.payment_details.credit_card_company | payment_icon_png_url }}" alt="{{ transaction.payment_details.credit_card_company }}" height="24">
+                        {{ transaction.payment_details.credit_card_company }} endet mit {{ transaction.payment_details.credit_card_last_four_digits }}<br>
+                        {% if transaction.first_installment_amount %}
+                          {{ transaction.first_installment_amount | money }}/Monat für {{ transaction.installment_count }} Monate<br>
+                        {% endif %}
+                      {% elsif transaction.gateway_display_name == 'Gift card' %}
+                        Gutschein endet mit {{ transaction.payment_details.gift_card.last_four_characters | upcase }}<br>
+                      {% elsif transaction.payment_details.local_payment? %}
+                        <img src="{{ transaction.payment_details.payment_icon_source | payment_type_img_url }}" alt="" height="24">
+                        {{ transaction.payment_details.payment_method_display_name }}<br>
+                      {% elsif transaction.gateway_display_name != 'Shop Cash' and transaction.gateway != 'shop_offer' %}
+                        {{ transaction.gateway_display_name }}<br>
+                      {% endif %}
+                    {% elsif transaction.kind == 'authorization' and transaction.gateway_display_name == 'Shop Cash' %}
+                      Shop Cash<br>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endcapture %}
+
+            {% assign payment_section_body_stripped = payment_section_body | strip %}
+
+            <tr>
+              <td class="hngry-section-dark">
+                <div class="hngry-section-number">{% if has_split_cart %}(04){% else %}(03){% endif %} — THE DETAILS</div>
+                <h2 class="hngry-heading">CUSTOMER INFO</h2>
+
+                <table role="presentation" class="hngry-stack" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    {% if requires_shipping and shipping_address %}
+                      <td class="hngry-info-card">
+                        <div class="hngry-info-label">LIEFERADRESSE</div>
+                        <div class="hngry-info-copy">{{ shipping_address | format_address }}</div>
+                      </td>
+                    {% endif %}
+                    {% if billing_address %}
+                      <td class="hngry-info-card hngry-info-card-right">
+                        <div class="hngry-info-label">RECHNUNGSADRESSE</div>
+                        <div class="hngry-info-copy">{{ billing_address | format_address }}</div>
+                      </td>
+                    {% endif %}
+                  </tr>
+                </table>
+
+                <table role="presentation" class="hngry-stack" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    {% if company_location %}
+                      <td class="hngry-info-card">
+                        <div class="hngry-info-label">STANDORT</div>
+                        <div class="hngry-info-copy">{{ company_location.name }}</div>
+                      </td>
+                    {% endif %}
+
+                    {% if payment_section_body_stripped != blank or b2b? %}
+                      <td class="hngry-info-card hngry-info-card-right">
+                        <div class="hngry-info-label">ZAHLUNG</div>
+                        <div class="hngry-info-copy">{{ payment_section_body }}</div>
+                      </td>
+                    {% endif %}
+                  </tr>
+                </table>
+
+                {% if requires_shipping and shipping_address %}
+                  <table role="presentation" class="hngry-stack" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td class="hngry-info-card">
+                        <div class="hngry-info-label">VERSAND</div>
+                        <div class="hngry-info-copy">
+                          {% if shipping_methods.size > 0 %}
+                            {% assign unique_shipping_titles = shipping_methods | map: 'title' | uniq %}
+                            {% if unique_shipping_titles.size == 1 and delivery_promise_branded_shipping_line %}
+                              {{ delivery_promise_branded_shipping_line }}
+                            {% else %}
+                              {% for shipping_title in unique_shipping_titles %}
+                                {{ shipping_title }}{% unless forloop.last %}<br>{% endunless %}
+                              {% endfor %}
+                            {% endif %}
+                          {% elsif shipping_method %}
+                            {% if delivery_promise_branded_shipping_line %}
+                              {{ delivery_promise_branded_shipping_line }}
+                            {% else %}
+                              {{ shipping_method.title }}
+                            {% endif %}
+                          {% endif %}
+                        </div>
+                      </td>
+                      <td class="hngry-info-card hngry-info-card-right">
+                        <div class="hngry-info-label">STATUS</div>
+                        <div class="hngry-info-copy">ORDER LOCKED.<br>UPDATE FOLGT, SOBALD DEINE PIECES UNTERWEGS SIND.</div>
+                      </td>
+                    </tr>
+                  </table>
+                {% endif %}
+              </td>
+            </tr>
+
+            <tr>
+              <td class="hngry-footer">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="left" valign="top">
+                      <strong style="color: #f1efe9; font-size: 12px;">STAY HNGRŸ.</strong><br>
+                      CLOTHES FOR THE ONES WHO WANT MORE.<br>
+                      EST. 2026
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top: 22px; border-top: 1px solid #343431;">
+                      FRAGEN ZU DEINER ORDER? ANTWORTE DIREKT AUF DIESE E-MAIL ODER SCHREIB AN
+                      <a href="mailto:{{ shop.email }}">{{ shop.email }}</a>.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top: 18px; color: #66655f;">
+                      © {{ 'now' | date: '%Y' }} HNGRŸ — ALL RIGHTS RESERVED
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <img src="{{ 'notifications/spacer.png' | shopify_asset_url }}" alt="" height="1" style="display: block; height: 1px; width: 1px;">
+  </body>
+</html>
+
+{%- if billing_address.country_code == 'DE' or billing_address.country_code == 'DK' -%}
+  {%- if shop.terms_of_service.body != blank -%}
+    {{ shop.terms_of_service | attach_as_pdf: 'AGB' }}
+  {%- endif -%}
+
+  {%- if shop.refund_policy.body != blank -%}
+    {{ shop.refund_policy | attach_as_pdf: 'Widerrufsrecht' }}
+  {%- endif -%}
+{%- endif -%}

@@ -74,14 +74,24 @@
   }
 
   .hngry-newsletter__heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.14em;
     margin: 0;
-    font-size: clamp(2.8rem, 4vw, 4rem);
-    line-height: 1.1;
+    font-family: "Anton", "Arial Black", sans-serif;
+    font-size: clamp(3rem, 4.2vw, 5.4rem);
+    line-height: 0.98;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
   }
 
+  .hngry-newsletter__heading br {
+    display: none;
+  }
+
   .hngry-newsletter__heading-line {
-    display: inline-block;
+    display: block;
   }
 
   .hngry-newsletter__signup {

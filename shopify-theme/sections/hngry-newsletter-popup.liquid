@@ -136,8 +136,11 @@
     }
     .hngry-nl-popup__media {
       width: 100%;
-      height: 20vh;
+      height: clamp(18rem, 28vh, 24rem);
       flex-shrink: 0;
+    }
+    .hngry-nl-popup__img {
+      object-position: center 30%;
     }
     .hngry-nl-popup__content {
       padding: 2rem 1.6rem;

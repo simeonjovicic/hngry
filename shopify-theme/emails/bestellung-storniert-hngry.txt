@@ -1,0 +1,146 @@
+{% comment %}
+  HNGRŸ — Shopify Bestellung storniert
+
+  Empfohlener E-Mail-Betreff:
+  BESTELLUNG {{ name }} WURDE STORNIERT
+
+  Diese Datei vollständig in Shopify unter
+  Einstellungen → Benachrichtigungen → Bestellung storniert einfügen.
+{% endcomment %}
+
+{% capture email_title %}Deine Bestellung wurde storniert{% endcapture %}
+{% capture display_title %}ORDER CANCELLED.{% endcapture %}
+{% capture email_body %}
+  {% if financial_status == 'voided' %}
+    {% case cancel_reason %}
+      {% when 'customer' %}Bestellung {{ name }} wurde auf deinen Wunsch hin storniert. Deine Zahlung wurde annulliert.
+      {% when 'inventory' %}Bestellung {{ name }} wurde storniert, weil unsere Lagerbestände nicht ausreichen. Deine Zahlung wurde annulliert.
+      {% when 'fraud' %}Bestellung {{ name }} wurde aufgrund unvorhergesehener Umstände storniert. Deine Zahlung wurde annulliert.
+      {% when 'declined' %}Bestellung {{ name }} wurde storniert, weil deine Zahlung abgelehnt wurde.
+      {% when 'staff' %}Bestellung {{ name }} wurde aufgrund eines internen Fehlers storniert. Deine Zahlung wurde ebenfalls annulliert.
+      {% else %}Bestellung {{ name }} wurde storniert. Deine Zahlung wurde annulliert.
+    {% endcase %}
+  {% elsif financial_status == 'refunded' %}
+    {% case cancel_reason %}
+      {% when 'customer' %}Bestellung {{ name }} wurde auf deinen Wunsch hin storniert. Deine Zahlung wurde zurückerstattet.
+      {% when 'inventory' %}Bestellung {{ name }} wurde storniert, weil unsere Lagerbestände nicht ausreichen. Deine Zahlung wurde zurückerstattet.
+      {% when 'fraud' %}Bestellung {{ name }} wurde aufgrund unvorhergesehener Umstände storniert. Deine Zahlung wurde zurückerstattet.
+      {% when 'declined' %}Bestellung {{ name }} wurde storniert, weil deine Zahlung abgelehnt wurde.
+      {% when 'staff' %}Bestellung {{ name }} wurde aufgrund eines internen Fehlers storniert. Deine Zahlung wurde zurückerstattet.
+      {% else %}Bestellung {{ name }} wurde storniert. Deine Zahlung wurde zurückerstattet.
+    {% endcase %}
+  {% elsif financial_status == 'paid' %}
+    {% case cancel_reason %}
+      {% when 'customer' %}Bestellung {{ name }} wurde auf deinen Wunsch hin storniert. Deine Zahlung wurde noch nicht zurückerstattet.
+      {% when 'inventory' %}Bestellung {{ name }} wurde storniert, weil unsere Lagerbestände nicht ausreichen. Deine Zahlung wurde noch nicht zurückerstattet.
+      {% when 'fraud' %}Bestellung {{ name }} wurde aufgrund unvorhergesehener Umstände storniert. Deine Zahlung wurde noch nicht zurückerstattet.
+      {% when 'declined' %}Bestellung {{ name }} wurde storniert, weil deine Zahlung abgelehnt wurde.
+      {% when 'staff' %}Bestellung {{ name }} wurde aufgrund eines internen Fehlers storniert. Deine Zahlung wurde noch nicht zurückerstattet.
+      {% else %}Bestellung {{ name }} wurde storniert. Deine Zahlung wurde noch nicht zurückerstattet.
+    {% endcase %}
+  {% else %}
+    Bestellung {{ name }} wurde storniert.
+  {% endif %}
+{% endcapture %}
+
+{% capture payment_status_label %}
+  {% if financial_status == 'voided' %}PAYMENT VOIDED{% elsif financial_status == 'refunded' %}REFUND ISSUED{% elsif financial_status == 'paid' %}REFUND PENDING{% else %}ORDER CLOSED{% endif %}
+{% endcapture %}
+
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <title>{{ email_title }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only">
+    <meta name="supported-color-schemes" content="light only">
+    <link rel="stylesheet" type="text/css" href="/assets/notifications/styles.css">
+    <style>
+      body,.hngry-body{margin:0!important;padding:0!important;width:100%!important;background:#e3e1da!important;color:#0c0c0c!important}table{border-collapse:collapse;border-spacing:0}img{border:0;display:block;line-height:100%}p,h1,h2,h3,h4{margin:0}a,a:hover,a:active,a:visited{color:#0c0c0c}
+      .hngry-shell{width:100%;background:#e3e1da}.hngry-container{width:640px;max-width:640px}.hngry-preheader{display:none!important;max-height:0!important;overflow:hidden!important;opacity:0!important;color:transparent!important}.hngry-ticker{background:#0c0c0c;color:#f1efe9;font:700 9px/14px "Courier New",Courier,monospace;letter-spacing:2px;padding:9px 18px;text-align:center}
+      .hngry-header{background:#f1efe9;border-bottom:1px solid #0c0c0c;padding:22px 32px}.hngry-logo-text{color:#0c0c0c!important;font:900 29px/32px Impact,Haettenschweiler,"Arial Black",sans-serif;letter-spacing:-1px;text-decoration:none}.hngry-order-label{color:#0c0c0c;font:700 10px/16px "Courier New",Courier,monospace;letter-spacing:1.5px;text-align:right}
+      .hngry-hero{background:#0c0c0c;color:#f1efe9;padding:46px 40px 42px}.hngry-kicker{color:#9c9a94;font:700 10px/16px "Courier New",Courier,monospace;letter-spacing:2.5px;padding-bottom:17px}.hngry-title{color:#f1efe9;font:900 53px/52px Impact,Haettenschweiler,"Arial Narrow Bold","Arial Black",sans-serif;letter-spacing:-1px;text-transform:uppercase}.hngry-title-accent{color:#f4731c}.hngry-copy{color:#f1efe9;font:400 13px/23px "Courier New",Courier,monospace;letter-spacing:.4px;padding-top:25px}.hngry-order-chip{background:transparent;border:1px solid #4a4a47;color:#f1efe9;display:inline-block;font:700 10px/14px "Courier New",Courier,monospace;letter-spacing:2px;padding:9px 12px;text-transform:uppercase}
+      .hngry-content,.hngry-section{background:#f1efe9;padding:38px 40px}.hngry-section{border-top:1px solid #0c0c0c}.hngry-section-number{color:#77756f;font:700 9px/15px "Courier New",Courier,monospace;letter-spacing:2.2px;padding-bottom:10px}.hngry-heading{color:#0c0c0c;font:900 31px/35px Impact,Haettenschweiler,"Arial Narrow Bold","Arial Black",sans-serif;padding-bottom:22px;text-transform:uppercase}
+      .hngry-status-box{background:#e3e1da;border:1px solid #c8c6bf;color:#0c0c0c;font:400 11px/19px "Courier New",Courier,monospace;letter-spacing:.4px;padding:16px 18px}.hngry-status-box strong{display:block;font-size:12px;letter-spacing:1.4px;padding-bottom:3px}.hngry-status-pending{border-left:3px solid #f4731c}
+      .hngry-product-row{border-top:1px solid #c8c6bf}.hngry-product-image-cell{padding:18px 16px 18px 0;vertical-align:top;width:84px}.hngry-product-image{background:#e3e1da;filter:grayscale(100%);height:84px;object-fit:cover;opacity:.75;width:84px}.hngry-product-info{padding:18px 10px 18px 0;vertical-align:top}.hngry-product-title{color:#0c0c0c;font:800 15px/20px Arial,Helvetica,sans-serif;text-transform:uppercase}.hngry-product-meta,.hngry-product-property{color:#77756f;font:400 10px/16px "Courier New",Courier,monospace;letter-spacing:.5px}.hngry-product-price{color:#0c0c0c;font:700 13px/20px "Courier New",Courier,monospace;padding:18px 0 18px 8px;text-align:right;vertical-align:top;white-space:nowrap}.hngry-old-price{color:#8d8b85;display:block;font-weight:400;text-decoration:line-through}.hngry-discount{color:#f4731c;font:700 9px/15px "Courier New",Courier,monospace;letter-spacing:.5px;padding-top:4px;text-transform:uppercase}.hngry-child-row td{background:#e9e7e1;border-top:1px solid #d0cec7;padding-bottom:10px;padding-top:10px}
+      .hngry-totals{border-top:2px solid #0c0c0c;margin-top:8px}.hngry-total-label,.hngry-total-value{color:#0c0c0c;font:400 12px/18px "Courier New",Courier,monospace;padding:6px 0}.hngry-total-value{font-weight:700;text-align:right;white-space:nowrap}.hngry-grand-total td{border-top:1px solid #0c0c0c;color:#0c0c0c;font:900 25px/30px Impact,Haettenschweiler,"Arial Narrow Bold","Arial Black",sans-serif;padding-top:15px;text-transform:uppercase}.hngry-refund{color:#f4731c;font:700 10px/16px "Courier New",Courier,monospace;letter-spacing:.7px;padding-top:8px;text-align:right}
+      .hngry-footer{background:#0c0c0c;border-top:1px solid #4a4a47;color:#9c9a94;font:400 9px/16px "Courier New",Courier,monospace;letter-spacing:1px;padding:26px 40px 34px}.hngry-footer a{color:#f1efe9!important}
+      @media only screen and (max-width:680px){.hngry-container{width:100%!important}.hngry-header,.hngry-hero,.hngry-content,.hngry-section,.hngry-footer{padding-left:22px!important;padding-right:22px!important}.hngry-title{font-size:39px!important;line-height:40px!important}.hngry-heading{font-size:27px!important;line-height:31px!important}.hngry-order-label{font-size:9px!important;letter-spacing:1px!important}.hngry-product-image-cell{width:68px!important}.hngry-product-image{height:68px!important;width:68px!important}.hngry-product-title{font-size:13px!important;line-height:18px!important}.hngry-product-price{font-size:11px!important}}
+    </style>
+  </head>
+
+  <body class="hngry-body">
+    <div class="hngry-preheader">Bestellung {{ order_name }} wurde storniert. {{ payment_status_label | strip }}.</div>
+    <table role="presentation" class="hngry-shell" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center">
+      <table role="presentation" class="hngry-container" width="640" cellpadding="0" cellspacing="0" border="0">
+        <tr><td class="hngry-ticker">ORDER CANCELLED &nbsp;✦&nbsp; {{ payment_status_label | strip }} &nbsp;✦&nbsp; ORDER {{ name }} &nbsp;✦&nbsp; ORDER CANCELLED</td></tr>
+        <tr><td class="hngry-header"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+          <td align="left" valign="middle">{% if shop.email_logo_url %}<a href="{{ shop.url }}"><img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" width="{{ shop.email_logo_width }}" style="max-width:150px;height:auto"></a>{% else %}<a href="{{ shop.url }}" class="hngry-logo-text">HNGRŸ</a>{% endif %}</td>
+          <td class="hngry-order-label" align="right" valign="middle">ORDER {{ order_name }}{% if po_number %}<br>PO {{ po_number }}{% endif %}</td>
+        </tr></table></td></tr>
+
+        <tr><td class="hngry-hero">
+          <div class="hngry-kicker">(01) — CANCELLATION {{ name }}</div>
+          <h1 class="hngry-title">{{ display_title | strip | replace: '.', '<span class="hngry-title-accent">.</span>' }}</h1>
+          <div class="hngry-copy">{{ email_body | strip }}{% if custom_message != blank %}<br><br>{{ custom_message }}{% endif %}</div>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:26px"><tr><td class="hngry-order-chip">{{ name }} / CANCELLED</td></tr></table>
+        </td></tr>
+
+        <tr><td class="hngry-content">
+          <div class="hngry-status-box {% if financial_status == 'paid' %}hngry-status-pending{% endif %}"><strong>{{ payment_status_label | strip }}</strong>{% if financial_status == 'voided' %}DIE ZAHLUNG WURDE ANNULLIERT UND WIRD NICHT EINGEZOGEN.{% elsif financial_status == 'refunded' %}DIE RÜCKERSTATTUNG WURDE VERANLASST. JE NACH ZAHLUNGSANBIETER KANN DIE GUTSCHRIFT EINIGE TAGE DAUERN.{% elsif financial_status == 'paid' %}DIE RÜCKERSTATTUNG IST NOCH AUSSTEHEND. DU ERHÄLTST EINE WEITERE BESTÄTIGUNG, SOBALD SIE VERANLASST WURDE.{% else %}DEINE BESTELLUNG IST GESCHLOSSEN.{% endif %}</div>
+        </td></tr>
+
+        <tr><td class="hngry-section">
+          <div class="hngry-section-number">(02) — REMOVED FROM ORDER</div><h2 class="hngry-heading">ENTFERNTE ARTIKEL</h2>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            {% for line in subtotal_line_items %}
+              {% unless line.nested_line_child? %}
+                {% if line.presentment_title %}{% assign line_title = line.presentment_title %}{% elsif line.title %}{% assign line_title = line.title %}{% else %}{% assign line_title = line.product.title %}{% endif %}
+                <tr class="hngry-product-row">
+                  <td class="hngry-product-image-cell">{% if line.image %}<img src="{{ line | img_url: 'compact_cropped' }}" alt="{{ line_title | escape }}" width="84" height="84" class="hngry-product-image">{% else %}<img src="{{ 'notifications/no-image.png' | shopify_asset_url }}" alt="" width="84" height="84" class="hngry-product-image">{% endif %}</td>
+                  <td class="hngry-product-info">
+                    <div class="hngry-product-title">{{ line_title }} × {{ line.quantity }}</div>
+                    {% if line.variant.title != 'Default Title' %}<div class="hngry-product-meta">{{ line.variant.title }}</div>{% endif %}
+                    {% if line.selling_plan_allocation %}<div class="hngry-product-meta">{{ line.selling_plan_allocation.selling_plan.name }}</div>{% endif %}
+                    {% for group in line.groups %}<div class="hngry-product-meta">{% if group.deliverable? %}FÜR: {% else %}TEIL VON: {% endif %}{{ group.display_title }}</div>{% endfor %}
+                    {% for property in line.properties %}{% assign first_char = property.first | slice: 0 %}{% if property.last != blank and first_char != '_' %}<div class="hngry-product-property">{{ property.first }}: {% if property.last contains '/uploads/' %}<a href="{{ property.last }}" target="_blank">{{ property.last | split: '/' | last }}</a>{% else %}{{ property.last }}{% endif %}</div>{% endif %}{% endfor %}
+                    {% for allocation in line.discount_allocations %}{% if allocation.discount_application.target_selection != 'all' %}<div class="hngry-discount">TAG / {{ allocation.discount_application.title }} −{{ allocation.amount | money }}</div>{% endif %}{% endfor %}
+                  </td>
+                  <td class="hngry-product-price">{% if line.original_line_price != line.final_line_price %}<span class="hngry-old-price">{{ line.original_line_price | money }}</span>{% endif %}{% if line.final_line_price > 0 %}{{ line.final_line_price | money }}{% else %}KOSTENLOS{% endif %}{% if line.unit_price_measurement %}<div class="hngry-product-meta">{{ line.unit_price | unit_price_with_measurement: line.unit_price_measurement }}</div>{% endif %}</td>
+                </tr>
+                {% for child_line in line.bundle_components %}<tr class="hngry-child-row"><td style="padding-left:14px;text-align:center;color:#77756f;font-family:'Courier New',monospace">↳</td><td class="hngry-product-info"><div class="hngry-product-title" style="font-size:12px">{{ child_line.product.title | default: child_line.title }} × {{ child_line.quantity }}</div>{% if child_line.variant.title != 'Default Title' %}<div class="hngry-product-meta">{{ child_line.variant.title }}</div>{% endif %}</td><td class="hngry-product-price">INKL.</td></tr>{% endfor %}
+                {% if line.nested_line_parent? %}{% for child_line in line.nested_lines %}<tr class="hngry-child-row"><td style="padding-left:14px;text-align:center;color:#77756f;font-family:'Courier New',monospace">↳</td><td class="hngry-product-info"><div class="hngry-product-title" style="font-size:12px">{{ child_line.product.title | default: child_line.title }} × {{ child_line.quantity }}</div>{% if child_line.variant.title != 'Default Title' %}<div class="hngry-product-meta">{{ child_line.variant.title }}</div>{% endif %}</td><td class="hngry-product-price">{% if child_line.final_line_price > 0 %}{{ child_line.final_line_price | money }}{% else %}KOSTENLOS{% endif %}</td></tr>{% endfor %}{% endif %}
+              {% endunless %}
+            {% endfor %}
+          </table>
+
+          {% assign order_discount_count = 0 %}{% assign total_order_discount_amount = 0 %}
+          {% for application in discount_applications %}{% if application.target_selection == 'all' and application.target_type == 'line_item' %}{% assign order_discount_count = order_discount_count | plus: 1 %}{% assign total_order_discount_amount = total_order_discount_amount | plus: application.total_allocated_amount %}{% endif %}{% endfor %}
+          {% assign shipping_type_total = 0 %}{% for method in shipping_methods %}{% assign shipping_type_total = shipping_type_total | plus: method.price_with_discounts %}{% endfor %}
+          {% assign pickup_type_total = 0 %}{% for method in pickup_methods %}{% assign pickup_type_total = pickup_type_total | plus: method.price_with_discounts %}{% endfor %}
+          {% assign refunded_amount = 0 %}{% for transaction in transactions %}{% if transaction.kind == 'refund' %}{% if transaction.status == 'success' or transaction.status == 'pending' %}{% assign refunded_amount = refunded_amount | plus: transaction.amount %}{% endif %}{% endif %}{% endfor %}
+          <table role="presentation" class="hngry-totals" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr><td class="hngry-total-label">ZWISCHENSUMME</td><td class="hngry-total-value">{{ subtotal_price | plus: total_order_discount_amount | money }}</td></tr>
+            {% if order_discount_count > 0 %}<tr><td class="hngry-total-label">{% if order_discount_count == 1 %}BESTELLRABATT{% else %}BESTELLRABATTE{% endif %}</td><td class="hngry-total-value">−{{ total_order_discount_amount | money }}</td></tr>{% endif %}
+            {% if shipping_methods.size > 0 %}<tr><td class="hngry-total-label">VERSAND</td><td class="hngry-total-value">{% if shipping_type_total == 0 %}KOSTENLOS{% else %}{{ shipping_type_total | money }}{% endif %}</td></tr>{% endif %}
+            {% if pickup_methods.size > 0 %}<tr><td class="hngry-total-label">ABHOLUNG</td><td class="hngry-total-value">{% if pickup_type_total == 0 %}KOSTENLOS{% else %}{{ pickup_type_total | money }}{% endif %}</td></tr>{% endif %}
+            {% if shipping_methods.size == 0 and pickup_methods.size == 0 and retail_delivery_only != true %}<tr><td class="hngry-total-label">{% if delivery_method_for_subtotal == 'pick-up' %}ABHOLUNG{% else %}VERSAND{% endif %}</td><td class="hngry-total-value">{% if shipping_price == 0 %}KOSTENLOS{% else %}{{ shipping_price | money }}{% endif %}</td></tr>{% endif %}
+            {% if total_duties %}<tr><td class="hngry-total-label">ZOLLGEBÜHREN</td><td class="hngry-total-value">{{ total_duties | money }}</td></tr>{% endif %}
+            <tr><td class="hngry-total-label">STEUERN</td><td class="hngry-total-value">{{ tax_price | money }}</td></tr>
+            {% if total_tip and total_tip > 0 %}<tr><td class="hngry-total-label">TIP</td><td class="hngry-total-value">{{ total_tip | money }}</td></tr>{% endif %}
+            <tr class="hngry-grand-total"><td>STORNIERT</td><td align="right">{{ total_price | money_with_currency }}</td></tr>
+            {% if refunded_amount > 0 %}<tr><td colspan="2" class="hngry-refund">REFUND / {{ refunded_amount | money_with_currency }}</td></tr>{% endif %}
+          </table>
+        </td></tr>
+
+        <tr><td class="hngry-footer"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr><td><strong style="color:#f1efe9;font-size:12px">STAY HNGRŸ.</strong><br>CLOTHES FOR THE ONES WHO WANT MORE.<br>EST. 2026</td></tr>
+          <tr><td style="padding-top:22px;border-top:1px solid #343431">FRAGEN ZUR STORNIERUNG? ANTWORTE DIREKT AUF DIESE E-MAIL ODER SCHREIB AN <a href="mailto:{{ shop.email }}">{{ shop.email }}</a>.</td></tr>
+          <tr><td style="padding-top:18px;color:#66655f">© {{ 'now' | date: '%Y' }} HNGRŸ — ALL RIGHTS RESERVED</td></tr>
+        </table></td></tr>
+      </table>
+    </td></tr></table>
+    <img src="{{ 'notifications/spacer.png' | shopify_asset_url }}" alt="" width="1" height="1" style="display:block;height:1px;width:1px">
+  </body>
+</html>

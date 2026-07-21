@@ -52,7 +52,7 @@ export default function CartDrawer() {
                   key={`${item.slug}-${item.size}`}
                   className="flex gap-4 border-b border-ink/15 py-5"
                 >
-                  <div className="relative h-24 w-24 shrink-0 overflow-hidden bg-smoke">
+                  <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-[8px] bg-smoke">
                     {product.photos ? (
                       <Image
                         src={product.photos[0].src}

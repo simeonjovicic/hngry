@@ -1,0 +1,92 @@
+<script src="{{ 'hngry-reveal.js' | asset_url }}" defer></script>
+
+{%- liquid
+  if section.settings.image_left != blank
+    assign img_left = section.settings.image_left | image_url: width: 1600
+    assign alt_left = section.settings.image_left.alt | default: shop.name
+    assign w_left = section.settings.image_left.width
+    assign h_left = section.settings.image_left.height
+  else
+    assign img_left = 'hngry-split-bench.jpg' | asset_url
+    assign alt_left = shop.name
+    assign w_left = 1600
+    assign h_left = 1000
+  endif
+
+  if section.settings.image_right != blank
+    assign img_right = section.settings.image_right | image_url: width: 1600
+    assign alt_right = section.settings.image_right.alt | default: shop.name
+    assign w_right = section.settings.image_right.width
+    assign h_right = section.settings.image_right.height
+  else
+    assign img_right = 'hngry-split-bench.jpg' | asset_url
+    assign alt_right = shop.name
+    assign w_right = 1600
+    assign h_right = 1000
+  endif
+-%}
+
+<section class="hngry-image-duo color-{{ section.settings.color_scheme }}" {{ section.shopify_attributes }}>
+  <div class="hngry-image-duo__cell hngry-reveal">
+    <img src="{{ img_left }}" alt="{{ alt_left | escape }}" loading="lazy" width="{{ w_left }}" height="{{ h_left }}" class="hngry-image-duo__img">
+  </div>
+  <div class="hngry-image-duo__cell hngry-reveal">
+    <img src="{{ img_right }}" alt="{{ alt_right | escape }}" loading="lazy" width="{{ w_right }}" height="{{ h_right }}" class="hngry-image-duo__img">
+  </div>
+</section>
+
+{% style %}
+  .hngry-image-duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    background: var(--hngry-bone);
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.15);
+  }
+
+  @media (max-width: 749px) {
+    .hngry-image-duo { display: none; }
+  }
+
+  .hngry-image-duo__img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .js-reveal .hngry-image-duo .hngry-reveal {
+    opacity: 0;
+    transform: translateY(2rem);
+    transition:
+      opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .js-reveal .hngry-image-duo .hngry-reveal:nth-child(2) { transition-delay: 120ms; }
+
+  .js-reveal .hngry-image-duo .hngry-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js-reveal .hngry-image-duo .hngry-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "HNGRY Image Duo",
+  "settings": [
+    { "type": "image_picker", "id": "image_left", "label": "Left image", "info": "Falls back to a bundled campaign image." },
+    { "type": "image_picker", "id": "image_right", "label": "Right image", "info": "Falls back to a bundled campaign image." },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "HNGRY Image Duo" }]
+}
+{% endschema %}

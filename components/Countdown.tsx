@@ -31,7 +31,7 @@ export default function Countdown() {
     <div className="flex items-start gap-6 sm:gap-10">
       {UNITS.map((unit, i) => (
         <div key={unit} className="flex flex-col items-center gap-2">
-          <span className="font-display text-4xl tabular-nums sm:text-6xl">
+          <span className="font-heading text-4xl tabular-nums sm:text-6xl">
             {parts ? parts[i] : "––"}
           </span>
           <span className="font-mono text-[10px] tracking-[0.35em] text-bone/40">

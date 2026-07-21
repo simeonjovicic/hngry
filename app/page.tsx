@@ -3,16 +3,15 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import AddToCart from "@/components/AddToCart";
 import NewsletterForm from "@/components/NewsletterForm";
-import EditorialSplit from "@/components/EditorialSplit";
-import LookbookBlock from "@/components/LookbookBlock";
+import Gallery from "@/components/Gallery";
+import NewsletterModal from "@/components/NewsletterModal";
 import SocialIcons from "@/components/SocialIcons";
 import Reveal from "@/components/Reveal";
 import Teaser from "@/components/Teaser";
 import { ACCESS_COOKIE, ACCESS_VALUE } from "@/lib/access";
 import { formatPrice, getProduct } from "@/lib/products";
 import heroSky from "@/public/img/Hngry-horizontal_2.png";
-import lookStairs from "@/public/img/Hngry-horizontal_1.png";
-import crewBench from "@/public/img/Hngry_3.png";
+import mentalityLeft from "@/public/img/Hngry_1.png";
 
 export default async function Home() {
   const store = await cookies();
@@ -23,14 +22,18 @@ export default async function Home() {
 
   return (
     <>
-      {/* HERO — horizontal campaign image at its natural aspect ratio */}
-      <section className="relative w-full overflow-hidden border-b border-ink/15">
+      {/* HERO — fills the first screen with a minimum height so it never looks short on wide/flat laptop viewports */}
+      <section
+        className="relative w-full overflow-hidden border-b border-ink/15"
+        style={{ minHeight: "max(60rem, calc(100svh - 6rem))" }}
+      >
         <Image
           src={heroSky}
           alt="Three crew members in HNGRY tees on a rooftop against a blue sky"
           preload
+          fill
           sizes="100vw"
-          className="h-auto w-full"
+          className="object-cover object-[center_30%]"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/15 to-ink/25" />
 
@@ -42,7 +45,7 @@ export default async function Home() {
 
           <div className="animate-rise flex flex-col items-start gap-4 [animation-delay:250ms] sm:gap-6">
             <div>
-              <h1 className="font-display text-3xl uppercase leading-[0.95] text-bone sm:text-6xl lg:text-7xl">
+              <h1 className="font-heading text-3xl uppercase leading-[0.95] text-bone sm:text-6xl lg:text-7xl">
                 Too flyyy
                 <br />
                 for a 9–5.
@@ -69,43 +72,39 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* (01) THE MENTALITY — text left, portrait image right */}
-      <EditorialSplit
-        index="01"
-        eyebrow="THE MENTALITY"
-        title={
-          <>
-            No office hours.
-            <br />
-            Stay hngrÿ.
-          </>
-        }
-        caption="FOR THE ONES WHO SKIP THE MEETING AND TAKE THE STAIRS TWO AT A TIME. NEVER ASK FOR PERMISSION."
-        cta={{ href: "/product/flyyy-9-5-tee", label: "GET THE TEE" }}
-        image={{
-          src: crewBench,
-          alt: "Three crew members in HNGRY tees sitting on a bench in the city",
-        }}
-        flip
-      />
+      {/* (01) — two-image editorial row */}
+      <section className="hidden grid-cols-2 gap-2 border-b border-ink/15 bg-bone py-2 sm:grid">
+        <Image
+          src={mentalityLeft}
+          alt="Crew members in HNGRY tees in the city"
+          sizes="(min-width: 640px) 50vw, 100vw"
+          className="h-auto w-full"
+        />
+        <Image
+          src={mentalityLeft}
+          alt="Crew members in HNGRY tees in the city"
+          sizes="(min-width: 640px) 50vw, 100vw"
+          className="h-auto w-full"
+        />
+      </section>
 
       {/* (02) THE DROP — featured product with full buy panel */}
-      <section className="border-b border-ink/15 bg-bone py-20 sm:py-28">
+      <section className="border-b border-ink/15 bg-bone py-14 sm:py-28">
         <Reveal>
           <p className="text-center font-mono text-[11px] tracking-[0.3em] text-ink/40">
             (02) — THE DROP
           </p>
-          <h2 className="mt-3 text-center font-display text-3xl uppercase tracking-[0.15em] sm:text-4xl">
+          <h2 className="mt-3 text-center font-display text-2xl uppercase tracking-[0.15em] sm:text-4xl">
             Featured Product
           </h2>
         </Reveal>
 
-        <div className="mx-auto mt-14 grid max-w-5xl items-center gap-10 px-4 sm:mt-20 sm:grid-cols-2 sm:gap-14 sm:px-8 lg:gap-20">
+        <div className="mx-auto mt-10 grid max-w-5xl items-center gap-8 px-4 sm:mt-20 sm:grid-cols-2 sm:gap-14 sm:px-8 lg:gap-20">
           {/* product photo — crisp hairline frame */}
           <Reveal>
             <Link
               href={`/product/${drop.slug}`}
-              className="group relative block overflow-hidden border border-ink/10 bg-smoke transition-colors duration-300 hover:border-ink/30"
+              className="group relative mx-auto block max-w-[18rem] overflow-hidden rounded-[8px] border border-ink/10 bg-smoke transition-colors duration-300 hover:border-ink/30 sm:max-w-none"
             >
               {drop.badge && (
                 <span className="absolute left-4 top-4 z-10 bg-ink px-2 py-1 font-mono text-[10px] tracking-[0.2em] text-bone">
@@ -176,25 +175,8 @@ export default async function Home() {
         </p>
       </section>
 
-      {/* (03) THE CREW — full-bleed lookbook with text overlay */}
-      <LookbookBlock
-        index="03"
-        eyebrow="THE CREW"
-        title={
-          <>
-            Take the stairs.
-            <br />
-            Two at a time.
-          </>
-        }
-        caption="SHOT ON LOCATION, NOT IN A STUDIO. WORN BY THE ONES WHO MEAN IT."
-        cta={{ href: "/product/flyyy-9-5-tee", label: "SHOP THE DROP" }}
-        image={{
-          src: lookStairs,
-          alt: "Overhead shot of the crew on a staircase around a HNGRY tee laid on the steps",
-        }}
-        align="right"
-      />
+      {/* (03) THE CREW — horizontal image carousel */}
+      <Gallery />
 
       {/* NEWSLETTER */}
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-8">
@@ -220,6 +202,8 @@ export default async function Home() {
           </div>
         </Reveal>
       </section>
+
+      <NewsletterModal />
     </>
   );
 }

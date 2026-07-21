@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --bone: #f1efe9;
+  --bone: #ffffff;
   --ink: #0c0c0c;
   --smoke: #e3e1da;
-  --tag-orange: #f4731c;
+  --tag-orange: #0c0c0c;
 }
 
 @theme inline {
@@ -12,9 +12,10 @@
   --color-ink: var(--ink);
   --color-smoke: var(--smoke);
   --color-tag: var(--tag-orange);
-  --font-display: var(--font-anton);
-  --font-sans: var(--font-grotesk);
-  --font-mono: var(--font-space-mono);
+  --font-display: var(--font-open-sans);
+  --font-sans: var(--font-open-sans);
+  --font-mono: var(--font-open-sans);
+  --font-heading: var(--font-anton);
 }
 
 body {
@@ -36,6 +37,26 @@ body {
 .logo-invert {
   filter: invert(1);
   mix-blend-mode: screen;
+}
+
+@keyframes hngry-modal-panel {
+  from {
+    opacity: 0;
+    transform: translateY(2rem) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hngry-modal-backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes ticker {

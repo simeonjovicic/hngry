@@ -414,5 +414,9 @@
 
     <script src="{{ 'hngry-header.js' | asset_url }}" defer="defer"></script>
     <div class="hngry-grain" aria-hidden="true"></div>
+
+    {%- unless request.page_type == 'password' -%}
+      {% section 'hngry-newsletter-popup' %}
+    {%- endunless -%}
   </body>
 </html>

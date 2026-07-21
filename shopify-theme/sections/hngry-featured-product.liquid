@@ -173,6 +173,7 @@
     position: relative;
     display: block;
     overflow: hidden;
+    border-radius: 8px;
     background: var(--hngry-smoke);
     border: 1px solid rgba(12, 12, 12, 0.1);
     transition: border-color 0.3s;
@@ -226,6 +227,7 @@
   .hngry-featured__img--hover {
     position: absolute;
     inset: 0;
+    width: 100%;
     height: 100%;
     object-fit: cover;
     opacity: 0;
@@ -432,6 +434,66 @@
   }
 
   .hngry-featured__details:hover { color: var(--hngry-ink); }
+
+  /* mobile — compact so the full image + buy controls fit without endless scroll */
+  @media (max-width: 749px) {
+    .hngry-featured {
+      padding: 2.5rem 0 3rem;
+    }
+    .hngry-featured__title {
+      font-size: 2.2rem;
+      letter-spacing: 0.1em;
+    }
+    .hngry-featured__grid {
+      margin-top: 2rem;
+      gap: 1.6rem;
+    }
+    /* cap the product photo so it doesn't eat the whole screen. Use max-width (not
+       fit-content) so the absolute hover img's width:100% still resolves correctly. */
+    .hngry-featured__media {
+      max-width: 34rem;
+      margin: 0 auto;
+    }
+    .hngry-featured__name {
+      font-size: 2rem;
+    }
+    .hngry-featured__price {
+      font-size: 1.4rem;
+      margin-top: 0.6rem;
+    }
+    .hngry-featured__panel .hngry-featured__divider {
+      margin: 1.3rem 0;
+    }
+    .hngry-featured__size-label {
+      margin-bottom: 0.7rem;
+    }
+    .hngry-featured__size span {
+      min-width: 4rem;
+      padding: 0.8rem 1rem;
+      font-size: 1rem;
+    }
+    .hngry-featured__buy {
+      margin-top: 1.3rem;
+    }
+    .hngry-featured__qty button {
+      padding: 1rem;
+      font-size: 1.15rem;
+    }
+    .hngry-featured__qty input {
+      width: 2.8rem;
+      font-size: 1.15rem;
+    }
+    .hngry-featured__submit {
+      padding: 1.1rem;
+      font-size: 1.05rem;
+      letter-spacing: 0.2em;
+    }
+    .hngry-featured__payments {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      line-height: 1.7;
+    }
+  }
 {% endstyle %}
 
 {% schema %}

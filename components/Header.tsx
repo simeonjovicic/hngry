@@ -14,7 +14,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-ink/15 bg-bone/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-8">
+      <div className="flex h-12 items-center justify-between px-4 sm:px-10">
         <nav className="flex flex-1 items-center gap-5 font-mono text-[11px] tracking-[0.15em]">
           {NAV.map((item) => (
             <Link

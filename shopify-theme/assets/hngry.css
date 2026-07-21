@@ -1,6 +1,8 @@
 /* HNGRY design system — ported from the Next.js build.
    Loaded after Dawn's base.css so these tokens win. */
 
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap");
+
 @font-face {
   font-family: "Anton";
   src: url("hngry-anton.woff2") format("woff2");
@@ -30,13 +32,16 @@
 }
 
 :root {
-  --hngry-bone: #f1efe9;
+  --hngry-bone: #ffffff;
   --hngry-ink: #0c0c0c;
   --hngry-smoke: #e3e1da;
-  --hngry-tag: #f4731c;
-  --hngry-display: "Anton", "Arial Black", sans-serif;
-  --hngry-sans: "Space Grotesk", sans-serif;
-  --hngry-mono: "Space Mono", monospace;
+  --hngry-tag: #0c0c0c;
+  --hngry-display: "Open Sans", sans-serif;
+  --hngry-sans: "Open Sans", sans-serif;
+  --hngry-mono: "Open Sans", sans-serif;
+  /* also override Dawn's own font tokens so cart / account / footer match */
+  --font-body-family: "Open Sans", sans-serif;
+  --font-heading-family: "Open Sans", sans-serif;
 }
 
 ::selection {
@@ -518,12 +523,19 @@ button.shopify-payment-button__button--unbranded {
 }
 @media screen and (min-width: 750px) {
   .header {
-    padding-top: 1.1rem;
-    padding-bottom: 1.1rem;
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
   }
   .hngry-wordmark {
     max-height: 2.6rem; /* compact desktop */
   }
+}
+
+/* wider header — full width so nav / logo / bag sit toward the screen edges */
+.section-header .header.page-width {
+  max-width: none;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
 }
 
 /* ======================================================================
@@ -594,6 +606,8 @@ button.shopify-payment-button__button--unbranded {
 .hngry-header-overlay .header__menu-item span,
 .hngry-header-overlay .header__icon,
 .hngry-header-overlay .header__icon svg,
+.hngry-header-overlay .localization-form__select,
+.hngry-header-overlay .localization-form__select svg,
 .hngry-header-overlay .hngry-wordmark {
   transition:
     border-color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
@@ -625,10 +639,13 @@ button.shopify-payment-button__button--unbranded {
 .hngry-header-overlay:not(.hngry-header-solid) .header__menu-item span,
 .hngry-header-overlay:not(.hngry-header-solid) .header__icon,
 .hngry-header-overlay:not(.hngry-header-solid) .header__icon .icon,
-.hngry-header-overlay:not(.hngry-header-solid) .header__icon svg {
+.hngry-header-overlay:not(.hngry-header-solid) .header__icon svg,
+.hngry-header-overlay:not(.hngry-header-solid) .localization-form__select,
+.hngry-header-overlay:not(.hngry-header-solid) .localization-form__select svg {
   color: var(--hngry-bone);
 }
-.hngry-header-overlay:not(.hngry-header-solid) .header__icon svg {
+.hngry-header-overlay:not(.hngry-header-solid) .header__icon svg,
+.hngry-header-overlay:not(.hngry-header-solid) .localization-form__select svg {
   stroke: var(--hngry-bone);
 }
 /* logo turns white over the image while transparent */

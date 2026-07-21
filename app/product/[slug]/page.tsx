@@ -40,7 +40,7 @@ export default async function ProductPage({
 
       <div className="mt-8 grid gap-12 lg:grid-cols-2">
         <div>
-          <div className="relative bg-smoke">
+          <div className="relative overflow-hidden rounded-[8px] bg-smoke">
             {product.badge && (
               <span className="absolute left-4 top-4 z-10 bg-ink px-2 py-1 font-mono text-[10px] tracking-[0.2em] text-bone">
                 {product.badge}
@@ -68,7 +68,7 @@ export default async function ProductPage({
                   src={photo.src}
                   alt={photo.alt}
                   sizes="(min-width: 1024px) 16vw, 33vw"
-                  className="h-auto w-full bg-smoke"
+                  className="h-auto w-full rounded-[8px] bg-smoke"
                 />
               ))}
             </div>
@@ -76,13 +76,13 @@ export default async function ProductPage({
         </div>
 
         <div className="max-w-lg">
-          <h1 className="font-display text-4xl uppercase sm:text-5xl">
+          <h1 className="font-display text-4xl uppercase sm:text-5xl lg:text-7xl">
             {product.name}
           </h1>
-          <p className="mt-2 font-mono text-[11px] tracking-[0.25em] text-ink/50">
+          <p className="mt-2 font-mono text-[11px] tracking-[0.25em] text-ink/50 lg:text-xs">
             {product.color} / DROP 001
           </p>
-          <p className="mt-4 font-mono text-xl">
+          <p className="mt-4 font-mono text-xl lg:text-3xl">
             {product.compareAt && (
               <span className="mr-3 text-ink/40 line-through">
                 {formatPrice(product.compareAt)}
@@ -91,7 +91,7 @@ export default async function ProductPage({
             {formatPrice(product.price)}
           </p>
 
-          <p className="mt-6 border-l-2 border-ink pl-4 text-sm leading-relaxed text-ink/80">
+          <p className="mt-6 border-l-2 border-ink pl-4 text-sm leading-relaxed text-ink/80 lg:text-lg">
             {product.description}
           </p>
 
@@ -105,7 +105,7 @@ export default async function ProductPage({
               {product.details.map((d) => (
                 <li
                   key={d}
-                  className="font-mono text-xs leading-relaxed tracking-wider text-ink/60"
+                  className="font-mono text-xs leading-relaxed tracking-wider text-ink/60 lg:text-base"
                 >
                   ✦ {d.toUpperCase()}
                 </li>

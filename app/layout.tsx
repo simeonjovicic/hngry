@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Anton, Space_Grotesk, Space_Mono } from "next/font/google";
+import { Anton, Open_Sans } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart";
@@ -11,20 +11,16 @@ import Footer from "@/components/Footer";
 import Grain from "@/components/Grain";
 import TempLock from "@/components/TempLock";
 
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
+  weight: ["300", "400", "600", "700"],
+  subsets: ["latin"],
+});
+
+// Anton is kept only for the big hero + gallery display titles
 const anton = Anton({
   variable: "--font-anton",
   weight: "400",
-  subsets: ["latin"],
-});
-
-const grotesk = Space_Grotesk({
-  variable: "--font-grotesk",
-  subsets: ["latin"],
-});
-
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
-  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
@@ -45,7 +41,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${anton.variable} ${grotesk.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${openSans.variable} ${anton.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         {unlocked ? (

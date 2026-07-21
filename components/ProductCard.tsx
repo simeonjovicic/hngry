@@ -9,7 +9,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/product/${product.slug}`} className="group block">
-      <div className="relative aspect-square overflow-hidden bg-smoke">
+      <div className="relative aspect-square overflow-hidden rounded-[8px] bg-smoke">
         {product.badge && (
           <span
             className={`absolute left-3 top-3 z-10 px-2 py-1 font-mono text-[10px] tracking-[0.2em] ${

@@ -1,0 +1,356 @@
+<script src="{{ 'hngry-reveal.js' | asset_url }}" defer></script>
+
+{%- comment -%}
+  Bundled campaign shots used as placeholders until portrait images are added
+  per block. Cycled by block index so an all-default preset still looks varied.
+{%- endcomment -%}
+{%- assign fallbacks = 'hngry-lookbook-stairs.jpg,hngry_vertical.jpg,hngry-split-bench.jpg,hngry_vertical2.jpg,hngry-hero-sky.jpg,hngry-hero.png' | split: ',' -%}
+
+{%- capture slides -%}
+  {%- for block in section.blocks -%}
+    {%- liquid
+      assign fi = forloop.index0 | modulo: fallbacks.size
+      if block.settings.image != blank
+        assign slide_img = block.settings.image | image_url: width: 900
+        assign slide_alt = block.settings.image.alt | default: shop.name
+      else
+        assign slide_img = fallbacks[fi] | asset_url
+        assign slide_alt = shop.name
+      endif
+    -%}
+    <li class="hngry-gallery__slide" {{ block.shopify_attributes }}>
+      {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}" class="hngry-gallery__slide-link">{%- endif -%}
+      <div class="hngry-gallery__frame">
+        <img src="{{ slide_img }}" alt="{{ slide_alt | escape }}" loading="lazy" width="900" height="1200" class="hngry-gallery__img">
+      </div>
+      {%- if block.settings.caption != blank -%}
+        <span class="hngry-gallery__caption hngry-mono">{{ block.settings.caption }}</span>
+      {%- endif -%}
+      {%- if block.settings.link != blank -%}</a>{%- endif -%}
+    </li>
+  {%- endfor -%}
+{%- endcapture -%}
+
+<section class="hngry-gallery color-{{ section.settings.color_scheme }}" {{ section.shopify_attributes }} data-hngry-gallery>
+  <div class="hngry-gallery__wrap hngry-gallery__head hngry-reveal">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="hngry-gallery__eyebrow hngry-mono">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <div class="hngry-gallery__head-row">
+      <h2 class="hngry-gallery__heading hngry-display">
+        {{ section.settings.heading_line1 }}<br>
+        <span class="hngry-outline">{{ section.settings.heading_line2 }}</span>
+      </h2>
+      <div class="hngry-gallery__social">
+        {%- if section.settings.handle != blank -%}
+          <span class="hngry-gallery__handle hngry-display">{{ section.settings.handle }}</span>
+        {%- endif -%}
+        {%- if section.settings.follow_label != blank -%}
+          <a href="{{ section.settings.follow_link | default: '#' }}" class="hngry-gallery__follow hngry-mono">{{ section.settings.follow_label }} &rarr;</a>
+        {%- endif -%}
+      </div>
+    </div>
+    {%- if section.settings.subline != blank -%}
+      <p class="hngry-gallery__subline hngry-mono">{{ section.settings.subline }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="hngry-gallery__wrap">
+    <div class="hngry-gallery__viewport hngry-reveal">
+      <button type="button" class="hngry-gallery__arrow hngry-gallery__arrow--prev" aria-label="Previous" data-hngry-gallery-prev>
+        <span aria-hidden="true">&lsaquo;</span>
+      </button>
+
+      {%- comment -%} three identical copies so it wraps endlessly both ways {%- endcomment -%}
+      <ul class="hngry-gallery__track" role="list" data-hngry-gallery-track>
+        {{ slides }}{{ slides }}{{ slides }}
+      </ul>
+
+      <button type="button" class="hngry-gallery__arrow hngry-gallery__arrow--next" aria-label="Next" data-hngry-gallery-next>
+        <span aria-hidden="true">&rsaquo;</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .hngry-gallery {
+    background: var(--hngry-bone);
+    color: rgb(var(--color-foreground));
+    padding: 6rem 0 5rem;
+    border-top: 1px solid rgba(var(--color-foreground), 0.1);
+    overflow: hidden;
+  }
+
+  .hngry-gallery__eyebrow {
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    opacity: 0.4;
+    margin: 0 0 1.4rem;
+  }
+
+  .hngry-gallery__head-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.6rem 3rem;
+  }
+
+  .hngry-gallery__heading {
+    margin: 0;
+    font-family: "Anton", "Arial Black", sans-serif;
+    font-size: clamp(3rem, 6vw, 6.4rem);
+    line-height: 0.85;
+    text-transform: uppercase;
+  }
+
+  .hngry-gallery__social {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  @media (min-width: 750px) {
+    .hngry-gallery__social { align-items: flex-end; text-align: right; }
+  }
+
+  .hngry-gallery__handle {
+    font-size: clamp(1.8rem, 2.6vw, 2.8rem);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .hngry-gallery__follow {
+    font-size: 1rem;
+    letter-spacing: 0.25em;
+    color: inherit;
+    text-decoration: none;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid currentColor;
+    transition: opacity 0.2s;
+  }
+
+  .hngry-gallery__follow:hover { opacity: 0.55; }
+
+  .hngry-gallery__subline {
+    max-width: 42rem;
+    margin: 1.8rem 0 0;
+    font-size: 1.05rem;
+    line-height: 2;
+    letter-spacing: 0.08em;
+    opacity: 0.6;
+  }
+
+  /* static, click-through carousel that cycles endlessly */
+  .hngry-gallery__wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .hngry-gallery__viewport {
+    position: relative;
+    margin-top: 3rem;
+  }
+
+  .hngry-gallery__track {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .hngry-gallery__track::-webkit-scrollbar { display: none; }
+
+  .hngry-gallery__slide {
+    flex: 0 0 auto;
+    width: clamp(17rem, 19vw, 26rem);
+    scroll-snap-align: start;
+  }
+
+  .hngry-gallery__slide-link { color: inherit; text-decoration: none; }
+
+  .hngry-gallery__frame {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: rgba(var(--color-foreground), 0.06);
+  }
+
+  .hngry-gallery__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hngry-gallery__caption {
+    display: block;
+    margin-top: 0.9rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    opacity: 0.5;
+  }
+
+  .hngry-gallery__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 4.4rem;
+    height: 4.4rem;
+    border: none;
+    border-radius: 50%;
+    background: rgba(var(--color-foreground), 0.85);
+    color: rgb(var(--color-background));
+    font-size: 2.4rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .hngry-gallery__arrow span { transform: translateY(-0.15rem); }
+  .hngry-gallery__arrow:hover { background: rgb(var(--color-foreground)); }
+  .hngry-gallery__arrow--prev { left: 1.5rem; }
+  .hngry-gallery__arrow--next { right: 1.5rem; }
+
+  @media (max-width: 749px) {
+    .hngry-gallery__arrow { display: none; }
+    .hngry-gallery__slide { width: 74vw; }
+  }
+
+  .js-reveal .hngry-gallery .hngry-reveal {
+    opacity: 0;
+    transform: translateY(2.4rem);
+    transition:
+      opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .js-reveal .hngry-gallery .hngry-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js-reveal .hngry-gallery .hngry-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+{% endstyle %}
+
+<script>
+  (function () {
+    function initGallery(section) {
+      var track = section.querySelector('[data-hngry-gallery-track]');
+      var prev = section.querySelector('[data-hngry-gallery-prev]');
+      var next = section.querySelector('[data-hngry-gallery-next]');
+      if (!track || !prev || !next) return;
+
+      // slides are rendered in 3 identical copies
+      var perCopy = Math.round(track.children.length / 3) || 1;
+
+      function metrics() {
+        var slide = track.querySelector('.hngry-gallery__slide');
+        var gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || 0) || 0;
+        var cardW = slide ? slide.getBoundingClientRect().width : track.clientWidth * 0.8;
+        return { step: cardW + gap, unit: (cardW + gap) * perCopy };
+      }
+
+      // keep the position inside the middle copy; wrap by exactly one copy
+      // (identical content, so it's invisible)
+      function wrap() {
+        var u = metrics().unit;
+        if (u <= 0) return;
+        if (track.scrollLeft >= 2 * u) track.scrollLeft -= u;
+        else if (track.scrollLeft < u) track.scrollLeft += u;
+      }
+
+      requestAnimationFrame(function () { track.scrollLeft = metrics().unit; });
+
+      prev.addEventListener('click', function () {
+        wrap();
+        track.scrollBy({ left: -metrics().step, behavior: 'smooth' });
+      });
+      next.addEventListener('click', function () {
+        wrap();
+        track.scrollBy({ left: metrics().step, behavior: 'smooth' });
+      });
+
+      var t;
+      track.addEventListener('scroll', function () {
+        window.clearTimeout(t);
+        t = window.setTimeout(wrap, 150);
+      }, { passive: true });
+    }
+
+    function boot(scope) {
+      (scope || document).querySelectorAll('[data-hngry-gallery]').forEach(initGallery);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { boot(document); }, { once: true });
+    } else {
+      boot(document);
+    }
+
+    document.addEventListener('shopify:section:load', function (event) { boot(event.target); });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "HNGRY Gallery",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow label", "default": "(03) — THE FEED" },
+    { "type": "text", "id": "heading_line1", "label": "Heading line 1", "default": "Caught In" },
+    { "type": "text", "id": "heading_line2", "label": "Heading line 2 (outlined)", "default": "The Wild" },
+    {
+      "type": "textarea",
+      "id": "subline",
+      "label": "Subline",
+      "default": "The hungry, out in their element. Tag @hngry and catch your fit on the feed."
+    },
+    { "type": "text", "id": "handle", "label": "Handle", "default": "@HNGRY" },
+    { "type": "text", "id": "follow_label", "label": "Follow label", "default": "JOIN THE FEED" },
+    { "type": "url", "id": "follow_link", "label": "Follow link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (portrait)",
+          "info": "Best as a vertical 3:4 shot. Falls back to a bundled campaign image."
+        },
+        { "type": "text", "id": "caption", "label": "Caption" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 16,
+  "presets": [
+    {
+      "name": "HNGRY Gallery",
+      "blocks": [
+        { "type": "slide" }, { "type": "slide" }, { "type": "slide" }, { "type": "slide" },
+        { "type": "slide" }, { "type": "slide" }, { "type": "slide" }, { "type": "slide" }
+      ]
+    }
+  ]
+}
+{% endschema %}

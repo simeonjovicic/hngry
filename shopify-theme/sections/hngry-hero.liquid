@@ -63,8 +63,9 @@
 
   .hngry-hero {
     position: relative;
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
+    /* full-bleed via the full-width <main>; avoid 100vw so the vertical
+       scrollbar width can't cause horizontal overflow */
+    width: 100%;
     /* slide up under the transparent header so it overlays the image */
     margin-top: calc(-1 * var(--header-height, 5.5rem));
     /* Fill the first screen on every device. The header overlays the image,
@@ -72,7 +73,9 @@
     height: calc(100vh - 3.2rem);
     height: calc(100svh - 3.2rem);
     aspect-ratio: auto;
-    min-height: 42rem;
+    /* At least a MacBook-class screen height (~960px) so the hero never looks
+       cropped/short on Windows laptops running 125–150% display scaling. */
+    min-height: 60rem;
     overflow: hidden;
     background: var(--hngry-ink);
   }
@@ -178,6 +181,7 @@
 
   .hngry-hero__headline {
     margin: 0;
+    font-family: "Anton", "Arial Black", sans-serif;
     font-size: clamp(3.2rem, 6.5vw, 7.2rem);
     line-height: 0.95;
     text-transform: uppercase;

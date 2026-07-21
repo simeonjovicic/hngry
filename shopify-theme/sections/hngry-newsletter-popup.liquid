@@ -1,0 +1,367 @@
+{%- liquid
+  if section.settings.image != blank
+    assign pop_img = section.settings.image | image_url: width: 1000
+    assign pop_alt = section.settings.image.alt | default: shop.name
+  else
+    assign pop_img = 'Hngry_1.jpg' | asset_url
+    assign pop_alt = shop.name
+  endif
+-%}
+
+<div
+  class="hngry-nl-popup"
+  data-hngry-nl-popup
+  data-delay="{{ section.settings.delay_seconds | default: 12 }}"
+  data-scroll="{{ section.settings.scroll_percent | default: 45 }}"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="hngry-nl-popup-title"
+  hidden
+>
+  <div class="hngry-nl-popup__backdrop" data-hngry-nl-close></div>
+
+  <div class="hngry-nl-popup__panel color-{{ section.settings.color_scheme }}">
+    <button type="button" class="hngry-nl-popup__close hngry-mono" aria-label="Close" data-hngry-nl-close>&times;</button>
+
+    <div class="hngry-nl-popup__media">
+      <img src="{{ pop_img }}" alt="{{ pop_alt | escape }}" class="hngry-nl-popup__img" loading="lazy" width="1000" height="1574">
+    </div>
+
+    <div class="hngry-nl-popup__content">
+      <p class="hngry-nl-popup__eyebrow hngry-mono">{{ section.settings.eyebrow }}</p>
+      <h2 id="hngry-nl-popup-title" class="hngry-nl-popup__heading hngry-display">
+        {{ section.settings.heading_line1 }}<br>
+        <span>{{ section.settings.heading_line2 }}</span>
+      </h2>
+      <p class="hngry-nl-popup__body hngry-mono">{{ section.settings.body }}</p>
+
+      {%- form 'customer', id: 'hngry-nl-popup-form', class: 'hngry-nl-popup__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        {%- if section.settings.success_shown and form.posted_successfully -%}
+          <p class="hngry-nl-popup__success hngry-mono">{{ section.settings.success_text }}</p>
+        {%- else -%}
+          <input
+            type="email"
+            name="contact[email]"
+            required
+            placeholder="{{ section.settings.placeholder }}"
+            class="hngry-nl-popup__input hngry-mono"
+            aria-label="Email"
+          >
+          <button type="submit" class="hngry-nl-popup__submit hngry-mono" name="commit">&rarr;</button>
+        {%- endif -%}
+      {%- endform -%}
+
+      <p class="hngry-nl-popup__note hngry-mono">{{ section.settings.note }}</p>
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .hngry-nl-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .hngry-nl-popup[hidden] { display: none; }
+
+  /* doubled class beats Dawn's `div:empty { display: none }` in base.css — the
+     backdrop is an empty div, so without this it is hidden and no overlay shows */
+  .hngry-nl-popup .hngry-nl-popup__backdrop {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 8, 8, 0.85);
+    opacity: 0;
+    /* overlay fades in FIRST, on its own */
+    transition: opacity 0.35s ease;
+  }
+
+  .hngry-nl-popup.is-open .hngry-nl-popup__backdrop { opacity: 1; }
+
+  .hngry-nl-popup__panel {
+    position: relative;
+    display: flex;
+    width: 100%;
+    max-width: 900px;
+    max-height: calc(100vh - 2rem);
+    min-height: min(600px, calc(100vh - 2rem));
+    overflow: hidden;
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+    border: 1px solid rgb(var(--color-foreground));
+    transform: translateY(2rem) scale(0.96);
+    opacity: 0;
+    /* panel eases in AFTER the overlay is already dark (0.28s delay) */
+    transition:
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.28s,
+      opacity 0.45s ease 0.28s;
+  }
+
+  .hngry-nl-popup__media {
+    position: relative;
+    width: 42%;
+    flex-shrink: 0;
+  }
+
+  .hngry-nl-popup__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hngry-nl-popup__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 3rem;
+  }
+
+  @media (min-width: 750px) {
+    .hngry-nl-popup__content { padding: 4rem; justify-content: center; }
+  }
+
+  @media (max-width: 749px) {
+    .hngry-nl-popup__panel {
+      flex-direction: column;
+      min-height: 0;
+    }
+    .hngry-nl-popup__media {
+      width: 100%;
+      height: 20vh;
+      flex-shrink: 0;
+    }
+    .hngry-nl-popup__content {
+      padding: 2rem 1.6rem;
+    }
+    .hngry-nl-popup__eyebrow { font-size: 1.1rem; }
+    .hngry-nl-popup__heading { font-size: 3.2rem; }
+    .hngry-nl-popup__body {
+      font-size: 1.35rem;
+      line-height: 1.6;
+      margin-top: 1rem;
+    }
+    .hngry-nl-popup__form { margin-top: 1.5rem; }
+    .hngry-nl-popup__input { font-size: 1.3rem; }
+    .hngry-nl-popup__submit { font-size: 1.3rem; }
+    .hngry-nl-popup__note { font-size: 1rem; margin-top: 1.3rem; }
+  }
+
+  .hngry-nl-popup.is-open .hngry-nl-popup__panel {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .hngry-nl-popup__close {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.3rem;
+    border: none;
+    background: none;
+    color: inherit;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.2s;
+  }
+
+  .hngry-nl-popup__close:hover { opacity: 1; }
+
+  .hngry-nl-popup__eyebrow {
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: 0.3em;
+    opacity: 0.4;
+  }
+
+  .hngry-nl-popup__heading {
+    margin: 1rem 0 0;
+    font-family: "Anton", "Arial Black", sans-serif;
+    font-size: clamp(4.2rem, 8vw, 6rem);
+    line-height: 0.9;
+    text-transform: uppercase;
+    background: linear-gradient(160deg, #0c0c0c 0%, #0c0c0c 45%, #7a7a7a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .hngry-nl-popup__body {
+    max-width: 30rem;
+    margin: 1.6rem 0 0;
+    font-size: 1.9rem;
+    line-height: 1.7;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+  }
+
+  .hngry-nl-popup__form {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.9rem;
+    margin-top: 2rem;
+  }
+
+  .hngry-nl-popup__input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.4);
+    padding-bottom: 0.7rem;
+    font-size: 1.6rem;
+    letter-spacing: 0.2em;
+    color: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .hngry-nl-popup__input::placeholder { color: rgba(var(--color-foreground), 0.3); }
+  .hngry-nl-popup__input:focus { border-color: rgb(var(--color-foreground)); }
+
+  .hngry-nl-popup__submit {
+    border: none;
+    background: none;
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.4);
+    padding-bottom: 0.7rem;
+    font-size: 1.7rem;
+    letter-spacing: 0.15em;
+    color: inherit;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .hngry-nl-popup__submit:hover {
+    color: var(--hngry-tag);
+    border-color: rgb(var(--color-foreground));
+  }
+
+  .hngry-nl-popup__success {
+    margin-top: 2rem;
+    font-size: 1.7rem;
+    letter-spacing: 0.25em;
+  }
+
+  .hngry-nl-popup__note {
+    margin: 1.8rem 0 0;
+    font-size: 1.3rem;
+    letter-spacing: 0.25em;
+    opacity: 0.4;
+  }
+{% endstyle %}
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-hngry-nl-popup]');
+    if (!root) return;
+
+    var SESSION_KEY = 'hngry_community_seen';
+    var delayMs = (parseFloat(root.getAttribute('data-delay')) || 12) * 1000;
+    var scrollTrigger = (parseFloat(root.getAttribute('data-scroll')) || 45) / 100;
+    var opened = false;
+    var wantOpen = false;
+    var timer;
+    var poll;
+
+    // Shopify's Customer Privacy consent banner mounts bottom-right as
+    // #shopify-pc__banner. The popup is centered so it never overlaps it, but
+    // we still hold off while the banner is up so two dialogs are never open at
+    // once — polling so the popup appears as soon as consent is handled instead
+    // of being blocked forever.
+    function cookieBannerVisible() {
+      var el = document.getElementById('shopify-pc__banner');
+      return !!el && el.offsetParent !== null;
+    }
+
+    function lockScroll(lock) {
+      document.body.style.overflow = lock ? 'hidden' : '';
+    }
+
+    function open() {
+      if (opened) return;
+      opened = true;
+      window.clearInterval(poll);
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
+      root.hidden = false;
+      // next frame so the transition runs
+      // double rAF so the closed state paints first → smooth ease-in, no snap
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { root.classList.add('is-open'); });
+      });
+      lockScroll(true);
+      cleanup();
+    }
+
+    // a trigger fired: open now if consent is clear, otherwise poll until it is
+    function arm() {
+      if (opened) return;
+      if (!cookieBannerVisible()) { open(); return; }
+      if (!wantOpen) {
+        wantOpen = true;
+        poll = window.setInterval(function () {
+          if (opened) { window.clearInterval(poll); return; }
+          if (!cookieBannerVisible()) open();
+        }, 1000);
+      }
+    }
+
+    function close() {
+      root.classList.remove('is-open');
+      lockScroll(false);
+      window.setTimeout(function () { root.hidden = true; }, 350);
+    }
+
+    function onScroll() {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max > 0 && window.scrollY / max >= scrollTrigger) arm();
+    }
+
+    function cleanup() {
+      window.clearTimeout(timer);
+      window.removeEventListener('scroll', onScroll);
+    }
+
+    try {
+      if (sessionStorage.getItem(SESSION_KEY)) return;
+    } catch (e) {}
+
+    timer = window.setTimeout(arm, delayMs);
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    root.querySelectorAll('[data-hngry-nl-close]').forEach(function (el) {
+      el.addEventListener('click', close);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && root.classList.contains('is-open')) close();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "HNGRY Newsletter Popup",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image (left)", "info": "Falls back to the bundled newsletter campaign shot." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "EARLY ACCESS — DROP 001" },
+    { "type": "text", "id": "heading_line1", "label": "Heading line 1", "default": "Join the" },
+    { "type": "text", "id": "heading_line2", "label": "Heading line 2 (outlined)", "default": "Hungry." },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "First dibs on every drop. No spam, just drops." },
+    { "type": "text", "id": "placeholder", "label": "Input placeholder", "default": "ENTER EMAIL ADDRESS" },
+    { "type": "checkbox", "id": "success_shown", "label": "Show success message after signup", "default": true },
+    { "type": "text", "id": "success_text", "label": "Success text", "default": "YOU'RE IN. STAY HNGRŸ. ✦" },
+    { "type": "text", "id": "note", "label": "Fine print", "default": "NO SPAM. ONLY DROPS." },
+    { "type": "range", "id": "delay_seconds", "min": 2, "max": 30, "step": 1, "unit": "s", "label": "Show after delay", "default": 12 },
+    { "type": "range", "id": "scroll_percent", "min": 10, "max": 90, "step": 5, "unit": "%", "label": "…or after scrolling", "default": 45 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ]
+}
+{% endschema %}

@@ -79,7 +79,20 @@
           {%- form 'product', product, id: product_form_id, class: 'hngry-pdp__form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
             {%- unless product.has_only_default_variant -%}
               <fieldset class="hngry-pdp__variants">
-                <legend class="hngry-pdp__variants-label hngry-mono">SELECT SIZE</legend>
+                <legend class="visually-hidden">Select size</legend>
+                <div class="hngry-pdp__variants-head">
+                  <span class="hngry-pdp__variants-label hngry-mono">SELECT SIZE</span>
+                  {%- if section.settings.size_guide_enabled -%}
+                    <button
+                      type="button"
+                      class="hngry-pdp__sizeguide hngry-mono"
+                      data-hngry-sg-open
+                      aria-haspopup="dialog"
+                    >
+                      SIZE GUIDE &rarr;
+                    </button>
+                  {%- endif -%}
+                </div>
                 <div class="hngry-pdp__sizes">
                   {%- for variant in product.variants -%}
                     <label class="hngry-pdp__size{% unless variant.available %} is-soldout{% endunless %}">
@@ -126,6 +139,16 @@
       </div>
     </div>
   </div>
+
+  {%- if section.settings.size_guide_enabled -%}
+    {%- render 'hngry-size-guide',
+      heading: section.settings.size_guide_heading,
+      sizes: section.settings.size_guide_sizes,
+      rows: section.settings.size_guide_rows,
+      note: section.settings.size_guide_note,
+      color_scheme: section.settings.color_scheme
+    -%}
+  {%- endif -%}
 </section>
 
 {% style %}
@@ -232,12 +255,36 @@
 
   .hngry-pdp__variants { border: none; padding: 0; margin: 0 0 1.6rem; }
 
+  .hngry-pdp__variants-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
   .hngry-pdp__variants-label {
     padding: 0;
     font-size: 0.85rem;
     letter-spacing: 0.25em;
     opacity: 0.55;
   }
+
+  .hngry-pdp__sizeguide {
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.2s;
+  }
+
+  .hngry-pdp__sizeguide:hover { opacity: 1; }
+  .hngry-pdp__sizeguide:focus-visible { outline: 2px solid var(--hngry-tag); outline-offset: 2px; }
 
   .hngry-pdp__sizes {
     display: flex;
@@ -372,6 +419,7 @@
     .hngry-pdp__price { font-size: 2.8rem; }
     .hngry-pdp__desc { font-size: 1.8rem; line-height: 1.7; }
     .hngry-pdp__variants-label { font-size: 1.5rem; }
+    .hngry-pdp__sizeguide { font-size: 1.4rem; }
     .hngry-pdp__size span { font-size: 1.6rem; padding: 1.1rem 1.7rem; min-width: 5.5rem; }
     .hngry-pdp__add { font-size: 1.7rem; padding: 1.6rem; }
     .hngry-pdp__details-label { font-size: 1.5rem; }
@@ -391,7 +439,29 @@
       "label": "Details (one per line)",
       "default": "280 GSM heavyweight cotton\nBoxy oversized fit — size down for regular\nPuff print front, screen print back\nWoven HNGRŸ label at hem"
     },
-    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Size guide" },
+    { "type": "checkbox", "id": "size_guide_enabled", "label": "Show size guide", "default": true },
+    { "type": "text", "id": "size_guide_heading", "label": "Size guide heading", "default": "SIZE GUIDE" },
+    {
+      "type": "text",
+      "id": "size_guide_sizes",
+      "label": "Sizes (comma separated)",
+      "default": "XS, S, M, L"
+    },
+    {
+      "type": "textarea",
+      "id": "size_guide_rows",
+      "label": "Measurements (one per line)",
+      "info": "Label followed by one value per size, comma separated. Values in cm — the CM\/IN toggle converts them.",
+      "default": "Chest width, 49, 51, 53, 55\nTotal length from HPS, 62, 65, 68, 71\nSleeve length, 20, 20.5, 21, 21.5\nNeck opening, 15.5, 16, 16.5, 17\nShoulder line, 16.5, 17, 17.5, 18\nSleeve opening, 20.5, 21, 21.5, 22\nRibb collar height, 2.5, 2.5, 2.5, 2.5"
+    },
+    {
+      "type": "text",
+      "id": "size_guide_note",
+      "label": "Size guide note",
+      "default": "Alle Angaben in cm, flach gemessen. Toleranz ±2 cm. Boxy oversized fit — für regular Fit eine Größe kleiner wählen."
+    }
   ]
 }
 {% endschema %}

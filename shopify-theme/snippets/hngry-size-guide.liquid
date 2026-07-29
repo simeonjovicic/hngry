@@ -1,0 +1,318 @@
+{%- comment -%}
+  Size guide overlay for the HNGRY PDP.
+
+  Accepts:
+  - heading: dialog title
+  - sizes: comma separated column headers, e.g. "XS, S, M, L"
+  - rows: one measurement per line, "Label, v1, v2, v3, v4" — values in cm
+  - note: small print under the table
+  - color_scheme: scheme id from the calling section
+
+  Values are stored in cm on each cell (data-cm); the CM/IN toggle converts in JS
+  so the cm figure stays the single source of truth in the markup.
+{%- endcomment -%}
+
+{%- liquid
+  assign sg_sizes = sizes | default: 'XS, S, M, L' | split: ','
+  assign sg_rows = rows | strip | newline_to_br | split: '<br />'
+-%}
+
+<div
+  class="hngry-sg"
+  data-hngry-sg
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="hngry-sg-title"
+  hidden
+>
+  <div class="hngry-sg__backdrop" data-hngry-sg-close></div>
+
+  <div class="hngry-sg__panel color-{{ color_scheme }}">
+    <button type="button" class="hngry-sg__close hngry-mono" aria-label="Close" data-hngry-sg-close>&times;</button>
+
+    <div class="hngry-sg__head">
+      <p id="hngry-sg-title" class="hngry-sg__heading hngry-display">{{ heading | default: 'SIZE GUIDE' }}</p>
+
+      <div class="hngry-sg__units" role="group" aria-label="Unit">
+        <button type="button" class="hngry-sg__unit hngry-mono is-active" data-hngry-sg-unit="cm" aria-pressed="true">CM</button>
+        <button type="button" class="hngry-sg__unit hngry-mono" data-hngry-sg-unit="in" aria-pressed="false">IN</button>
+      </div>
+    </div>
+
+    <div class="hngry-sg__scroll">
+      <table class="hngry-sg__table hngry-mono">
+        <thead>
+          <tr>
+            <th scope="col">MEASUREMENTS</th>
+            {%- for size in sg_sizes -%}
+              <th scope="col">{{ size | strip | upcase }}</th>
+            {%- endfor -%}
+          </tr>
+        </thead>
+        <tbody>
+          {%- for row in sg_rows -%}
+            {%- assign cells = row | strip | split: ',' -%}
+            {%- assign label = cells.first | strip -%}
+            {%- if label != blank -%}
+              <tr>
+                <th scope="row">{{ label | upcase }}</th>
+                {%- for cell in cells offset: 1 -%}
+                  {%- assign value = cell | strip -%}
+                  <td data-cm="{{ value }}">{{ value }}</td>
+                {%- endfor -%}
+              </tr>
+            {%- endif -%}
+          {%- endfor -%}
+        </tbody>
+      </table>
+    </div>
+
+    {%- if note != blank -%}
+      <p class="hngry-sg__note hngry-mono">{{ note }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% style %}
+  .hngry-sg {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .hngry-sg[hidden] { display: none; }
+
+  /* doubled class beats Dawn's `div:empty { display: none }` in base.css — the
+     backdrop is an empty div, so without this it is hidden and no overlay shows */
+  .hngry-sg .hngry-sg__backdrop {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 8, 8, 0.85);
+    opacity: 0;
+    /* overlay fades in FIRST, on its own */
+    transition: opacity 0.35s ease;
+  }
+
+  .hngry-sg.is-open .hngry-sg__backdrop { opacity: 1; }
+
+  .hngry-sg__panel {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    padding: 2.2rem 1.6rem 1.8rem;
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+    border: 1px solid rgb(var(--color-foreground));
+    transform: translateY(2rem) scale(0.96);
+    opacity: 0;
+    /* panel eases in AFTER the overlay is already dark (0.28s delay) */
+    transition:
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.28s,
+      opacity 0.45s ease 0.28s;
+  }
+
+  .hngry-sg.is-open .hngry-sg__panel { transform: none; opacity: 1; }
+
+  .hngry-sg__close {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.9rem;
+    padding: 0.2rem;
+    border: none;
+    background: none;
+    color: inherit;
+    font-size: 1.9rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  .hngry-sg__close:hover { opacity: 1; }
+
+  .hngry-sg__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.6rem;
+    padding-right: 2rem;
+  }
+
+  .hngry-sg__heading {
+    margin: 0;
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .hngry-sg__units { display: flex; gap: 0.4rem; }
+
+  .hngry-sg__unit {
+    padding: 0.45rem 0.8rem;
+    border: 1px solid rgba(var(--color-foreground), 0.4);
+    background: none;
+    color: inherit;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  }
+
+  .hngry-sg__unit.is-active {
+    background: rgb(var(--color-foreground));
+    color: rgb(var(--color-background));
+    border-color: rgb(var(--color-foreground));
+  }
+
+  .hngry-sg__unit:focus-visible { outline: 2px solid var(--hngry-tag); outline-offset: 2px; }
+
+  .hngry-sg__scroll { overflow-x: auto; }
+
+  .hngry-sg__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .hngry-sg__table th,
+  .hngry-sg__table td {
+    padding: 0.75rem 0.6rem;
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.15);
+    text-align: center;
+    font-weight: normal;
+  }
+
+  .hngry-sg__table thead th {
+    border-bottom-color: rgba(var(--color-foreground), 0.45);
+    opacity: 0.55;
+  }
+
+  .hngry-sg__table th[scope='row'] {
+    text-align: left;
+    padding-left: 0;
+    opacity: 0.6;
+  }
+
+  .hngry-sg__table thead th:first-child { text-align: left; padding-left: 0; }
+  .hngry-sg__table tbody tr:last-child th,
+  .hngry-sg__table tbody tr:last-child td { border-bottom: none; }
+
+  .hngry-sg__note {
+    margin: 1.4rem 0 0;
+    font-size: 0.75rem;
+    line-height: 1.7;
+    letter-spacing: 0.06em;
+    opacity: 0.5;
+  }
+
+  @media (min-width: 990px) {
+    .hngry-sg__panel { padding: 2.8rem 2.4rem 2.2rem; }
+    .hngry-sg__unit { font-size: 1.1rem; padding: 0.55rem 1.1rem; }
+    .hngry-sg__table { font-size: 1.15rem; }
+    .hngry-sg__table th,
+    .hngry-sg__table td { padding: 0.95rem 0.7rem; }
+    .hngry-sg__note { font-size: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hngry-sg .hngry-sg__backdrop,
+    .hngry-sg__panel { transition: none; }
+  }
+{% endstyle %}
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-hngry-sg]');
+    if (!root) return;
+
+    var panel = root.querySelector('.hngry-sg__panel');
+    var closeBtn = root.querySelector('.hngry-sg__close');
+    var cells = root.querySelectorAll('[data-cm]');
+    var lastTrigger = null;
+
+    function lockScroll(lock) {
+      document.body.style.overflow = lock ? 'hidden' : '';
+    }
+
+    function open(trigger) {
+      lastTrigger = trigger || null;
+      root.hidden = false;
+      // double rAF so the closed state paints first → smooth ease-in, no snap
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { root.classList.add('is-open'); });
+      });
+      lockScroll(true);
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function close() {
+      root.classList.remove('is-open');
+      lockScroll(false);
+      window.setTimeout(function () { root.hidden = true; }, 350);
+      if (lastTrigger) {
+        lastTrigger.focus();
+        lastTrigger = null;
+      }
+    }
+
+    function setUnit(unit) {
+      cells.forEach(function (cell) {
+        var cm = parseFloat(cell.getAttribute('data-cm'));
+        if (isNaN(cm)) return;
+        cell.textContent = unit === 'in' ? (cm / 2.54).toFixed(1) : String(cm);
+      });
+      root.querySelectorAll('[data-hngry-sg-unit]').forEach(function (btn) {
+        var active = btn.getAttribute('data-hngry-sg-unit') === unit;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    document.querySelectorAll('[data-hngry-sg-open]').forEach(function (el) {
+      el.addEventListener('click', function () { open(el); });
+    });
+
+    root.querySelectorAll('[data-hngry-sg-close]').forEach(function (el) {
+      el.addEventListener('click', close);
+    });
+
+    root.querySelectorAll('[data-hngry-sg-unit]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        setUnit(btn.getAttribute('data-hngry-sg-unit'));
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && root.classList.contains('is-open')) close();
+    });
+
+    // keep focus inside the dialog while it is open
+    if (panel) {
+      panel.addEventListener('keydown', function (e) {
+        if (e.key !== 'Tab') return;
+        var focusable = panel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (!focusable.length) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      });
+    }
+  })();
+</script>

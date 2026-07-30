@@ -99,77 +99,10 @@
         background-image: linear-gradient(#fffffe, #fffffe);
       }
 
-      .hngry-header-label,
-      .hngry-eyebrow,
-      .hngry-button,
-      .hngry-note,
-      .hngry-footer {
-        font-family: "Courier New", Courier, monospace;
-      }
-
-      .hngry-header-label {
-        color: #7a7a7a !important;
-        font-size: 10px;
-        letter-spacing: 1.4px;
-        line-height: 16px;
-        text-align: right;
-      }
-
       .hngry-main {
         padding: 56px 36px 52px;
         background-color: #fffffe;
         background-image: linear-gradient(#fffffe, #fffffe);
-      }
-
-      .hngry-eyebrow {
-        padding-bottom: 14px;
-        color: #808080 !important;
-        font-size: 10px;
-        letter-spacing: 2px;
-        line-height: 16px;
-      }
-
-      .hngry-title {
-        max-width: 470px;
-        color: #0c0c0c !important;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 42px;
-        font-weight: 400;
-        letter-spacing: 1px;
-        line-height: 46px;
-      }
-
-      .hngry-copy {
-        max-width: 450px;
-        padding-top: 22px;
-        color: #555555 !important;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 14px;
-        line-height: 22px;
-      }
-
-      .hngry-button-cell {
-        background-color: #0c0c0c;
-        background-image: linear-gradient(#0c0c0c, #0c0c0c);
-      }
-
-      .hngry-button {
-        display: inline-block;
-        padding: 15px 23px;
-        color: #fffffe !important;
-        font-size: 10px;
-        font-weight: bold;
-        letter-spacing: 1.6px;
-        line-height: 16px;
-        text-decoration: none;
-      }
-
-      .hngry-note {
-        margin-top: 22px;
-        color: #888888 !important;
-        font-size: 9px;
-        letter-spacing: 0.5px;
-        line-height: 16px;
       }
 
       .hngry-footer {
@@ -177,18 +110,6 @@
         border-top: 1px solid #e0e0e0;
         background-color: #fffffe;
         background-image: linear-gradient(#fffffe, #fffffe);
-        color: #777777 !important;
-        font-size: 9px;
-        letter-spacing: 0.8px;
-        line-height: 16px;
-      }
-
-      .hngry-footer-copy {
-        color: #777777 !important;
-      }
-
-      .hngry-footer a {
-        color: #0c0c0c !important;
       }
 
       @media only screen and (max-width: 640px) {
@@ -203,10 +124,6 @@
           padding-right: 22px !important;
         }
 
-        .hngry-title {
-          font-size: 34px !important;
-          line-height: 38px !important;
-        }
       }
     </style>
   </head>
@@ -235,8 +152,14 @@
                         >
                       </a>
                     </td>
-                    <td class="hngry-header-label" align="right" valign="middle" style="color:#444444!important;">
-                      <span style="color:#444444!important;background-image:linear-gradient(#444444,#444444);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">EMAIL SIGN-UP</span>
+                    <td align="right" valign="middle">
+                      <img
+                        src="https://hngryclo.com/cdn/shop/t/6/assets/hngry-email-header-label.png?width=208"
+                        alt="EMAIL SIGN-UP"
+                        width="104"
+                        height="18"
+                        style="display:block;width:104px;max-width:100%;height:auto;margin-left:auto;"
+                      >
                     </td>
                   </tr>
                 </table>
@@ -245,43 +168,55 @@
 
             <tr>
               <td class="hngry-main" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color-scheme:light only;supported-color-schemes:light;">
-                <div class="hngry-eyebrow" style="color:#333333!important;">
-                  <span style="color:#333333!important;background-image:linear-gradient(#333333,#333333);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">ONE LAST STEP</span>
-                </div>
-                <h1 class="hngry-title" style="color:#0c0c0c!important;">
-                  <span style="color:#0c0c0c!important;background-image:linear-gradient(#0c0c0c,#0c0c0c);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">{{ email_title | strip }}</span>
-                </h1>
-                <div class="hngry-copy" style="color:#222222!important;">
-                  <div style="color:#222222!important;background-image:linear-gradient(#222222,#222222);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">{{ email_body | strip }}</div>
-                </div>
+                <img
+                  src="https://hngryclo.com/cdn/shop/t/6/assets/hngry-email-confirm-copy.png?width=680"
+                  alt="ONE LAST STEP. CONFIRM YOUR EMAIL. {{ email_body | strip }}"
+                  width="340"
+                  height="218"
+                  style="display:block;width:340px;max-width:100%;height:auto;"
+                >
 
                 {% if customer.subscribe_url %}
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:28px;">
                     <tr>
-                      <td class="hngry-button-cell" bgcolor="#0c0c0c" style="background-color:#0c0c0c;background-image:linear-gradient(#0c0c0c,#0c0c0c);">
-                        <a href="{{ customer.subscribe_url }}" class="hngry-button" style="color:#fffffe!important;">
-                          <span style="color:#fffffe!important;background-image:linear-gradient(#fffffe,#fffffe);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">CONFIRM SIGN-UP →</span>
+                      <td>
+                        <a href="{{ customer.subscribe_url }}" style="display:block;text-decoration:none;">
+                          <img
+                            src="https://hngryclo.com/cdn/shop/t/6/assets/hngry-email-confirm-button.png?width=440"
+                            alt="CONFIRM SIGN-UP →"
+                            width="220"
+                            height="48"
+                            style="display:block;width:220px;max-width:100%;height:auto;"
+                          >
                         </a>
                       </td>
                     </tr>
                   </table>
                 {% endif %}
 
-                <div class="hngry-note" style="color:#444444!important;">
-                  <div style="color:#444444!important;background-image:linear-gradient(#444444,#444444);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">THIS LINK ONLY CONFIRMS YOUR EMAIL SUBSCRIPTION.</div>
+                <div style="margin-top:22px;">
+                  <img
+                    src="https://hngryclo.com/cdn/shop/t/6/assets/hngry-email-confirm-note.png?width=640"
+                    alt="THIS LINK ONLY CONFIRMS YOUR EMAIL SUBSCRIPTION."
+                    width="320"
+                    height="18"
+                    style="display:block;width:320px;max-width:100%;height:auto;"
+                  >
                 </div>
               </td>
             </tr>
 
             <tr>
               <td class="hngry-footer" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color:#777777!important;color-scheme:light only;supported-color-schemes:light;">
-                <div class="hngry-footer-copy" style="color:#444444!important;">
-                  <div style="color:#444444!important;background-image:linear-gradient(#444444,#444444);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">
-                    QUESTIONS? REPLY TO THIS EMAIL OR CONTACT
-                    <a href="mailto:{{ shop.email }}" style="color:#0c0c0c!important;">{{ shop.email }}</a>.<br>
-                    © {{ 'now' | date: '%Y' }} HNGRŸ
-                  </div>
-                </div>
+                <a href="mailto:{{ shop.email }}" style="display:block;text-decoration:none;">
+                  <img
+                    src="https://hngryclo.com/cdn/shop/t/6/assets/hngry-email-footer.png?width=640"
+                    alt="QUESTIONS? REPLY TO THIS EMAIL OR CONTACT {{ shop.email }}. © HNGRŸ"
+                    width="320"
+                    height="54"
+                    style="display:block;width:320px;max-width:100%;height:auto;"
+                  >
+                </a>
               </td>
             </tr>
           </table>

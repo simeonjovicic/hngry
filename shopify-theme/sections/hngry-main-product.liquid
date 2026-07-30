@@ -55,7 +55,9 @@
 
       {%- comment -%} info column {%- endcomment -%}
       <div class="hngry-pdp__info hngry-reveal">
-        <h1 class="hngry-pdp__title hngry-display">{{ product.title }}</h1>
+        <h1 class="hngry-pdp__title hngry-display">
+          {{- product.title | escape | replace: ' A ', ' <br class="hngry-pdp__title-break">A ' -}}
+        </h1>
 
         {%- if section.settings.sub_label != blank -%}
           <p class="hngry-pdp__sublabel hngry-mono">{{ section.settings.sub_label }}</p>
@@ -221,6 +223,8 @@
     line-height: 0.95;
     text-transform: uppercase;
   }
+
+  .hngry-pdp__title-break { display: none; }
 
   .hngry-pdp__sublabel {
     margin: 0.6rem 0 0;
@@ -416,6 +420,7 @@
   @media (min-width: 990px) {
     .hngry-pdp__back { font-size: 1.4rem; }
     .hngry-pdp__title { font-size: clamp(2.97rem, 3.3vw, 4.29rem); }
+    .hngry-pdp__title-break { display: block; }
     .hngry-pdp__sublabel { font-size: 1.5rem; }
     .hngry-pdp__price { font-size: 2.8rem; }
     .hngry-pdp__desc { font-size: 1.8rem; line-height: 1.7; }

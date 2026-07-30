@@ -465,7 +465,15 @@ button.shopify-payment-button__button--unbranded {
 .product__title h1,
 .product__title .h1 {
   font-family: var(--hngry-display);
+  font-size: calc(var(--font-heading-scale) * 2.6rem);
   text-transform: uppercase;
+}
+
+@media only screen and (min-width: 750px) {
+  .product__title h1,
+  .product__title .h1 {
+    font-size: calc(var(--font-heading-scale) * 3.2rem);
+  }
 }
 
 /* payment note under buy buttons */

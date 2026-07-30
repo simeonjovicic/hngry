@@ -27,57 +27,6 @@
     <meta name="supported-color-schemes" content="light">
     <link rel="stylesheet" type="text/css" href="/assets/notifications/styles.css">
     <style>
-      u + #body .gmail-dark-text-outer {
-        background: #000000 !important;
-        mix-blend-mode: exclusion !important;
-      }
-
-      u + #body .gmail-dark-text-inner {
-        background: #000000 !important;
-        color: #ffffff !important;
-        mix-blend-mode: difference !important;
-      }
-
-      u + #body .gmail-dark-text-inner a {
-        color: #ffffff !important;
-      }
-
-      u + #body .gmail-light-text-screen {
-        background: #000000 !important;
-        mix-blend-mode: screen !important;
-      }
-
-      u + #body .gmail-light-text-difference {
-        background: #000000 !important;
-        mix-blend-mode: difference !important;
-      }
-
-      u + .body .gmail-dark-text-outer {
-        background: #000000 !important;
-        mix-blend-mode: exclusion !important;
-      }
-
-      u + .body .gmail-dark-text-inner {
-        background: #000000 !important;
-        color: #ffffff !important;
-        mix-blend-mode: difference !important;
-      }
-
-      u + .body .gmail-dark-text-inner a {
-        color: #ffffff !important;
-      }
-
-      u + .body .gmail-light-text-screen {
-        background: #000000 !important;
-        mix-blend-mode: screen !important;
-      }
-
-      u + .body .gmail-light-text-difference {
-        background: #000000 !important;
-        mix-blend-mode: difference !important;
-      }
-    </style>
-    <style>
       :root {
         color-scheme: light only;
         supported-color-schemes: light;
@@ -286,8 +235,8 @@
                         >
                       </a>
                     </td>
-                    <td class="hngry-header-label gmail-dark-text-outer" align="right" valign="middle" style="color:#7a7a7a!important;">
-                      <span class="gmail-dark-text-inner">EMAIL SIGN-UP</span>
+                    <td class="hngry-header-label" align="right" valign="middle" style="color:#444444!important;">
+                      <span style="color:#444444!important;background-image:linear-gradient(#444444,#444444);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">EMAIL SIGN-UP</span>
                     </td>
                   </tr>
                 </table>
@@ -296,38 +245,38 @@
 
             <tr>
               <td class="hngry-main" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color-scheme:light only;supported-color-schemes:light;">
-                <div class="hngry-eyebrow gmail-dark-text-outer" style="color:#808080!important;">
-                  <span class="gmail-dark-text-inner">ONE LAST STEP</span>
+                <div class="hngry-eyebrow" style="color:#333333!important;">
+                  <span style="color:#333333!important;background-image:linear-gradient(#333333,#333333);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">ONE LAST STEP</span>
                 </div>
-                <h1 class="hngry-title gmail-dark-text-outer" style="color:#0c0c0c!important;">
-                  <span class="gmail-dark-text-inner">{{ email_title | strip }}</span>
+                <h1 class="hngry-title" style="color:#0c0c0c!important;">
+                  <span style="color:#0c0c0c!important;background-image:linear-gradient(#0c0c0c,#0c0c0c);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">{{ email_title | strip }}</span>
                 </h1>
-                <div class="hngry-copy gmail-dark-text-outer" style="color:#555555!important;">
-                  <div class="gmail-dark-text-inner">{{ email_body | strip }}</div>
+                <div class="hngry-copy" style="color:#222222!important;">
+                  <div style="color:#222222!important;background-image:linear-gradient(#222222,#222222);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">{{ email_body | strip }}</div>
                 </div>
 
                 {% if customer.subscribe_url %}
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:28px;">
                     <tr>
                       <td class="hngry-button-cell" bgcolor="#0c0c0c" style="background-color:#0c0c0c;background-image:linear-gradient(#0c0c0c,#0c0c0c);">
-                        <a href="{{ customer.subscribe_url }}" class="hngry-button gmail-light-text-screen" style="color:#fffffe!important;">
-                          <span class="gmail-light-text-difference">CONFIRM SIGN-UP →</span>
+                        <a href="{{ customer.subscribe_url }}" class="hngry-button" style="color:#fffffe!important;">
+                          <span style="color:#fffffe!important;background-image:linear-gradient(#fffffe,#fffffe);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">CONFIRM SIGN-UP →</span>
                         </a>
                       </td>
                     </tr>
                   </table>
                 {% endif %}
 
-                <div class="hngry-note gmail-dark-text-outer" style="color:#888888!important;">
-                  <div class="gmail-dark-text-inner">THIS LINK ONLY CONFIRMS YOUR EMAIL SUBSCRIPTION.</div>
+                <div class="hngry-note" style="color:#444444!important;">
+                  <div style="color:#444444!important;background-image:linear-gradient(#444444,#444444);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">THIS LINK ONLY CONFIRMS YOUR EMAIL SUBSCRIPTION.</div>
                 </div>
               </td>
             </tr>
 
             <tr>
               <td class="hngry-footer" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color:#777777!important;color-scheme:light only;supported-color-schemes:light;">
-                <div class="hngry-footer-copy gmail-dark-text-outer" style="color:#777777!important;">
-                  <div class="gmail-dark-text-inner">
+                <div class="hngry-footer-copy" style="color:#444444!important;">
+                  <div style="color:#444444!important;background-image:linear-gradient(#444444,#444444);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;">
                     QUESTIONS? REPLY TO THIS EMAIL OR CONTACT
                     <a href="mailto:{{ shop.email }}" style="color:#0c0c0c!important;">{{ shop.email }}</a>.<br>
                     © {{ 'now' | date: '%Y' }} HNGRŸ

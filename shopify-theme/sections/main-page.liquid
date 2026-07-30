@@ -1,5 +1,15 @@
 {{ 'section-main-page.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign page_display_title = page.title
+  assign page_language = request.locale.iso_code
+
+  if template.suffix == 'contact'
+    assign page_display_title = 'CONTACT'
+    assign page_language = 'en'
+  endif
+-%}
+
 {%- style -%}
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
@@ -14,9 +24,9 @@
   }
 {%- endstyle -%}
 
-<div class="page-width page-width--narrow section-{{ section.id }}-padding">
+<div class="page-width page-width--narrow section-{{ section.id }}-padding" lang="{{ page_language }}">
   <h1 class="main-page-title page-title h0{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
-    {{ page.title | escape }}
+    {{ page_display_title | escape }}
   </h1>
   <div class="rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
     {{ page.content }}

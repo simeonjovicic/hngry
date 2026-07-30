@@ -66,7 +66,7 @@
                           selected="selected"
                         {% endif %}
                       >
-                        {{ option.name | escape }}
+                        {% render 'hngry-sort-option-label', value: option.value, label: option.name %}
                       </option>
                     {%- endfor -%}
                   </select>

@@ -1,0 +1,45 @@
+{%- comment -%}
+  Normalizes common Shopify filter labels and values to English when the
+  storefront itself still uses a German locale.
+
+  Accepts:
+  - label: filter label or filter value
+{%- endcomment -%}
+
+{%- liquid
+  assign label_key = label | handleize
+  assign display_label = label
+
+  case label_key
+    when 'verfugbarkeit', 'verfuegbarkeit', 'availability'
+      assign display_label = 'Availability'
+    when 'preis', 'price'
+      assign display_label = 'Price'
+    when 'grosse', 'groesse', 'size'
+      assign display_label = 'Size'
+    when 'farbe', 'color', 'colour'
+      assign display_label = 'Color'
+    when 'produkttyp', 'product-type'
+      assign display_label = 'Product type'
+    when 'anbieter', 'marke', 'vendor', 'brand'
+      assign display_label = 'Brand'
+    when 'auf-lager', 'in-stock'
+      assign display_label = 'In stock'
+    when 'nicht-vorratig', 'nicht-verfugbar', 'out-of-stock'
+      assign display_label = 'Out of stock'
+    when 'schwarz', 'black'
+      assign display_label = 'Black'
+    when 'weiss', 'white'
+      assign display_label = 'White'
+    when 'grau', 'gray', 'grey'
+      assign display_label = 'Gray'
+    when 'grun', 'gruen', 'green'
+      assign display_label = 'Green'
+    when 'blau', 'blue'
+      assign display_label = 'Blue'
+    when 'rot', 'red'
+      assign display_label = 'Red'
+  endcase
+
+  echo display_label | escape
+-%}

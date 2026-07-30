@@ -30,10 +30,10 @@
     },
     "continue_shopping": "Weiter shoppen",
     "pagination": {
-      "label": "Seitennummerierung",
-      "page": "Seite {{ number }}",
-      "next": "Nächste Seite",
-      "previous": "Vorherige Seite"
+      "label": "Pagination",
+      "page": "Page {{ number }}",
+      "next": "Next page",
+      "previous": "Previous page"
     },
     "search": {
       "search": "Suchen",
@@ -124,13 +124,13 @@
         "in_cart_aria_label": "Menge ({{ quantity }} im Warenkorb)"
       },
       "price": {
-        "from_price_html": "Von {{ price }}",
-        "regular_price": "Normaler Preis",
-        "sale_price": "Verkaufspreis",
-        "unit_price": "Grundpreis"
+        "from_price_html": "From {{ price }}",
+        "regular_price": "Regular price",
+        "sale_price": "Sale price",
+        "unit_price": "Unit price"
       },
       "share": "Dieses Produkt teilen",
-      "sold_out": "Ausverkauft",
+      "sold_out": "Sold out",
       "unavailable": "Nicht verfügbar",
       "vendor": "Anbieter",
       "video_exit_message": "{{ title }} öffnet das Video auf derselben Seite im Vollbildmodus.",
@@ -185,35 +185,35 @@
       "label": "Medien-Galerie"
     },
     "facets": {
-      "apply": "Anwenden",
-      "clear": "Löschen",
-      "clear_all": "Alle entfernen",
-      "from": "Von",
-      "filter_and_sort": "Filtern und sortieren",
+      "apply": "Apply",
+      "clear": "Clear",
+      "clear_all": "Remove all",
+      "from": "From",
+      "filter_and_sort": "Filter and sort",
       "filter_by_label": "Filter:",
       "filter_button": "Filter",
       "filters_selected": {
-        "one": "{{ count }} ausgewählt",
-        "other": "{{ count }} ausgewählt"
+        "one": "{{ count }} selected",
+        "other": "{{ count }} selected"
       },
-      "max_price": "Der höchste Preis ist {{ price }}",
+      "max_price": "The highest price is {{ price }}",
       "product_count": {
-        "one": "{{ product_count }} von {{ count }} Produkt",
-        "other": "{{ product_count }} von {{ count }} Produkten"
+        "one": "{{ product_count }} of {{ count }} product",
+        "other": "{{ product_count }} of {{ count }} products"
       },
       "product_count_simple": {
-        "one": "{{ count }} Produkt",
-        "other": "{{ count }} Produkte"
+        "one": "{{ count }} product",
+        "other": "{{ count }} products"
       },
-      "reset": "Zurücksetzen",
-      "sort_button": "Sortieren",
-      "sort_by_label": "Sortieren nach:",
-      "to": "Bis",
-      "clear_filter": "Filter entfernen",
-      "filter_selected_accessibility": "{{ type }} ({{ count }} Filter ausgewählt)",
-      "show_more": "Mehr anzeigen",
-      "show_less": "Weniger anzeigen",
-      "filter_and_operator_subtitle": "Allen entsprechen"
+      "reset": "Reset",
+      "sort_button": "Sort",
+      "sort_by_label": "Sort by:",
+      "to": "To",
+      "clear_filter": "Remove filter",
+      "filter_selected_accessibility": "{{ type }} ({{ count }} filters selected)",
+      "show_more": "Show more",
+      "show_less": "Show less",
+      "filter_and_operator_subtitle": "Match all"
     }
   },
   "templates": {
@@ -252,13 +252,13 @@
     "contact": {
       "form": {
         "name": "Name",
-        "email": "E-Mail",
-        "phone": "Telefonnummer",
-        "comment": "Kommentar",
-        "send": "Senden",
-        "post_success": "Danke, dass du uns kontaktiert hast. Wir werden uns so schnell wie möglich bei dir melden.",
-        "error_heading": "Bitte passe Folgendes an:",
-        "title": "Kontaktformular"
+        "email": "Email",
+        "phone": "Phone number",
+        "comment": "Comment",
+        "send": "Send",
+        "post_success": "Thanks for contacting us. We'll get back to you as soon as possible.",
+        "error_heading": "Please adjust the following:",
+        "title": "Contact form"
       }
     },
     "404": {
@@ -325,9 +325,9 @@
       "view_all": "Alle anzeigen"
     },
     "collection_template": {
-      "title": "Kategorie",
-      "empty": "Keine Produkte gefunden",
-      "use_fewer_filters_html": "Verwende weniger Filter oder <a class=\"{{ class }}\" href=\"{{ link }}\">entferne alle</a>"
+      "title": "Collection",
+      "empty": "No products found",
+      "use_fewer_filters_html": "Use fewer filters or <a class=\"{{ class }}\" href=\"{{ link }}\">remove all</a>"
     },
     "video": {
       "load_video": "Video laden: {{ description }}"

@@ -1,0 +1,35 @@
+{%- comment -%}
+  Keeps Shopify's canonical sort values while rendering English labels,
+  independent of the store's active locale.
+
+  Accepts:
+  - value: canonical sort value
+  - label: Shopify's localized fallback label
+{%- endcomment -%}
+
+{%- liquid
+  assign display_label = label
+
+  case value
+    when 'manual'
+      assign display_label = 'Featured'
+    when 'best-selling'
+      assign display_label = 'Best selling'
+    when 'title-ascending'
+      assign display_label = 'Alphabetically, A–Z'
+    when 'title-descending'
+      assign display_label = 'Alphabetically, Z–A'
+    when 'price-ascending'
+      assign display_label = 'Price, low to high'
+    when 'price-descending'
+      assign display_label = 'Price, high to low'
+    when 'created-ascending'
+      assign display_label = 'Date, old to new'
+    when 'created-descending'
+      assign display_label = 'Date, new to old'
+    when 'relevance'
+      assign display_label = 'Relevance'
+  endcase
+
+  echo display_label | escape
+-%}

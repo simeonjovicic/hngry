@@ -1,6 +1,16 @@
 {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
 {{ 'component-collection-hero.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign collection_title_key = collection.title | handleize
+  assign collection_display_title = collection.title
+
+  case collection_title_key
+    when 'alle', 'alle-produkte', 'produkte', 'katalog', 'shop'
+      assign collection_display_title = 'SHOP'
+  endcase
+-%}
+
 {%- style -%}
   @media screen and (max-width: 749px) {
     .collection-hero--with-image .collection-hero__inner {
@@ -9,7 +19,10 @@
   }
 {%- endstyle -%}
 
-<div class="collection-hero{% if section.settings.show_collection_image and collection.image %} collection-hero--with-image{% endif %} color-{{ section.settings.color_scheme }} gradient">
+<div
+  class="collection-hero{% if section.settings.show_collection_image and collection.image %} collection-hero--with-image{% endif %} color-{{ section.settings.color_scheme }} gradient"
+  lang="en"
+>
   <div class="collection-hero__inner page-width {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
     <div class="collection-hero__text-wrapper">
       <a href="{{ routes.root_url }}" class="hngry-back hngry-mono">← BACK TO HOME</a>
@@ -18,7 +31,7 @@
       {%- endif -%}
       <h1 class="collection-hero__title hngry-collection-title">
         <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
-        {{- collection.title | escape -}}
+        {{- collection_display_title | escape -}}
       </h1>
 
       {%- if section.settings.show_collection_description -%}

@@ -13,7 +13,7 @@
 {% capture display_title %}PICKUP COMPLETE.{% endcapture %}
 
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" style="color-scheme:light only;">
   <head>
     <title>{{ email_title }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -22,6 +22,7 @@
     <meta name="supported-color-schemes" content="light only">
     <link rel="stylesheet" type="text/css" href="/assets/notifications/styles.css">
     <style>
+      :root{color-scheme:light only;supported-color-schemes:light}
       body,.hngry-body{margin:0!important;padding:0!important;width:100%!important;background:#e3e1da!important;color:#0c0c0c!important}
       table{border-collapse:collapse;border-spacing:0}img{border:0;display:block;line-height:100%}p,h1,h2,h3,h4{margin:0}
       a,a:hover,a:active,a:visited{color:#0c0c0c}.hngry-shell{width:100%;background:#e3e1da}.hngry-container{width:640px;max-width:640px}
@@ -43,14 +44,15 @@
       .hngry-totals{border-top:2px solid #0c0c0c;margin-top:8px}.hngry-total-label,.hngry-total-value{color:#0c0c0c;font:400 12px/18px "Courier New",Courier,monospace;padding:6px 0}.hngry-total-value{font-weight:700;text-align:right;white-space:nowrap}
       .hngry-grand-total td{border-top:1px solid #0c0c0c;color:#0c0c0c;font:900 25px/30px Impact,Haettenschweiler,"Arial Narrow Bold","Arial Black",sans-serif;padding-top:15px;text-transform:uppercase}.hngry-saved{color:#0c0c0c;font:700 10px/16px "Courier New",Courier,monospace;letter-spacing:.6px;padding-top:8px;text-align:right}
       .hngry-footer{background:#0c0c0c;border-top:1px solid #4a4a47;color:#9c9a94;font:400 9px/16px "Courier New",Courier,monospace;letter-spacing:1px;padding:26px 40px 34px}.hngry-footer a{color:#f1efe9!important}
+      @media (prefers-color-scheme:dark){html,body,.hngry-body,.hngry-shell{background-color:#e3e1da!important;color:#0c0c0c!important}.hngry-header,.hngry-content,.hngry-section{background-color:#f1efe9!important;color:#0c0c0c!important}.hngry-ticker,.hngry-hero,.hngry-footer{background-color:#0c0c0c!important}.hngry-ticker,.hngry-hero,.hngry-title,.hngry-copy,.hngry-order-chip,.hngry-footer,.hngry-footer a{color:#f1efe9!important}.hngry-button-cell{background-color:#0c0c0c!important}.hngry-button{color:#f1efe9!important}}
       @media only screen and (max-width:680px){.hngry-container{width:100%!important}.hngry-header,.hngry-hero,.hngry-content,.hngry-section,.hngry-footer{padding-left:22px!important;padding-right:22px!important}.hngry-title{font-size:41px!important;line-height:41px!important}.hngry-heading{font-size:27px!important;line-height:31px!important}.hngry-order-label{font-size:9px!important;letter-spacing:1px!important}.hngry-button-wrap,.hngry-button-wrap tbody,.hngry-button-wrap tr,.hngry-button-wrap td{display:block!important;width:100%!important}.hngry-button{box-sizing:border-box!important;text-align:center!important;width:100%!important}.hngry-product-image-cell{width:68px!important}.hngry-product-image{height:68px!important;width:68px!important}.hngry-product-title{font-size:13px!important;line-height:18px!important}.hngry-product-price{font-size:11px!important}}
     </style>
   </head>
 
-  <body class="hngry-body">
+  <body class="hngry-body" bgcolor="#e3e1da" style="margin:0;padding:0;background-color:#e3e1da;color:#0c0c0c;">
     <div class="hngry-preheader">Deine HNGRŸ Bestellung {{ order_name }} wurde abgeholt.</div>
-    <table role="presentation" class="hngry-shell" width="100%" cellpadding="0" cellspacing="0" border="0">
-      <tr><td align="center">
+    <table role="presentation" class="hngry-shell" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#e3e1da" style="background-color:#e3e1da;color:#0c0c0c;">
+      <tr><td align="center" bgcolor="#e3e1da" style="background-color:#e3e1da;">
         <table role="presentation" class="hngry-container" width="640" cellpadding="0" cellspacing="0" border="0">
           <tr><td class="hngry-ticker">PICKUP COMPLETE &nbsp;✦&nbsp; STAY HNGRŸ &nbsp;✦&nbsp; THANK YOU &nbsp;✦&nbsp; PICKUP COMPLETE</td></tr>
           <tr><td class="hngry-header">

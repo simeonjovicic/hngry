@@ -7,9 +7,8 @@
     <meta name="theme-color" content="">
     <link rel="canonical" href="{{ canonical_url }}">
 
-    {%- if settings.favicon != blank -%}
-      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
-    {%- endif -%}
+    <link rel="icon" type="image/png" href="{{ 'hngry-full-wordmark-favicon-v2.png' | asset_url }}">
+    <link rel="shortcut icon" type="image/png" href="{{ 'hngry-full-wordmark-favicon-v2.png' | asset_url }}">
 
     {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
@@ -22,9 +21,11 @@
       {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
     </title>
 
-    {% if page_description %}
-      <meta name="description" content="{{ page_description | escape }}">
-    {% endif %}
+    {% assign hngry_meta_description = page_description
+      | default: shop.description
+      | default: 'Independent fashion for the ones who want more.'
+    %}
+    <meta name="description" content="{{ hngry_meta_description | escape }}">
 
     {% render 'meta-tags' %}
 

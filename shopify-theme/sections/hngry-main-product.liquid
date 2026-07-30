@@ -5,6 +5,7 @@
   assign current = product.selected_or_first_available_variant
   assign details = section.settings.details | strip | newline_to_br | split: '<br />'
   assign product_form_id = 'hngry-product-form-' | append: section.id
+  assign product_description_text = product.description | strip_html | replace: '&nbsp;', '' | strip
 -%}
 
 <section class="hngry-pdp color-{{ section.settings.color_scheme }}" {{ section.shopify_attributes }}>
@@ -67,7 +68,7 @@
           {{ current.price | money }}
         </p>
 
-        {%- if product.description != blank -%}
+        {%- if product_description_text != blank -%}
           <div class="hngry-pdp__desc">{{ product.description }}</div>
         {%- endif -%}
 
@@ -454,13 +455,13 @@
       "id": "size_guide_rows",
       "label": "Measurements (one per line)",
       "info": "Label followed by one value per size, comma separated. Values in cm — the CM\/IN toggle converts them.",
-      "default": "Chest width, 49, 51, 53, 55\nTotal length from HPS, 62, 65, 68, 71\nSleeve length, 20, 20.5, 21, 21.5\nNeck opening, 15.5, 16, 16.5, 17\nShoulder line, 16.5, 17, 17.5, 18\nSleeve opening, 20.5, 21, 21.5, 22\nRibb collar height, 2.5, 2.5, 2.5, 2.5"
+      "default": "Chest width, 49, 51, 53, 55\nTotal length, 62, 65, 68, 71\nSleeve length, 20, 20.5, 21, 21.5\nNeck opening, 15.5, 16, 16.5, 17\nShoulder line, 16.5, 17, 17.5, 18"
     },
     {
       "type": "text",
       "id": "size_guide_note",
       "label": "Size guide note",
-      "default": "Alle Angaben in cm, flach gemessen. Toleranz ±2 cm. Boxy oversized fit — für regular Fit eine Größe kleiner wählen."
+      "default": "All measurements are in cm and taken flat. Tolerance ±2 cm. Boxy fit — size down for a regular fit."
     }
   ]
 }

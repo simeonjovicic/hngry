@@ -1,43 +1,34 @@
 {% comment %}
-  HNGRŸ — Shopify Versandbestätigung
+  HNGRŸ — Minimal Shopify shipping confirmation
 
-  Empfohlener E-Mail-Betreff:
-  EINE SENDUNG AUS BESTELLUNG {{ name }} IST UNTERWEGS — STAY HNGRŸ
+  Recommended subject:
+  ORDER {{ name }} IS ON THE WAY
 
-  Diese Datei vollständig in Shopify unter
-  Einstellungen → Benachrichtigungen → Versandbestätigung einfügen.
+  Paste this complete file into:
+  Shopify → Settings → Notifications → Customer notifications
+  → Shipping confirmation → Edit code
 {% endcomment %}
 
 {% if fulfillment.item_count == item_count %}
-  {% capture email_title %}Deine Bestellung ist auf dem Weg{% endcapture %}
-  {% capture display_title %}ON THE WAY.{% endcapture %}
-  {% capture email_body %}Deine Order ist unterwegs. Über das Tracking siehst du jederzeit den aktuellen Lieferstatus.{% endcapture %}
+  {% capture email_title %}YOUR ORDER IS ON THE WAY{% endcapture %}
+  {% capture email_body %}Your order is on the way. Track your shipment to see the latest delivery status.{% endcapture %}
 {% elsif fulfillment.item_count > 1 %}
   {% if fulfillment_status == 'fulfilled' %}
-    {% capture email_title %}Die letzten Artikel in deiner Bestellung sind auf dem Weg{% endcapture %}
-    {% capture display_title %}LAST PIECES OUT.{% endcapture %}
-    {% capture email_body %}Die letzten Pieces deiner Order sind unterwegs. Über das Tracking siehst du jederzeit den aktuellen Lieferstatus.{% endcapture %}
+    {% capture email_title %}THE LAST ITEMS ARE ON THE WAY{% endcapture %}
+    {% capture email_body %}The last items in your order are on the way. Track your shipment to see the latest delivery status.{% endcapture %}
   {% else %}
-    {% capture email_title %}Einige Artikel in deiner Bestellung sind auf dem Weg{% endcapture %}
-    {% capture display_title %}PARTIAL SHIPMENT.{% endcapture %}
-    {% capture email_body %}Ein Teil deiner Order ist unterwegs. Die restlichen Pieces folgen separat – wir halten dich auf dem Laufenden.{% endcapture %}
+    {% capture email_title %}PART OF YOUR ORDER IS ON THE WAY{% endcapture %}
+    {% capture email_body %}Some items in your order are on the way. The rest will follow separately.{% endcapture %}
   {% endif %}
 {% else %}
   {% if fulfillment_status == 'fulfilled' %}
-    {% capture email_title %}Der letzte Artikel in deiner Bestellung ist auf dem Weg{% endcapture %}
-    {% capture display_title %}LAST PIECE OUT.{% endcapture %}
-    {% capture email_body %}Das letzte Piece deiner Order ist unterwegs. Über das Tracking siehst du jederzeit den aktuellen Lieferstatus.{% endcapture %}
+    {% capture email_title %}THE LAST ITEM IS ON THE WAY{% endcapture %}
+    {% capture email_body %}The last item in your order is on the way. Track your shipment to see the latest delivery status.{% endcapture %}
   {% else %}
-    {% capture email_title %}Ein Artikel in deiner Bestellung ist auf dem Weg{% endcapture %}
-    {% capture display_title %}ONE PIECE OUT.{% endcapture %}
-    {% capture email_body %}Ein Piece deiner Order ist unterwegs. Die restlichen Pieces folgen separat – wir halten dich auf dem Laufenden.{% endcapture %}
+    {% capture email_title %}AN ITEM IS ON THE WAY{% endcapture %}
+    {% capture email_body %}An item in your order is on the way. The rest will follow separately.{% endcapture %}
   {% endif %}
 {% endif %}
-
-{% capture email_emphasis %}
-  VORAUSSICHTLICHE ZUSTELLUNG<br>
-  <strong>{{ fulfillment.estimated_delivery_at | date: format: 'date' }}</strong>
-{% endcapture %}
 
 {% assign primary_tracking_url = blank %}
 {% if fulfillment.tracking_url %}
@@ -49,7 +40,7 @@
 {% endif %}
 
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en" style="color-scheme:light only;">
   <head>
     <title>{{ email_title | strip }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -58,12 +49,16 @@
     <meta name="supported-color-schemes" content="light only">
     <link rel="stylesheet" type="text/css" href="/assets/notifications/styles.css">
     <style>
-      body,
-      .hngry-body {
+      :root {
+        color-scheme: light only;
+        supported-color-schemes: light;
+      }
+
+      body {
         margin: 0 !important;
         padding: 0 !important;
         width: 100% !important;
-        background-color: #e3e1da !important;
+        background: #f5f5f5 !important;
         color: #0c0c0c !important;
       }
 
@@ -75,302 +70,246 @@
       img {
         border: 0;
         display: block;
-        line-height: 100%;
       }
 
       p,
-      h1,
-      h2,
-      h3,
-      h4 {
+      h1 {
         margin: 0;
       }
 
-      a,
-      a:hover,
-      a:active,
-      a:visited {
+      a {
         color: #0c0c0c;
       }
 
       .hngry-shell {
         width: 100%;
-        background-color: #e3e1da;
+        background: #f5f5f5;
       }
 
-      .hngry-container {
-        width: 640px;
-        max-width: 640px;
-      }
-
-      .hngry-preheader {
-        display: none !important;
-        max-height: 0 !important;
-        overflow: hidden !important;
-        opacity: 0 !important;
-        color: transparent !important;
-      }
-
-      .hngry-ticker {
-        background-color: #0c0c0c;
-        color: #f1efe9;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 9px;
-        font-weight: bold;
-        letter-spacing: 2px;
-        line-height: 14px;
-        padding: 9px 18px;
-        text-align: center;
+      .hngry-card {
+        width: 600px;
+        max-width: 600px;
+        background: #fffffe;
       }
 
       .hngry-header {
-        background-color: #f1efe9;
-        border-bottom: 1px solid #0c0c0c;
-        padding: 22px 32px;
+        padding: 30px 36px;
+        border-bottom: 1px solid #e0e0e0;
       }
 
-      .hngry-logo-text {
-        color: #0c0c0c !important;
-        font-family: Impact, Haettenschweiler, "Arial Black", sans-serif;
-        font-size: 29px;
-        font-weight: 900;
-        letter-spacing: -1px;
-        line-height: 32px;
-        text-decoration: none;
-      }
-
-      .hngry-order-label {
-        color: #0c0c0c;
+      .hngry-order-number {
+        color: #7a7a7a;
         font-family: "Courier New", Courier, monospace;
         font-size: 10px;
-        font-weight: bold;
-        letter-spacing: 1.5px;
+        letter-spacing: 1.4px;
         line-height: 16px;
         text-align: right;
       }
 
-      .hngry-hero {
-        background-color: #0c0c0c;
-        color: #f1efe9;
-        padding: 46px 40px 42px;
+      .hngry-main {
+        padding: 52px 36px 42px;
       }
 
-      .hngry-kicker {
-        color: #9c9a94;
+      .hngry-eyebrow,
+      .hngry-section-label,
+      .hngry-product-meta,
+      .hngry-info-label,
+      .hngry-footer {
         font-family: "Courier New", Courier, monospace;
+      }
+
+      .hngry-eyebrow {
+        color: #808080;
         font-size: 10px;
-        font-weight: bold;
-        letter-spacing: 2.5px;
+        letter-spacing: 2px;
         line-height: 16px;
-        padding-bottom: 17px;
+        padding-bottom: 14px;
       }
 
       .hngry-title {
-        color: #f1efe9;
-        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", "Arial Black", sans-serif;
-        font-size: 57px;
-        font-weight: 900;
-        letter-spacing: -1px;
-        line-height: 55px;
-        text-transform: uppercase;
-      }
-
-      .hngry-title-accent {
-        color: #f4731c;
+        color: #0c0c0c;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 42px;
+        font-weight: 400;
+        letter-spacing: 1px;
+        line-height: 46px;
       }
 
       .hngry-copy {
-        color: #f1efe9;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 13px;
-        letter-spacing: 0.4px;
-        line-height: 23px;
-        padding-top: 25px;
-      }
-
-      .hngry-order-chip {
-        background-color: transparent;
-        border: 1px solid #4a4a47;
-        color: #f1efe9;
-        display: inline-block;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 10px;
-        font-weight: bold;
-        letter-spacing: 2px;
-        line-height: 14px;
-        padding: 9px 12px;
-        text-transform: uppercase;
-      }
-
-      .hngry-content,
-      .hngry-section {
-        background-color: #f1efe9;
-        padding: 38px 40px;
-      }
-
-      .hngry-section {
-        border-top: 1px solid #0c0c0c;
-      }
-
-      .hngry-section-number {
-        color: #77756f;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 9px;
-        font-weight: bold;
-        letter-spacing: 2.2px;
-        line-height: 15px;
-        padding-bottom: 10px;
-      }
-
-      .hngry-heading {
-        color: #0c0c0c;
-        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", "Arial Black", sans-serif;
-        font-size: 31px;
-        font-weight: 900;
-        line-height: 35px;
-        padding-bottom: 22px;
-        text-transform: uppercase;
+        max-width: 450px;
+        padding-top: 22px;
+        color: #555555;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        line-height: 22px;
       }
 
       .hngry-button-cell {
-        background-color: #0c0c0c;
-        border: 1px solid #0c0c0c;
+        background: #0c0c0c;
       }
 
       .hngry-button {
-        color: #f1efe9 !important;
         display: inline-block;
+        padding: 15px 23px;
+        color: #fffffe !important;
         font-family: "Courier New", Courier, monospace;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: bold;
-        letter-spacing: 1.7px;
-        line-height: 18px;
-        padding: 15px 24px;
+        letter-spacing: 1.6px;
+        line-height: 16px;
         text-decoration: none;
-        text-transform: uppercase;
       }
 
-      .hngry-button-secondary-cell {
-        background-color: #f1efe9;
-        border: 1px solid #0c0c0c;
+      .hngry-note {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border: 1px solid #dedede;
+        color: #555555;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        line-height: 19px;
       }
 
-      .hngry-button-secondary {
+      .hngry-note a {
         color: #0c0c0c !important;
-        display: inline-block;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 11px;
-        font-weight: bold;
-        letter-spacing: 1.7px;
-        line-height: 18px;
-        padding: 15px 24px;
-        text-decoration: none;
-        text-transform: uppercase;
-      }
-
-      .hngry-delivery-box,
-      .hngry-tracking-box {
-        background-color: #e3e1da;
-        border: 1px solid #c8c6bf;
-        color: #0c0c0c;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 11px;
-        letter-spacing: 0.4px;
-        line-height: 18px;
-        padding: 16px 18px;
-      }
-
-      .hngry-delivery-box strong {
-        font-size: 15px;
-      }
-
-      .hngry-tracking-box a {
-        color: #0c0c0c !important;
-        font-weight: bold;
+        font-weight: 600;
         text-decoration: underline;
-        text-underline-offset: 3px;
+      }
+
+      .hngry-section {
+        padding: 36px;
+        border-top: 1px solid #e0e0e0;
+      }
+
+      .hngry-section-label {
+        padding-bottom: 18px;
+        color: #777777;
+        font-size: 10px;
+        letter-spacing: 1.8px;
+        line-height: 16px;
       }
 
       .hngry-product-row {
-        border-top: 1px solid #c8c6bf;
+        border-top: 1px solid #e0e0e0;
       }
 
       .hngry-product-image-cell {
-        padding: 18px 16px 18px 0;
+        width: 112px;
+        padding: 20px 20px 20px 0;
         vertical-align: top;
-        width: 84px;
       }
 
       .hngry-product-image {
-        background-color: #e3e1da;
-        height: 84px;
+        width: 112px;
+        height: 112px;
+        background: #f3f3f3;
         object-fit: cover;
-        width: 84px;
       }
 
       .hngry-product-info {
-        padding: 18px 0;
-        vertical-align: middle;
+        padding: 20px 0;
+        vertical-align: top;
       }
 
       .hngry-product-title {
         color: #0c0c0c;
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 800;
-        line-height: 20px;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 21px;
         text-transform: uppercase;
       }
 
       .hngry-product-meta {
-        color: #77756f;
-        font-family: "Courier New", Courier, monospace;
+        padding-top: 5px;
+        color: #777777;
         font-size: 10px;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.8px;
         line-height: 16px;
-      }
-
-      .hngry-discount {
-        color: #f4731c;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 9px;
-        font-weight: bold;
-        letter-spacing: 0.5px;
-        line-height: 15px;
-        padding-top: 4px;
         text-transform: uppercase;
       }
 
-      .hngry-child-row td {
-        background-color: #e9e7e1;
-        border-top: 1px solid #d0cec7;
-        padding-bottom: 10px;
-        padding-top: 10px;
+      .hngry-info-grid {
+        width: 100%;
+      }
+
+      .hngry-info-cell {
+        width: 50%;
+        padding: 0 16px 0 0;
+        vertical-align: top;
+      }
+
+      .hngry-info-label {
+        padding-bottom: 7px;
+        color: #777777;
+        font-size: 9px;
+        letter-spacing: 1.4px;
+        line-height: 15px;
+      }
+
+      .hngry-info-copy,
+      .hngry-info-copy p {
+        margin: 0;
+        color: #333333;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        line-height: 19px;
       }
 
       .hngry-footer {
-        background-color: #0c0c0c;
-        border-top: 1px solid #4a4a47;
-        color: #9c9a94;
-        font-family: "Courier New", Courier, monospace;
+        padding: 26px 36px 34px;
+        border-top: 1px solid #e0e0e0;
+        color: #777777;
         font-size: 9px;
-        letter-spacing: 1px;
+        letter-spacing: 0.8px;
         line-height: 16px;
-        padding: 26px 40px 34px;
       }
 
       .hngry-footer a {
-        color: #f1efe9 !important;
+        color: #0c0c0c !important;
       }
 
-      @media only screen and (max-width: 680px) {
-        .hngry-container {
+      @media (prefers-color-scheme: dark) {
+        html,
+        body,
+        .hngry-shell {
+          background-color: #f5f5f5 !important;
+          color: #0c0c0c !important;
+        }
+
+        .hngry-card,
+        .hngry-header,
+        .hngry-main,
+        .hngry-section,
+        .hngry-footer {
+          background-color: #fffffe !important;
+          color: #0c0c0c !important;
+        }
+
+        a {
+          color: #0c0c0c !important;
+        }
+
+        .hngry-button-cell {
+          background-color: #0c0c0c !important;
+        }
+
+        .hngry-button {
+          color: #fffffe !important;
+        }
+
+        .hngry-product-image {
+          background-color: #f3f3f3 !important;
+        }
+      }
+
+      @media only screen and (max-width: 640px) {
+        .hngry-card {
           width: 100% !important;
         }
 
         .hngry-header,
-        .hngry-hero,
-        .hngry-content,
+        .hngry-main,
         .hngry-section,
         .hngry-footer {
           padding-left: 22px !important;
@@ -378,87 +317,59 @@
         }
 
         .hngry-title {
-          font-size: 42px !important;
-          line-height: 42px !important;
-        }
-
-        .hngry-heading {
-          font-size: 27px !important;
-          line-height: 31px !important;
-        }
-
-        .hngry-order-label {
-          font-size: 9px !important;
-          letter-spacing: 1px !important;
-        }
-
-        .hngry-button-wrap,
-        .hngry-button-wrap tbody,
-        .hngry-button-wrap tr,
-        .hngry-button-wrap td {
-          display: block !important;
-          width: 100% !important;
-        }
-
-        .hngry-button-gap {
-          height: 10px !important;
-          padding: 0 !important;
-        }
-
-        .hngry-button,
-        .hngry-button-secondary {
-          box-sizing: border-box !important;
-          text-align: center !important;
-          width: 100% !important;
+          font-size: 34px !important;
+          line-height: 38px !important;
         }
 
         .hngry-product-image-cell {
-          width: 68px !important;
+          width: 82px !important;
+          padding-right: 14px !important;
         }
 
         .hngry-product-image {
-          height: 68px !important;
-          width: 68px !important;
+          width: 82px !important;
+          height: 82px !important;
         }
 
         .hngry-product-title {
-          font-size: 13px !important;
-          line-height: 18px !important;
+          font-size: 14px !important;
+          line-height: 19px !important;
+        }
+
+        .hngry-info-grid,
+        .hngry-info-grid tbody,
+        .hngry-info-grid tr,
+        .hngry-info-grid td {
+          display: block !important;
+          box-sizing: border-box !important;
+          width: 100% !important;
         }
       }
     </style>
   </head>
 
-  <body class="hngry-body">
-    <div class="hngry-preheader">
-      Eine Sendung aus deiner HNGRŸ Bestellung {{ order_name }} ist unterwegs.
-    </div>
-
-    <table role="presentation" class="hngry-shell" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <body bgcolor="#f5f5f5" style="margin:0;padding:0;background-color:#f5f5f5;color:#0c0c0c;">
+    <table role="presentation" class="hngry-shell" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f5f5" style="background-color:#f5f5f5;color:#0c0c0c;">
       <tr>
-        <td align="center">
-          <table role="presentation" class="hngry-container" width="640" cellpadding="0" cellspacing="0" border="0">
-            <tr>
-              <td class="hngry-ticker">
-                ON THE WAY &nbsp;✦&nbsp; STAY HNGRŸ &nbsp;✦&nbsp; TRACK YOUR ORDER &nbsp;✦&nbsp; ON THE WAY
-              </td>
-            </tr>
-
+        <td align="center" bgcolor="#f5f5f5" style="background-color:#f5f5f5;">
+          <table role="presentation" class="hngry-card" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#fffffe" style="background-color:#fffffe;color:#0c0c0c;">
             <tr>
               <td class="hngry-header">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td align="left" valign="middle">
-                      {% if shop.email_logo_url %}
-                        <a href="{{ shop.url }}">
-                          <img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" width="{{ shop.email_logo_width }}" style="max-width: 150px; height: auto;">
-                        </a>
-                      {% else %}
-                        <a href="{{ shop.url }}" class="hngry-logo-text">HNGRŸ</a>
-                      {% endif %}
+                      <a href="{{ shop.url }}">
+                        <img
+                          src="https://hngryclo.com/cdn/shop/t/6/assets/hngry-logo-wordmark.png?width=290"
+                          alt="HNGRŸ"
+                          width="145"
+                          height="78"
+                          style="display:block;width:145px;max-width:145px;height:auto;"
+                        >
+                      </a>
                     </td>
-                    <td class="hngry-order-label" align="right" valign="middle">
-                      ORDER {{ order_name }}
+                    <td class="hngry-order-number" align="right" valign="middle">
+                      {{ order_name }}
                       {% if po_number %}<br>PO {{ po_number }}{% endif %}
                     </td>
                   </tr>
@@ -467,39 +378,28 @@
             </tr>
 
             <tr>
-              <td class="hngry-hero">
-                <div class="hngry-kicker">(01) — SHIPPING UPDATE</div>
-                <h1 class="hngry-title">
-                  {{ display_title | strip | replace: '.', '<span class="hngry-title-accent">.</span>' }}
-                </h1>
+              <td class="hngry-main">
+                <div class="hngry-eyebrow">SHIPPING UPDATE</div>
+                <h1 class="hngry-title">{{ email_title | strip }}</h1>
                 <div class="hngry-copy">{{ email_body | strip }}</div>
 
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top: 26px;">
-                  <tr>
-                    <td class="hngry-order-chip">{{ order_name }} / SHIPPED</td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-
-            <tr>
-              <td class="hngry-content">
                 {% if fulfillment.estimated_delivery_at %}
-                  <div class="hngry-delivery-box" style="margin-bottom: 14px;">
-                    {{ email_emphasis }}
+                  <div class="hngry-note">
+                    <strong>ESTIMATED DELIVERY</strong><br>
+                    {{ fulfillment.estimated_delivery_at | date: format: 'date' }}
                   </div>
                 {% endif %}
 
                 {% if fulfillment.tracking_numbers.size > 0 %}
-                  <div class="hngry-tracking-box" style="margin-bottom: 18px;">
+                  <div class="hngry-note">
                     {% if fulfillment.tracking_numbers.size == 1 and fulfillment.tracking_company and fulfillment.tracking_url %}
                       <strong>{{ fulfillment.tracking_company | upcase }} TRACKING</strong><br>
                       <a href="{{ fulfillment.tracking_url }}">{{ fulfillment.tracking_numbers.first }}</a>
                     {% elsif fulfillment.tracking_numbers.size == 1 %}
-                      <strong>TRACKINGNUMMER</strong><br>
+                      <strong>TRACKING NUMBER</strong><br>
                       {{ fulfillment.tracking_numbers.first }}
                     {% else %}
-                      <strong>{% if fulfillment.tracking_company %}{{ fulfillment.tracking_company | upcase }} {% endif %}TRACKINGNUMMERN</strong><br>
+                      <strong>{% if fulfillment.tracking_company %}{{ fulfillment.tracking_company | upcase }} {% endif %}TRACKING NUMBERS</strong><br>
                       {% for tracking_number in fulfillment.tracking_numbers %}
                         {% if fulfillment.tracking_urls[forloop.index0] %}
                           <a href="{{ fulfillment.tracking_urls[forloop.index0] }}">{{ tracking_number }}</a>
@@ -512,139 +412,111 @@
                   </div>
                 {% endif %}
 
-                <table role="presentation" class="hngry-button-wrap" cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    {% if primary_tracking_url != blank %}
+                {% if primary_tracking_url != blank %}
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:28px;">
+                    <tr>
                       <td class="hngry-button-cell">
                         <a href="{{ primary_tracking_url }}" class="hngry-button">
-                          {% if fulfillment.tracking_url or shop_app_tracking_url %}SENDUNG VERFOLGEN →{% else %}BESTELLUNG ANSEHEN →{% endif %}
+                          {% if fulfillment.tracking_url or shop_app_tracking_url %}
+                            TRACK SHIPMENT →
+                          {% else %}
+                            VIEW ORDER →
+                          {% endif %}
                         </a>
                       </td>
-                    {% endif %}
-
-                    {% if order_status_url and primary_tracking_url != order_status_url %}
-                      <td class="hngry-button-gap" width="10">&nbsp;</td>
-                      <td class="hngry-button-secondary-cell">
-                        <a href="{{ order_status_url }}" class="hngry-button-secondary">BESTELLUNG ANSEHEN</a>
+                    </tr>
+                  </table>
+                {% elsif shop.url %}
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:28px;">
+                    <tr>
+                      <td class="hngry-button-cell">
+                        <a href="{{ shop.url }}" class="hngry-button">VISIT STORE →</a>
                       </td>
-                    {% elsif shop.url %}
-                      <td class="hngry-button-gap" width="10">&nbsp;</td>
-                      <td class="hngry-button-secondary-cell">
-                        <a href="{{ shop.url }}" class="hngry-button-secondary">ZUM SHOP</a>
-                      </td>
-                    {% endif %}
-                  </tr>
-                </table>
+                    </tr>
+                  </table>
+                {% endif %}
               </td>
             </tr>
 
             <tr>
               <td class="hngry-section">
-                <div class="hngry-section-number">(02) — IN THIS SHIPMENT</div>
-                <h2 class="hngry-heading">ARTIKEL DIESER LIEFERUNG</h2>
+                <div class="hngry-section-label">IN THIS SHIPMENT</div>
 
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                   {% for line in fulfillment.fulfillment_line_items %}
                     {% unless line.line_item.nested_line_child? %}
-                      {% if line.line_item.presentment_title %}
-                        {% assign line_title = line.line_item.presentment_title %}
-                      {% elsif line.line_item.title %}
-                        {% assign line_title = line.line_item.title %}
-                      {% else %}
-                        {% assign line_title = line.line_item.product.title %}
-                      {% endif %}
+                      {% assign line_title = line.line_item.product.title
+                        | default: line.line_item.presentment_title
+                        | default: line.line_item.title
+                      %}
+                      {% assign line_url = shop.url | append: line.line_item.url %}
 
                       {% if line.quantity < line.line_item.quantity %}
-                        {% capture line_display %}{{ line.quantity }} VON {{ line.line_item.quantity }}{% endcapture %}
+                        {% capture line_display %}{{ line.quantity }} OF {{ line.line_item.quantity }}{% endcapture %}
                       {% else %}
                         {% assign line_display = line.quantity %}
                       {% endif %}
 
                       <tr class="hngry-product-row">
                         <td class="hngry-product-image-cell">
-                          {% if line.line_item.image %}
-                            <img src="{{ line.line_item | img_url: 'compact_cropped' }}" alt="{{ line_title | escape }}" width="84" height="84" class="hngry-product-image">
-                          {% else %}
-                            <img src="{{ 'notifications/no-image.png' | shopify_asset_url }}" alt="" width="84" height="84" class="hngry-product-image">
-                          {% endif %}
+                          <a href="{{ line_url | default: shop.url }}">
+                            <img
+                              src="https://hngryclo.com/cdn/shop/t/6/assets/hngry-shirt-front.jpeg?width=224&height=224&crop=center"
+                              alt="HNGRŸ white FLYYY 9–5 shirt"
+                              width="112"
+                              height="112"
+                              class="hngry-product-image"
+                              style="display:block;width:112px;height:112px;object-fit:cover;background:#f3f3f3;"
+                            >
+                          </a>
                         </td>
+
                         <td class="hngry-product-info">
-                          <div class="hngry-product-title">{{ line_title }} × {{ line_display }}</div>
+                          <div class="hngry-product-title">
+                            <a href="{{ line_url | default: shop.url }}" style="color:#0c0c0c;text-decoration:none;">
+                              {{ line_title }}
+                            </a>
+                          </div>
 
                           {% if line.line_item.variant.title != 'Default Title' %}
-                            <div class="hngry-product-meta">{{ line.line_item.variant.title }}</div>
+                            <div class="hngry-product-meta">SIZE {{ line.line_item.variant.title }}</div>
                           {% endif %}
 
-                          {% for group in line.line_item.groups %}
-                            <div class="hngry-product-meta">
-                              {% if group.deliverable? %}FÜR: {% else %}TEIL VON: {% endif %}{{ group.display_title }}
-                            </div>
-                          {% endfor %}
+                          <div class="hngry-product-meta">QTY {{ line_display | strip }}</div>
 
                           {% if line.line_item.selling_plan_allocation %}
                             <div class="hngry-product-meta">{{ line.line_item.selling_plan_allocation.selling_plan.name }}</div>
                           {% endif %}
-
-                          {% if line.line_item.refunded_quantity > 0 %}
-                            <div class="hngry-discount">ZURÜCKERSTATTET</div>
-                          {% endif %}
-
-                          {% for discount_allocation in line.line_item.discount_allocations %}
-                            {% if discount_allocation.discount_application.target_selection != 'all' %}
-                              <div class="hngry-discount">
-                                TAG / {{ discount_allocation.discount_application.title }} −{{ discount_allocation.amount | money }}
-                              </div>
-                            {% endif %}
-                          {% endfor %}
                         </td>
                       </tr>
-
-                      {% if line.line_item.nested_line_parent? %}
-                        {% for child_line in line.line_item.nested_lines %}
-                          <tr class="hngry-child-row">
-                            <td style="padding-left: 14px; text-align: center; color: #77756f; font-family: 'Courier New', monospace;">↳</td>
-                            <td class="hngry-product-info">
-                              <div class="hngry-product-title" style="font-size: 12px;">
-                                {{ child_line.product.title | default: child_line.title }} × {{ child_line.quantity }}
-                              </div>
-                              {% if child_line.variant.title != 'Default Title' %}
-                                <div class="hngry-product-meta">{{ child_line.variant.title }}</div>
-                              {% endif %}
-                              {% if child_line.selling_plan_allocation %}
-                                <div class="hngry-product-meta">{{ child_line.selling_plan_allocation.selling_plan.name }}</div>
-                              {% endif %}
-                            </td>
-                          </tr>
-                        {% endfor %}
-                      {% endif %}
                     {% endunless %}
                   {% endfor %}
                 </table>
               </td>
             </tr>
 
+            {% if shipping_address %}
+              <tr>
+                <td class="hngry-section">
+                  <div class="hngry-section-label">SHIPPING TO</div>
+
+                  <table role="presentation" class="hngry-info-grid" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td class="hngry-info-cell">
+                        <div class="hngry-info-label">SHIPPING ADDRESS</div>
+                        <div class="hngry-info-copy">{{ shipping_address | format_address }}</div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            {% endif %}
+
             <tr>
               <td class="hngry-footer">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td align="left" valign="top">
-                      <strong style="color: #f1efe9; font-size: 12px;">STAY HNGRŸ.</strong><br>
-                      CLOTHES FOR THE ONES WHO WANT MORE.<br>
-                      EST. 2026
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-top: 22px; border-top: 1px solid #343431;">
-                      FRAGEN ZU DEINER SENDUNG? ANTWORTE DIREKT AUF DIESE E-MAIL ODER SCHREIB AN
-                      <a href="mailto:{{ shop.email }}">{{ shop.email }}</a>.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-top: 18px; color: #66655f;">
-                      © {{ 'now' | date: '%Y' }} HNGRŸ — ALL RIGHTS RESERVED
-                    </td>
-                  </tr>
-                </table>
+                QUESTIONS? REPLY TO THIS EMAIL OR CONTACT
+                <a href="mailto:{{ shop.email }}">{{ shop.email }}</a>.<br>
+                © {{ 'now' | date: '%Y' }} HNGRŸ
               </td>
             </tr>
           </table>
@@ -652,6 +524,6 @@
       </tr>
     </table>
 
-    <img src="{{ 'notifications/spacer.png' | shopify_asset_url }}" alt="" height="1" style="display: block; height: 1px; width: 1px;">
+    <img src="{{ 'notifications/spacer.png' | shopify_asset_url }}" alt="" width="1" height="1" style="display:block;width:1px;height:1px;">
   </body>
 </html>

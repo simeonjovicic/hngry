@@ -27,7 +27,7 @@
 {% assign maps_url = 'https://www.google.com/maps/search/?api=1&query=' | append: maps_query_encoded %}
 
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" style="color-scheme:light only;">
   <head>
     <title>{{ email_title | strip }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,6 +36,11 @@
     <meta name="supported-color-schemes" content="light only">
     <link rel="stylesheet" type="text/css" href="/assets/notifications/styles.css">
     <style>
+      :root {
+        color-scheme: light only;
+        supported-color-schemes: light;
+      }
+
       body,
       .hngry-body {
         margin: 0 !important;
@@ -408,6 +413,47 @@
         color: #f1efe9 !important;
       }
 
+      @media (prefers-color-scheme: dark) {
+        html,
+        body,
+        .hngry-body,
+        .hngry-shell {
+          background-color: #e3e1da !important;
+          color: #0c0c0c !important;
+        }
+
+        .hngry-header,
+        .hngry-content,
+        .hngry-section {
+          background-color: #f1efe9 !important;
+          color: #0c0c0c !important;
+        }
+
+        .hngry-ticker,
+        .hngry-hero,
+        .hngry-footer {
+          background-color: #0c0c0c !important;
+        }
+
+        .hngry-ticker,
+        .hngry-hero,
+        .hngry-title,
+        .hngry-copy,
+        .hngry-order-chip,
+        .hngry-footer,
+        .hngry-footer a {
+          color: #f1efe9 !important;
+        }
+
+        .hngry-button-cell {
+          background-color: #0c0c0c !important;
+        }
+
+        .hngry-button {
+          color: #f1efe9 !important;
+        }
+      }
+
       @media only screen and (max-width: 680px) {
         .hngry-container {
           width: 100% !important;
@@ -478,14 +524,14 @@
     </style>
   </head>
 
-  <body class="hngry-body">
+  <body class="hngry-body" bgcolor="#e3e1da" style="margin:0;padding:0;background-color:#e3e1da;color:#0c0c0c;">
     <div class="hngry-preheader">
       Deine HNGRŸ Bestellung {{ order_name }} ist zur Abholung bereit.
     </div>
 
-    <table role="presentation" class="hngry-shell" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <table role="presentation" class="hngry-shell" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#e3e1da" style="background-color:#e3e1da;color:#0c0c0c;">
       <tr>
-        <td align="center">
+        <td align="center" bgcolor="#e3e1da" style="background-color:#e3e1da;">
           <table role="presentation" class="hngry-container" width="640" cellpadding="0" cellspacing="0" border="0">
             <tr>
               <td class="hngry-ticker">

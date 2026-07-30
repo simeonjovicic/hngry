@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "name": "t:sections.footer.name",
   "type": "footer",
@@ -5,20 +14,35 @@
     "hngry-footer": {
       "type": "hngry-footer",
       "settings": {
-        "color_scheme": "scheme-3",
         "tagline": "CLOTHES FOR THE ONES WHO WANT MORE. EST. 2026.",
+        "color_scheme": "scheme-3",
         "col1_title": "CUSTOMER SERVICE",
         "col1_label_1": "SHIPPING",
+        "col1_url_1": "shopify://pages/shipping",
         "col1_label_2": "RETURNS",
-        "col1_label_3": "FAQ",
+        "col1_url_2": "shopify://pages/cancelation-policy-right-of-widthdraw",
+        "col1_label_3": "",
+        "col1_url_3": "",
+        "col1_label_4": "",
+        "col1_url_4": "",
         "socials_title": "SOCIALS",
         "show_placeholder_socials": true,
+        "instagram_url": "https://www.instagram.com/hngry.clo",
+        "tiktok_url": "https://www.tiktok.com/@hngry.clo",
+        "whatsapp_url": "https://whatsapp.com/channel/0029Vb7wojc3gvWiVn7ylV3h",
         "newsletter_title": "SIGN UP FOR EARLY ACCESS",
-        "legal_label_1": "DATENSCHUTZ",
-        "legal_label_2": "AGB",
-        "legal_label_3": "IMPRESSUM"
+        "legal_label_1": "LEGAL NOTICE",
+        "legal_url_1": "shopify://pages/impressum",
+        "legal_label_2": "TERMS & CONDITIONS",
+        "legal_url_2": "shopify://pages/terms-conditions",
+        "legal_label_3": "PRIVACY POLICY",
+        "legal_url_3": "shopify://pages/privacy-policy",
+        "legal_label_4": "CANCELLATION POLICY",
+        "legal_url_4": "shopify://pages/cancelation-policy-right-of-widthdraw"
       }
     }
   },
-  "order": ["hngry-footer"]
+  "order": [
+    "hngry-footer"
+  ]
 }

@@ -37,18 +37,57 @@
 
       {%- form 'customer', id: 'hngry-nl-popup-form', class: 'hngry-nl-popup__form' -%}
         <input type="hidden" name="contact[tags]" value="newsletter">
-        {%- if section.settings.success_shown and form.posted_successfully -%}
-          <p class="hngry-nl-popup__success hngry-mono">{{ section.settings.success_text }}</p>
-        {%- else -%}
-          <input
-            type="email"
-            name="contact[email]"
-            required
-            placeholder="{{ section.settings.placeholder }}"
-            class="hngry-nl-popup__input hngry-mono"
-            aria-label="Email"
+        {%- if section.settings.success_shown and form.posted_successfully? -%}
+          <p
+            class="hngry-nl-popup__success hngry-mono"
+            role="status"
+            tabindex="-1"
+            data-hngry-nl-success
           >
-          <button type="submit" class="hngry-nl-popup__submit hngry-mono" name="commit">&rarr;</button>
+            {{ section.settings.success_text }}
+          </p>
+        {%- else -%}
+          <div class="hngry-nl-popup__form-row">
+            <input
+              id="hngry-nl-popup-email"
+              type="email"
+              name="contact[email]"
+              value="{{ form.email }}"
+              required
+              autocorrect="off"
+              autocapitalize="off"
+              autocomplete="email"
+              placeholder="{{ section.settings.placeholder }}"
+              class="hngry-nl-popup__input hngry-mono"
+              aria-label="Email address"
+              aria-required="true"
+              {% if form.errors %}
+                aria-invalid="true"
+                aria-describedby="hngry-nl-popup-error"
+              {% endif %}
+            >
+            <button
+              type="submit"
+              class="hngry-nl-popup__submit hngry-mono"
+              name="commit"
+              aria-label="Subscribe to HNGRŸ email updates"
+            >
+              &rarr;
+            </button>
+          </div>
+
+          {%- if form.errors -%}
+            <p
+              id="hngry-nl-popup-error"
+              class="hngry-nl-popup__error hngry-mono"
+              role="alert"
+              tabindex="-1"
+              data-hngry-nl-error
+            >
+              {{ form.errors.translated_fields.email | capitalize }}
+              {{ form.errors.messages.email }}
+            </p>
+          {%- endif -%}
         {%- endif -%}
       {%- endform -%}
 
@@ -209,10 +248,13 @@
   }
 
   .hngry-nl-popup__form {
+    margin-top: 2rem;
+  }
+
+  .hngry-nl-popup__form-row {
     display: flex;
     align-items: flex-end;
     gap: 0.9rem;
-    margin-top: 2rem;
   }
 
   .hngry-nl-popup__input {
@@ -249,9 +291,20 @@
   }
 
   .hngry-nl-popup__success {
-    margin-top: 2rem;
+    margin: 0;
     font-size: 1.7rem;
     letter-spacing: 0.25em;
+    line-height: 1.5;
+    outline: none;
+  }
+
+  .hngry-nl-popup__error {
+    margin: 0.9rem 0 0;
+    color: rgb(var(--color-foreground));
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+    outline: none;
   }
 
   .hngry-nl-popup__note {
@@ -267,6 +320,8 @@
     var root = document.querySelector('[data-hngry-nl-popup]');
     if (!root) return;
 
+    var formSuccess = root.querySelector('[data-hngry-nl-success]');
+    var formError = root.querySelector('[data-hngry-nl-error]');
     var SESSION_KEY = 'hngry_community_seen';
     var delayMs = (parseFloat(root.getAttribute('data-delay')) || 12) * 1000;
     var scrollTrigger = (parseFloat(root.getAttribute('data-scroll')) || 45) / 100;
@@ -298,7 +353,14 @@
       // next frame so the transition runs
       // double rAF so the closed state paints first → smooth ease-in, no snap
       requestAnimationFrame(function () {
-        requestAnimationFrame(function () { root.classList.add('is-open'); });
+        requestAnimationFrame(function () {
+          root.classList.add('is-open');
+          if (formSuccess || formError) {
+            window.setTimeout(function () {
+              (formError || formSuccess).focus();
+            }, 450);
+          }
+        });
       });
       lockScroll(true);
       cleanup();
@@ -333,19 +395,27 @@
       window.removeEventListener('scroll', onScroll);
     }
 
-    try {
-      if (sessionStorage.getItem(SESSION_KEY)) return;
-    } catch (e) {}
-
-    timer = window.setTimeout(arm, delayMs);
-    window.addEventListener('scroll', onScroll, { passive: true });
-
     root.querySelectorAll('[data-hngry-nl-close]').forEach(function (el) {
       el.addEventListener('click', close);
     });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && root.classList.contains('is-open')) close();
     });
+
+    // A Shopify form POST reloads the page. Always reopen the popup after that
+    // reload so the customer can see either the confirmation step or the error,
+    // even though the popup was already marked as seen in this browser session.
+    if (formSuccess || formError) {
+      arm();
+      return;
+    }
+
+    try {
+      if (sessionStorage.getItem(SESSION_KEY)) return;
+    } catch (e) {}
+
+    timer = window.setTimeout(arm, delayMs);
+    window.addEventListener('scroll', onScroll, { passive: true });
   })();
 </script>
 
@@ -360,8 +430,8 @@
     { "type": "textarea", "id": "body", "label": "Body", "default": "First dibs on every drop. No spam, just drops." },
     { "type": "text", "id": "placeholder", "label": "Input placeholder", "default": "ENTER EMAIL ADDRESS" },
     { "type": "checkbox", "id": "success_shown", "label": "Show success message after signup", "default": true },
-    { "type": "text", "id": "success_text", "label": "Success text", "default": "YOU'RE IN. STAY HNGRŸ. ✦" },
-    { "type": "text", "id": "note", "label": "Fine print", "default": "NO SPAM. ONLY DROPS." },
+    { "type": "text", "id": "success_text", "label": "Success text", "default": "ALMOST IN. CHECK YOUR INBOX TO CONFIRM. ✦" },
+    { "type": "text", "id": "note", "label": "Fine print", "default": "EMAIL UPDATES ONLY. UNSUBSCRIBE ANYTIME." },
     { "type": "range", "id": "delay_seconds", "min": 2, "max": 30, "step": 1, "unit": "s", "label": "Show after delay", "default": 12 },
     { "type": "range", "id": "scroll_percent", "min": 10, "max": 90, "step": 5, "unit": "%", "label": "…or after scrolling", "default": 45 },
     { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }

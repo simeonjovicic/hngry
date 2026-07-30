@@ -1,0 +1,296 @@
+{% comment %}
+  HNGRŸ — Minimal Shopify customer marketing confirmation
+
+  Recommended subject:
+  CONFIRM YOUR HNGRŸ EMAIL SIGN-UP
+
+  Paste this complete file into:
+  Shopify → Settings → Notifications → Customer notifications
+  → Customer marketing confirmation → Edit code
+
+  Keep this transactional confirmation free of promotional content.
+{% endcomment %}
+
+{% capture email_title %}CONFIRM YOUR EMAIL{% endcapture %}
+{% capture email_body %}
+  Please confirm that you want to receive email updates from HNGRŸ.
+  If you did not request this, no action is required.
+{% endcapture %}
+
+<!DOCTYPE html>
+<html lang="en" style="color-scheme:light only;supported-color-schemes:light;">
+  <head>
+    <title>{{ email_title | strip }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="supported-color-schemes" content="light">
+    <link rel="stylesheet" type="text/css" href="/assets/notifications/styles.css">
+    <style>
+      :root {
+        color-scheme: light only;
+        supported-color-schemes: light;
+      }
+
+      html,
+      body,
+      .hngry-shell,
+      .hngry-card,
+      .hngry-header,
+      .hngry-main,
+      .hngry-footer {
+        color-scheme: light only !important;
+        supported-color-schemes: light !important;
+      }
+
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        background: #f5f5f5 !important;
+        background-image: linear-gradient(#f5f5f5, #f5f5f5) !important;
+        color: #0c0c0c !important;
+      }
+
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+
+      img {
+        border: 0;
+        display: block;
+      }
+
+      p,
+      h1 {
+        margin: 0;
+      }
+
+      a {
+        color: #0c0c0c !important;
+        -webkit-text-fill-color: #0c0c0c !important;
+      }
+
+      .hngry-preheader {
+        display: none !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        color: transparent !important;
+      }
+
+      .hngry-shell {
+        width: 100%;
+        background: #f5f5f5;
+        background-image: linear-gradient(#f5f5f5, #f5f5f5);
+      }
+
+      .hngry-card {
+        width: 600px;
+        max-width: 600px;
+        background-color: #fffffe;
+        background-image: linear-gradient(#fffffe, #fffffe);
+      }
+
+      .hngry-header {
+        padding: 30px 36px;
+        border-bottom: 1px solid #e0e0e0;
+        background-color: #fffffe;
+        background-image: linear-gradient(#fffffe, #fffffe);
+      }
+
+      .hngry-header-label,
+      .hngry-eyebrow,
+      .hngry-button,
+      .hngry-note,
+      .hngry-footer {
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .hngry-header-label {
+        color: #7a7a7a !important;
+        -webkit-text-fill-color: #7a7a7a !important;
+        font-size: 10px;
+        letter-spacing: 1.4px;
+        line-height: 16px;
+        text-align: right;
+      }
+
+      .hngry-main {
+        padding: 56px 36px 52px;
+        background-color: #fffffe;
+        background-image: linear-gradient(#fffffe, #fffffe);
+      }
+
+      .hngry-eyebrow {
+        padding-bottom: 14px;
+        color: #808080 !important;
+        -webkit-text-fill-color: #808080 !important;
+        font-size: 10px;
+        letter-spacing: 2px;
+        line-height: 16px;
+      }
+
+      .hngry-title {
+        max-width: 470px;
+        color: #0c0c0c !important;
+        -webkit-text-fill-color: #0c0c0c !important;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 42px;
+        font-weight: 400;
+        letter-spacing: 1px;
+        line-height: 46px;
+      }
+
+      .hngry-copy {
+        max-width: 450px;
+        padding-top: 22px;
+        color: #555555 !important;
+        -webkit-text-fill-color: #555555 !important;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        line-height: 22px;
+      }
+
+      .hngry-button-cell {
+        background-color: #0c0c0c;
+        background-image: linear-gradient(#0c0c0c, #0c0c0c);
+      }
+
+      .hngry-button {
+        display: inline-block;
+        padding: 15px 23px;
+        color: #fffffe !important;
+        -webkit-text-fill-color: #fffffe !important;
+        font-size: 10px;
+        font-weight: bold;
+        letter-spacing: 1.6px;
+        line-height: 16px;
+        text-decoration: none;
+      }
+
+      .hngry-note {
+        margin-top: 22px;
+        color: #888888 !important;
+        -webkit-text-fill-color: #888888 !important;
+        font-size: 9px;
+        letter-spacing: 0.5px;
+        line-height: 16px;
+      }
+
+      .hngry-footer {
+        padding: 26px 36px 34px;
+        border-top: 1px solid #e0e0e0;
+        background-color: #fffffe;
+        background-image: linear-gradient(#fffffe, #fffffe);
+        color: #777777 !important;
+        -webkit-text-fill-color: #777777 !important;
+        font-size: 9px;
+        letter-spacing: 0.8px;
+        line-height: 16px;
+      }
+
+      .hngry-footer-copy {
+        color: #777777 !important;
+        -webkit-text-fill-color: #777777 !important;
+      }
+
+      .hngry-footer a {
+        color: #0c0c0c !important;
+        -webkit-text-fill-color: #0c0c0c !important;
+      }
+
+      @media only screen and (max-width: 640px) {
+        .hngry-card {
+          width: 100% !important;
+        }
+
+        .hngry-header,
+        .hngry-main,
+        .hngry-footer {
+          padding-left: 22px !important;
+          padding-right: 22px !important;
+        }
+
+        .hngry-title {
+          font-size: 34px !important;
+          line-height: 38px !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body bgcolor="#f5f5f5" style="margin:0;padding:0;background-color:#f5f5f5;background-image:linear-gradient(#f5f5f5,#f5f5f5);color:#0c0c0c;color-scheme:light only;supported-color-schemes:light;">
+    <div class="hngry-preheader">
+      Confirm your HNGRŸ email sign-up.
+    </div>
+
+    <table role="presentation" class="hngry-shell" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f5f5" style="background-color:#f5f5f5;background-image:linear-gradient(#f5f5f5,#f5f5f5);color:#0c0c0c;color-scheme:light only;supported-color-schemes:light;">
+      <tr>
+        <td align="center" bgcolor="#f5f5f5" style="background-color:#f5f5f5;background-image:linear-gradient(#f5f5f5,#f5f5f5);">
+          <table role="presentation" class="hngry-card" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color:#0c0c0c;color-scheme:light only;supported-color-schemes:light;">
+            <tr>
+              <td class="hngry-header" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color-scheme:light only;supported-color-schemes:light;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="left" valign="middle">
+                      <a href="{{ shop.url }}">
+                        <img
+                          src="https://hngryclo.com/cdn/shop/t/6/assets/hngry-logo-wordmark.png?width=290"
+                          alt="HNGRŸ"
+                          width="145"
+                          height="78"
+                          style="display:block;width:145px;max-width:145px;height:auto;"
+                        >
+                      </a>
+                    </td>
+                    <td class="hngry-header-label" align="right" valign="middle" style="color:#7a7a7a!important;-webkit-text-fill-color:#7a7a7a!important;">
+                      EMAIL SIGN-UP
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="hngry-main" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color-scheme:light only;supported-color-schemes:light;">
+                <div class="hngry-eyebrow" style="color:#808080!important;-webkit-text-fill-color:#808080!important;">ONE LAST STEP</div>
+                <h1 class="hngry-title" style="color:#0c0c0c!important;-webkit-text-fill-color:#0c0c0c!important;">{{ email_title | strip }}</h1>
+                <div class="hngry-copy" style="color:#555555!important;-webkit-text-fill-color:#555555!important;">{{ email_body | strip }}</div>
+
+                {% if customer.subscribe_url %}
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:28px;">
+                    <tr>
+                      <td class="hngry-button-cell" bgcolor="#0c0c0c" style="background-color:#0c0c0c;background-image:linear-gradient(#0c0c0c,#0c0c0c);">
+                        <a href="{{ customer.subscribe_url }}" class="hngry-button" style="color:#fffffe!important;-webkit-text-fill-color:#fffffe!important;">
+                          CONFIRM SIGN-UP →
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                {% endif %}
+
+                <div class="hngry-note" style="color:#888888!important;-webkit-text-fill-color:#888888!important;">
+                  THIS LINK ONLY CONFIRMS YOUR EMAIL SUBSCRIPTION.
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="hngry-footer" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color:#777777!important;-webkit-text-fill-color:#777777!important;color-scheme:light only;supported-color-schemes:light;">
+                <div class="hngry-footer-copy" style="color:#777777!important;-webkit-text-fill-color:#777777!important;">
+                  QUESTIONS? REPLY TO THIS EMAIL OR CONTACT
+                  <a href="mailto:{{ shop.email }}" style="color:#0c0c0c!important;-webkit-text-fill-color:#0c0c0c!important;">{{ shop.email }}</a>.<br>
+                  © {{ 'now' | date: '%Y' }} HNGRŸ
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <img src="{{ 'notifications/spacer.png' | shopify_asset_url }}" alt="" width="1" height="1" style="display:block;width:1px;height:1px;">
+  </body>
+</html>

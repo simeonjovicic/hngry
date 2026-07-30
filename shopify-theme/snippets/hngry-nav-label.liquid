@@ -1,0 +1,43 @@
+{%- comment -%}
+  Keeps merchant-managed navigation URLs intact while normalizing common
+  German menu labels to the English storefront language.
+
+  Accepts:
+  - title: navigation link title
+{%- endcomment -%}
+
+{%- liquid
+  assign title_key = title | handleize
+  assign display_title = title
+
+  case title_key
+    when 'startseite', 'home'
+      assign display_title = 'HOME'
+    when 'katalog', 'produkte', 'alle-produkte', 'shop'
+      assign display_title = 'SHOP'
+    when 'kontakt', 'contact'
+      assign display_title = 'CONTACT'
+    when 'uber-uns', 'ueber-uns', 'uber-hngry', 'about', 'about-us'
+      assign display_title = 'ABOUT'
+    when 'kollektionen', 'collections'
+      assign display_title = 'COLLECTIONS'
+    when 'neuheiten', 'new-arrivals'
+      assign display_title = 'NEW ARRIVALS'
+    when 'haufig-gestellte-fragen', 'faq'
+      assign display_title = 'FAQ'
+    when 'versand', 'shipping'
+      assign display_title = 'SHIPPING'
+    when 'ruckgabe', 'ruckgaben', 'retouren', 'returns'
+      assign display_title = 'RETURNS'
+    when 'datenschutz', 'datenschutzerklarung', 'privacy-policy'
+      assign display_title = 'PRIVACY POLICY'
+    when 'agb', 'allgemeine-geschaftsbedingungen', 'terms-conditions'
+      assign display_title = 'TERMS & CONDITIONS'
+    when 'impressum', 'legal-notice'
+      assign display_title = 'LEGAL NOTICE'
+    when 'widerrufsrecht', 'ruckerstattungsrichtlinie', 'cancellation-policy'
+      assign display_title = 'CANCELLATION POLICY'
+  endcase
+
+  echo display_title | escape
+-%}

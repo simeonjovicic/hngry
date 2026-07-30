@@ -23,7 +23,7 @@
         "m2": {
           "type": "message",
           "settings": {
-            "text": "FREE SHIPPING OVER €80"
+            "text": "FREE SHIPPING IN AUSTRIA"
           }
         },
         "m3": {
@@ -41,7 +41,7 @@
         "m5": {
           "type": "message",
           "settings": {
-            "text": "WORLDWIDE SHIPPING"
+            "text": "FREE SHIPPING ON EU + INTERNATIONAL ORDERS OVER €70"
           }
         }
       },

@@ -27,6 +27,32 @@
     <meta name="supported-color-schemes" content="light">
     <link rel="stylesheet" type="text/css" href="/assets/notifications/styles.css">
     <style>
+      u + .body .gmail-dark-text-outer {
+        background: #000000 !important;
+        mix-blend-mode: exclusion !important;
+      }
+
+      u + .body .gmail-dark-text-inner {
+        background: #000000 !important;
+        color: #ffffff !important;
+        mix-blend-mode: difference !important;
+      }
+
+      u + .body .gmail-dark-text-inner a {
+        color: #ffffff !important;
+      }
+
+      u + .body .gmail-light-text-screen {
+        background: #000000 !important;
+        mix-blend-mode: screen !important;
+      }
+
+      u + .body .gmail-light-text-difference {
+        background: #000000 !important;
+        mix-blend-mode: difference !important;
+      }
+    </style>
+    <style>
       :root {
         color-scheme: light only;
         supported-color-schemes: light;
@@ -69,7 +95,6 @@
 
       a {
         color: #0c0c0c !important;
-        -webkit-text-fill-color: #0c0c0c !important;
       }
 
       .hngry-preheader {
@@ -110,7 +135,6 @@
 
       .hngry-header-label {
         color: #7a7a7a !important;
-        -webkit-text-fill-color: #7a7a7a !important;
         font-size: 10px;
         letter-spacing: 1.4px;
         line-height: 16px;
@@ -126,7 +150,6 @@
       .hngry-eyebrow {
         padding-bottom: 14px;
         color: #808080 !important;
-        -webkit-text-fill-color: #808080 !important;
         font-size: 10px;
         letter-spacing: 2px;
         line-height: 16px;
@@ -135,7 +158,6 @@
       .hngry-title {
         max-width: 470px;
         color: #0c0c0c !important;
-        -webkit-text-fill-color: #0c0c0c !important;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 42px;
         font-weight: 400;
@@ -147,7 +169,6 @@
         max-width: 450px;
         padding-top: 22px;
         color: #555555 !important;
-        -webkit-text-fill-color: #555555 !important;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 14px;
         line-height: 22px;
@@ -162,7 +183,6 @@
         display: inline-block;
         padding: 15px 23px;
         color: #fffffe !important;
-        -webkit-text-fill-color: #fffffe !important;
         font-size: 10px;
         font-weight: bold;
         letter-spacing: 1.6px;
@@ -173,7 +193,6 @@
       .hngry-note {
         margin-top: 22px;
         color: #888888 !important;
-        -webkit-text-fill-color: #888888 !important;
         font-size: 9px;
         letter-spacing: 0.5px;
         line-height: 16px;
@@ -185,7 +204,6 @@
         background-color: #fffffe;
         background-image: linear-gradient(#fffffe, #fffffe);
         color: #777777 !important;
-        -webkit-text-fill-color: #777777 !important;
         font-size: 9px;
         letter-spacing: 0.8px;
         line-height: 16px;
@@ -193,12 +211,10 @@
 
       .hngry-footer-copy {
         color: #777777 !important;
-        -webkit-text-fill-color: #777777 !important;
       }
 
       .hngry-footer a {
         color: #0c0c0c !important;
-        -webkit-text-fill-color: #0c0c0c !important;
       }
 
       @media only screen and (max-width: 640px) {
@@ -221,7 +237,7 @@
     </style>
   </head>
 
-  <body bgcolor="#f5f5f5" style="margin:0;padding:0;background-color:#f5f5f5;background-image:linear-gradient(#f5f5f5,#f5f5f5);color:#0c0c0c;color-scheme:light only;supported-color-schemes:light;">
+  <body class="body" bgcolor="#f5f5f5" style="margin:0;padding:0;background-color:#f5f5f5;background-image:linear-gradient(#f5f5f5,#f5f5f5);color:#0c0c0c;color-scheme:light only;supported-color-schemes:light;">
     <div class="hngry-preheader">
       Confirm your HNGRŸ email sign-up.
     </div>
@@ -245,8 +261,8 @@
                         >
                       </a>
                     </td>
-                    <td class="hngry-header-label" align="right" valign="middle" style="color:#7a7a7a!important;-webkit-text-fill-color:#7a7a7a!important;">
-                      EMAIL SIGN-UP
+                    <td class="hngry-header-label gmail-dark-text-outer" align="right" valign="middle" style="color:#7a7a7a!important;">
+                      <span class="gmail-dark-text-inner">EMAIL SIGN-UP</span>
                     </td>
                   </tr>
                 </table>
@@ -255,34 +271,42 @@
 
             <tr>
               <td class="hngry-main" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color-scheme:light only;supported-color-schemes:light;">
-                <div class="hngry-eyebrow" style="color:#808080!important;-webkit-text-fill-color:#808080!important;">ONE LAST STEP</div>
-                <h1 class="hngry-title" style="color:#0c0c0c!important;-webkit-text-fill-color:#0c0c0c!important;">{{ email_title | strip }}</h1>
-                <div class="hngry-copy" style="color:#555555!important;-webkit-text-fill-color:#555555!important;">{{ email_body | strip }}</div>
+                <div class="hngry-eyebrow gmail-dark-text-outer" style="color:#808080!important;">
+                  <span class="gmail-dark-text-inner">ONE LAST STEP</span>
+                </div>
+                <h1 class="hngry-title gmail-dark-text-outer" style="color:#0c0c0c!important;">
+                  <span class="gmail-dark-text-inner">{{ email_title | strip }}</span>
+                </h1>
+                <div class="hngry-copy gmail-dark-text-outer" style="color:#555555!important;">
+                  <div class="gmail-dark-text-inner">{{ email_body | strip }}</div>
+                </div>
 
                 {% if customer.subscribe_url %}
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:28px;">
                     <tr>
                       <td class="hngry-button-cell" bgcolor="#0c0c0c" style="background-color:#0c0c0c;background-image:linear-gradient(#0c0c0c,#0c0c0c);">
-                        <a href="{{ customer.subscribe_url }}" class="hngry-button" style="color:#fffffe!important;-webkit-text-fill-color:#fffffe!important;">
-                          CONFIRM SIGN-UP →
+                        <a href="{{ customer.subscribe_url }}" class="hngry-button gmail-light-text-screen" style="color:#fffffe!important;">
+                          <span class="gmail-light-text-difference">CONFIRM SIGN-UP →</span>
                         </a>
                       </td>
                     </tr>
                   </table>
                 {% endif %}
 
-                <div class="hngry-note" style="color:#888888!important;-webkit-text-fill-color:#888888!important;">
-                  THIS LINK ONLY CONFIRMS YOUR EMAIL SUBSCRIPTION.
+                <div class="hngry-note gmail-dark-text-outer" style="color:#888888!important;">
+                  <div class="gmail-dark-text-inner">THIS LINK ONLY CONFIRMS YOUR EMAIL SUBSCRIPTION.</div>
                 </div>
               </td>
             </tr>
 
             <tr>
-              <td class="hngry-footer" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color:#777777!important;-webkit-text-fill-color:#777777!important;color-scheme:light only;supported-color-schemes:light;">
-                <div class="hngry-footer-copy" style="color:#777777!important;-webkit-text-fill-color:#777777!important;">
-                  QUESTIONS? REPLY TO THIS EMAIL OR CONTACT
-                  <a href="mailto:{{ shop.email }}" style="color:#0c0c0c!important;-webkit-text-fill-color:#0c0c0c!important;">{{ shop.email }}</a>.<br>
-                  © {{ 'now' | date: '%Y' }} HNGRŸ
+              <td class="hngry-footer" bgcolor="#fffffe" style="background-color:#fffffe;background-image:linear-gradient(#fffffe,#fffffe);color:#777777!important;color-scheme:light only;supported-color-schemes:light;">
+                <div class="hngry-footer-copy gmail-dark-text-outer" style="color:#777777!important;">
+                  <div class="gmail-dark-text-inner">
+                    QUESTIONS? REPLY TO THIS EMAIL OR CONTACT
+                    <a href="mailto:{{ shop.email }}" style="color:#0c0c0c!important;">{{ shop.email }}</a>.<br>
+                    © {{ 'now' | date: '%Y' }} HNGRŸ
+                  </div>
                 </div>
               </td>
             </tr>
